@@ -2153,15 +2153,19 @@
         });
       })();
 
-      // Hold either arrow to keep going. Twenty-odd sessions is far enough that
-      // reaching the other end of the programme should not be twenty taps.
+      // Hold either arrow to keep going. Twenty-odd sessions, and sixteen
+      // speakers, are both far enough that reaching the other end should not be
+      // twenty taps.
       //
       // The first step is still the click, so a tap is exactly one step and the
       // keyboard path (Enter/Space, which fire click with no pointer events at
       // all) is untouched. Only once the press outlasts a tap does it start
       // repeating, accelerating from a readable pace to a fast one — a fixed
       // fast rate overshoots, and a fixed slow one is not worth holding.
-      (function () {
+      //
+      // `step` moves by one, `where` says where it ended up, and the two of
+      // them are how the repeat knows it has run out of list.
+      function holdToRepeat(pairs, step, where, modal) {
         var HOLD_DELAY = 420; // a press longer than this is a hold, not a tap
         // Measured against the programme's own length: this crosses all 21
         // sessions in about three and a half seconds. Faster than that and the
@@ -2177,30 +2181,31 @@
           timer = null;
         }
 
-        function start(by, btn) {
+        function begin(by, btn) {
           var wait = FIRST;
           (function schedule(delay) {
             timer = setTimeout(function () {
-              var before = at;
-              stepEvent(by);
-              // Either end of the programme, or the button went disabled under
-              // the finger — stop rather than spin.
-              if (at === before || btn.disabled) return stop();
+              var before = where();
+              step(by);
+              // Either end of the list, or the button went disabled under the
+              // finger — stop rather than spin.
+              if (where() === before || btn.disabled) return stop();
               lastRepeat = Date.now();
-              wait = Math.max(FASTEST, wait * RAMP);
+              // Scheduled at the current pace and then quickened, not the
+              // other way round: ramping first meant FIRST was never actually
+              // waited — the first repeat came 206ms after the delay rather
+              // than the 240 it is written as.
               schedule(wait);
+              wait = Math.max(FASTEST, wait * RAMP);
             }, delay);
           })(HOLD_DELAY);
         }
 
-        [
-          ["modal-prev", -1],
-          ["modal-next", 1],
-        ].forEach(function (pair) {
+        pairs.forEach(function (pair) {
           var btn = document.getElementById(pair[0]),
             by = pair[1];
           btn.addEventListener("pointerdown", function () {
-            start(by, btn);
+            begin(by, btn);
           });
           ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) {
             btn.addEventListener(ev, stop);
@@ -2210,16 +2215,26 @@
             // Timestamped rather than flagged: a flag set by a press that ended
             // off the button never gets cleared, and swallows the next tap.
             if (Date.now() - lastRepeat < 400) return;
-            stepEvent(by);
+            step(by);
           });
         });
 
         // Releasing outside the dialog, or closing it mid-hold, must not leave
         // the timer running.
-        MODAL.addEventListener("close", stop);
+        modal.addEventListener("close", stop);
         addEventListener("pointerup", stop);
         addEventListener("blur", stop);
-      })();
+      }
+
+      holdToRepeat(
+        [
+          ["modal-prev", -1],
+          ["modal-next", 1],
+        ],
+        stepEvent,
+        function () { return at; },
+        MODAL
+      );
 
       // Card order, not id: the cards are written in one order and rearranged
       // by CSS for the Korean view, so an index into the list they were
@@ -2232,13 +2247,23 @@
       // Who this is. Not the session sheet's speakerHtml — that renders a
       // person inside a talk, with the talk's own material under them, which
       // is the arrangement this window exists to undo.
+      // "Prof. Jaeho Lee" and "이재호 교수" — the title leads in English and
+      // follows in Korean, which is where each language puts it. Both are
+      // always in the markup; the language switch shows one, as everywhere
+      // else on the page.
+      function titled(s) {
+        return (s.role ? '<span class="t-en">' + esc(s.role) + " </span>" : "") +
+               s.nameHtml +
+               (s.role_ko ? '<span class="t-ko"> ' + esc(s.role_ko) + "</span>" : "");
+      }
+
       function speakerPanel(s, i) {
         var head = s.photo
           ? '<img class="sp-photo" src="' + esc(s.photo) + '" alt="" loading="lazy" />'
           : '<div class="sp-photo sp-blank" aria-hidden="true"></div>';
         var name = s.home
-          ? '<a href="' + esc(s.home) + '" target="_blank" rel="noopener">' + s.nameHtml + "</a>"
-          : s.nameHtml;
+          ? '<a href="' + esc(s.home) + '" target="_blank" rel="noopener">' + titled(s) + "</a>"
+          : titled(s);
         var bits = '<div class="sp-name">' + name;
         if (s.affil) bits += " <em>" + s.affilHtml + "</em>";
         bits += "</div>";
@@ -2258,7 +2283,7 @@
       }
 
       function talkPanel(s, i) {
-        var who = s.nameHtml + (s.affil ? ' <em>' + s.affilHtml + "</em>" : "");
+        var who = titled(s) + (s.affil ? ' <em>' + s.affilHtml + "</em>" : "");
         var bits = '<button class="tk-back" onclick="openSpeaker(' + i + ')">' +
                    '<span aria-hidden="true">&larr;</span> ' + who + "</button>";
         bits += '<h4 class="tk-title">' + esc(s.talk) + "</h4>";
@@ -2364,14 +2389,18 @@
       function point(i) {
         var s = PEOPLE[i], n = STRIP.order.indexOf(i);
         if (!s || n < 0) return;
-        STRIP.tip.innerHTML = s.nameHtml + (s.affil ? ' <em>' + s.affilHtml + "</em>" : "");
+        STRIP.tip.innerHTML = titled(s) + (s.affil ? ' <em>' + s.affilHtml + "</em>" : "");
         var bar = STRIP.bar.getBoundingClientRect();
         var tick = STRIP.ticks[n].getBoundingClientRect();
-        // Centred on the tick, and kept inside the rail — over the first or
-        // last tick the label is wider than the room left beside it.
+        var sheet = SPEAKER_MODAL.getBoundingClientRect();
+        // Centred on the tick, and kept inside the sheet rather than inside the
+        // rail: the rail is 173px on a phone and "Kwang-Sung Jun POSTECH" is
+        // 185, so a label clamped to the rail would be pushed off it anyway,
+        // while there is room to spare in the window it sits in.
         var half = STRIP.tip.offsetWidth / 2;
-        var x = tick.left + tick.width / 2 - bar.left;
-        STRIP.tip.style.left = Math.max(half, Math.min(bar.width - half, x)) + "px";
+        var x = tick.left + tick.width / 2;
+        var lo = sheet.left + 8 + half, hi = sheet.right - 8 - half;
+        STRIP.tip.style.left = Math.max(lo, Math.min(hi, x)) - bar.left + "px";
       }
 
       function openSpeaker(i) {
@@ -2465,8 +2494,17 @@
         // No click handler: pointerdown already lands on the right person, and
         // a click firing after it would only repeat the move.
       })();
-      document.getElementById("spk-prev").onclick = function () { stepSpeaker(-1); };
-      document.getElementById("spk-next").onclick = function () { stepSpeaker(1); };
+      // The same hold the programme's arrows have — sixteen speakers is far
+      // enough to be worth holding through rather than tapping through.
+      holdToRepeat(
+        [
+          ["spk-prev", -1],
+          ["spk-next", 1],
+        ],
+        stepSpeaker,
+        function () { return spkAt; },
+        SPEAKER_MODAL
+      );
       SPEAKER_MODAL.addEventListener("keydown", function (ev) {
         if (ev.key === "ArrowLeft") stepSpeaker(-1);
         if (ev.key === "ArrowRight") stepSpeaker(1);

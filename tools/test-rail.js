@@ -16,7 +16,7 @@ const path = require("path");
 const page = fs.readFileSync(
   path.join(__dirname, "..", "_site", "2026", "index.html"), "utf8");
 const from = page.indexOf("// Hover to read a name, click to go there");
-const to = page.indexOf('document.getElementById("spk-prev").onclick', from);
+const to = page.indexOf("// The same hold the programme's arrows have", from);
 if (from < 0 || to < 0) {
   console.error("could not find the rail's handlers in _site/2026/index.html");
   process.exit(2);

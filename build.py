@@ -995,6 +995,10 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             "nameHtml": str(bilingual(s["name"], s.get("name_ko"))),
             "affilHtml": str(bilingual(s.get("affil") or "", s.get("affil_ko"))),
             "affil": s.get("affil"),
+            # Prof. before the name in English, 교수 after it in Korean, which
+            # is where each language puts it — the same pair the cards carry.
+            "role": s.get("role"),
+            "role_ko": s.get("role_ko") or s.get("role"),
             "topic": None,
             "talk": s.get("talk"),
             "abstract": md.markdown(s["abstract"]) if s.get("abstract") else None,

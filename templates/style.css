@@ -1967,11 +1967,8 @@ a.spk-card {
 .spk-rail.is-dragging .spk-tip {
   transition: none;
 }
-/* On a phone the rail shares a row with two pills. At the wide pitch that row
-   comes to about 348px inside a 350px box, which is not a margin — and when it
-   does not fit, the wrap puts the rail and the Next arrow on a line together
-   and leaves Previous by itself. A narrower pitch keeps all three on one line:
-   16 cells of 7px, 3px apart, is 157px against 188. */
+/* A narrower pitch on a phone: 16 cells of 8px, 3px apart, is 173px against
+   220. */
 @media (max-width: 620px) {
   .spk-letters,
   .spk-strip-bar {
@@ -1980,6 +1977,20 @@ a.spk-card {
   .spk-letters i,
   .spk-tick {
     width: 8px;
+  }
+}
+/* And below that, the rail takes a line of its own above the two arrows.
+   Measured from the shipped fonts: "← Previous" is a 94px pill and "Next →" a
+   67px one, which with the rail and the row's own padding comes to 394px —
+   four more than an iPhone has, and thirty-four more than a small one. The
+   words could be dropped to fit, but a rail nobody has to share a line with is
+   the better of the two answers: it gets the width, the arrows keep their
+   labels, and the label over a tick has nothing beside it to collide with.
+   Korean fits either way — 이전 and 다음 are half the width. */
+@media (max-width: 440px) {
+  .spk-rail {
+    order: -1;
+    flex: 1 1 100%;
   }
 }
 @media (prefers-reduced-motion: reduce) {
