@@ -421,7 +421,8 @@ def fill_defaults(bundle: dict) -> None:
     bundle["venue"].setdefault("getting_here_title_ko", None)
     for route in bundle["venue"].setdefault("getting_here", []):
         for key in ("from_ko", "total", "total_ko", "alt", "alt_ko", "icon",
-                    "stop", "stop_ko", "lat", "lon", "naver_name", "mode"):
+                    "stop", "stop_ko", "lat", "lon", "naver_name", "mode",
+                    "by", "by_ko", "taxi", "taxi_ko"):
             route.setdefault(key, None)
         # A journey the reader can follow rather than retype. Naver takes both
         # ends as lng,lat,name in the path; the empty fields after the name are

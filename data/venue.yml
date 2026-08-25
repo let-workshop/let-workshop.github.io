@@ -121,6 +121,16 @@ stop_word_ko: 정류장
 # minutes, and the rest of the first journey is one bus plus however long the
 # transfer takes, which is not two numbers we have.
 getting_here:
+  # `by` and `taxi` are the line under each name: which bus, and what it costs
+  # to skip it. Both are worth a row on their own and neither is worth a row on
+  # its own — the reader is choosing between them.
+  #
+  # The fares say 약 and mean it. Pohang's meter went to a 4,500원 base on 20
+  # January 2026 at 100원 per 128m, and the one published door-to-door figure
+  # anywhere is 10,000–12,000원 from the station, from before that rise. The
+  # other two are that figure carried across by distance. They are for deciding
+  # whether to wait for a bus, not for an expense claim.
+  #
   # Bus numbers and times are POSTECH's own, from the 오시는 길 page at
   # postech.ac.kr/kor/university-introduction/direction.do.
   # Pohang has two bus terminals 2.5km apart — the intercity one, whose own
@@ -136,6 +146,10 @@ getting_here:
   # the venue's own pin came from. `mode` is what Naver should plan for.
   - from: Pohang KTX station
     from_ko: 포항역
+    by: Bus 5000 → 207
+    by_ko: 5000번 → 207번
+    taxi: taxi 20–30 min, about ₩12,000
+    taxi_ko: 택시 20–30분 · 약 12,000원
     lat: 36.0712333
     lon: 129.3426784
     naver_name: 포항역
@@ -181,6 +195,10 @@ getting_here:
   # twenty in a taxi. Both are worth knowing and the sheet gives both.
   - from: Pohang Express Bus Terminal
     from_ko: 포항고속버스터미널
+    by: Walk 573 m → bus 207
+    by_ko: 도보 573m → 207번
+    taxi: taxi 20 min, about ₩8,000
+    taxi_ko: 택시 20분 · 약 8,000원
     icon: "🚌"
     lat: 36.0280334
     lon: 129.367615
@@ -222,6 +240,10 @@ getting_here:
 
   - from: Pohang Terminal (intercity)
     from_ko: 포항터미널(시외)
+    by: Bus 207
+    by_ko: 207번
+    taxi: taxi 10 min, about ₩6,000
+    taxi_ko: 택시 10분 · 약 6,000원
     icon: "🚌"
     lat: 36.0134405
     lon: 129.349645

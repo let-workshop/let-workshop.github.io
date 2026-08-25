@@ -741,7 +741,10 @@
             {% if venue.getting_here %}
             {% if venue.getting_here_title %}
             <h4 class="venue-h">{{ t(venue.getting_here_title, venue.getting_here_title_ko) }}
-              <span class="venue-h-note"><span class="t-en">opens in Naver Map</span><span class="t-ko">네이버 지도로 열립니다</span></span>
+              <!-- Where all three of these end. Every row is a journey to the
+                   same place, and the place was named only in the card's own
+                   heading two blocks up. -->
+              <span class="venue-h-note"><span class="t-en">to the venue, in Naver Map</span><span class="t-ko">포스코국제관까지 · 네이버 지도</span></span>
             </h4>
             {% endif %}
             <ul class="facts">
@@ -752,6 +755,9 @@
                   <span class="fact-name">{% if route.icon %}<span class="fact-icon" aria-hidden="true">{{ route.icon }}</span>{% endif %}{{ t(route.from, route.from_ko) }}</span>
                   {% if route.total %}<span class="fact-figure">{{ t(route.total, route.total_ko) }}</span>{% endif %}
                 </a>
+                {% if route.by or route.taxi %}
+                <span class="fact-sub">{{ t(route.by, route.by_ko) }}{% if route.by and route.taxi %} · {% endif %}{{ t(route.taxi, route.taxi_ko) }}</span>
+                {% endif %}
               </li>
               {% endfor %}
               {% for note in venue.getting_here_notes %}
