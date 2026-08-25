@@ -194,8 +194,8 @@ days:
               Machine Learning (ITML) Lab. His research explains what foundation models
               are doing, and turns that understanding into better algorithms.
             note: >-
-              Prefers Day 1 afternoon (not strict). Form (8/22): free Day 1 all three
-              sessions and Day 2 first two.
+              Prefers Day 1 afternoon (not strict). Form (8/26, resubmitted): free in
+              all four Day 1 sessions and the first two on Day 2.
             topic: in-context learning
             home: https://sites.google.com/view/jsohn
           - name: Seong Joon Oh
@@ -455,7 +455,8 @@ days:
               Computer Science from The University of Tokyo under the supervision of Prof.
               Masashi Sugiyama.
             note: >-
-              Form (8/22): free in every session on both days.
+              Form (8/25, resubmitted): free in every session on both days, the new
+              Day 1 16:40 slot included.
             home: https://jongyeong.github.io
 
       - type: break
@@ -516,7 +517,26 @@ days:
             name_ko: 이재호
             photo: jaeho-lee.jpg
             affil: POSTECH
-            topic: theory of KD
+            talk: On the Scale Bias of Neural Network Training
+            abstract: >-
+              How do we initialize the neural network weights? Classic ideas have
+              focused on stabilizing the activation distributions of the networks, so
+              that one can train deeper nets without exploding or vanishing gradients.
+              In this talk, we study how the initialization scale can affect the
+              efficiency of model training. In particular, we describe modern theories
+              on how the weight scale shapes the training speed and the generalization
+              capabilities of the model, and recent breakthroughs in characterizing the
+              optimal speed-generalization tradeoff point.
+            bio: >-
+              Jaeho Lee is an associate professor at the POSTECH EE, where he leads
+              Efficient Learning (EffL) Lab. He is mainly interested in designing
+              theories and algorithms for making ML more efficient.
+            # He is sitting in a Day 2 block and has ticked nothing on Day 2.
+            note: >-
+              CLASH — placed here on Day 2, but the form (8/25) says Day 1 only: all
+              four Day 1 sessions, nothing on Day 2.
+            # Was "theory of KD"; the title he sent is about initialization scale.
+            topic: initialization scale
             home: https://jaeho-lee.github.io/
           - name: Sung Whan Yoon
             role: Prof.
