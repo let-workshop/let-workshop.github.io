@@ -40,6 +40,22 @@ HYPHENS = pyphen.Pyphen(lang="en_US", left=3, right=3)
 SHY = "\u00ad"
 
 
+# 가나다 order runs ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ, and a syllable's
+# leading letter is its code point over 588. The tense pairs fold into the
+# plain ones — an index has a ㄱ section, not a ㄱ and a ㄲ.
+LEAD = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"
+FOLD = {"ㄲ": "ㄱ", "ㄸ": "ㄷ", "ㅃ": "ㅂ", "ㅆ": "ㅅ", "ㅉ": "ㅈ"}
+
+
+def choseong(ch: str) -> str:
+    """The letter a Hangul syllable is filed under; anything else, unchanged."""
+    i = ord(ch) - 0xAC00
+    if 0 <= i < 11172:
+        lead = LEAD[i // 588]
+        return FOLD.get(lead, lead)
+    return ch
+
+
 def soft_break(text: str | None) -> str | None:
     """Mark a title's syllable breaks with soft hyphens.
 
@@ -986,6 +1002,14 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             "photo": s.get("photo"),
             "slides": s.get("slides"),
             "home": s.get("home"),
+            # What the rail groups this person under: the initial of the
+            # romanised surname, and in Korean its 초성 — the letter, not the
+            # syllable, which is how a Korean index is written. It groups more
+            # coarsely than the syllable does (ㅇ takes 오·윤·이, ten of the
+            # sixteen) and that is what an index looks like when the names
+            # cluster; the ticks under it still say how many.
+            "letter": s["name"].split()[-1][0].upper(),
+            "letter_ko": choseong((s.get("name_ko") or s["name"])[0]),
             # Where this card stands in the Korean arrangement. The cards are
             # written once and reordered by CSS, so previous/next has to be
             # told the other order rather than reading it off the document.

@@ -1106,9 +1106,25 @@
         <form method="dialog"><button class="modal-x" aria-label="Close">&times;</button></form>
       </div>
       <div id="speaker-body"></div>
+      <!-- Sixteen people, and previous/next walks them one at a time. This is
+           the rail the session sheet already has, in the form a list of people
+           needs: one tick each, the one you are on filled, and the name of
+           whichever tick is under the cursor read out above it. An A–Z index
+           was the other idea and is the wrong one here — five of the sixteen
+           are surnamed Lee, so the letters would point at a wall. The name
+           says more than the letter and takes the same room. -->
       <div class="modal-nav">
         <button class="pill" id="spk-prev">&larr; <span class="t-en">Previous</span><span class="t-ko">이전</span></button>
-        <span id="spk-count"></span>
+        <!-- The rail sits between the arrows, at its own size. Sixteen ticks do
+             not want 600px: stretched across the sheet they were forty pixels
+             apart, which is a row of specks rather than a rail, and a swell
+             passing through it had nothing to pass through. -->
+        <span class="spk-rail" id="spk-rail">
+          <span class="spk-tip" id="spk-tip"></span>
+          <span class="spk-letters" id="spk-letters" aria-hidden="true"></span>
+          <span class="spk-strip-bar" id="spk-strip-bar"></span>
+          <span class="spk-count" id="spk-count"></span>
+        </span>
         <button class="pill" id="spk-next"><span class="t-en">Next</span><span class="t-ko">다음</span> &rarr;</button>
       </div>
     </dialog>
@@ -2266,6 +2282,85 @@
         return idx;
       }
 
+      // The rail. One tick per person in the order the cards are shown in, a
+      // letter over the first tick of each surname group, and a label that
+      // sits over whichever tick is being pointed at — the current one when
+      // nothing is.
+      var STRIP = {
+        bar: document.getElementById("spk-strip-bar"),
+        letters: document.getElementById("spk-letters"),
+        tip: document.getElementById("spk-tip"),
+        order: [],
+        ticks: [],
+      };
+
+      function drawStrip(order, cur) {
+        STRIP.order = order;
+        var ko = document.documentElement.getAttribute("data-lang") === "ko";
+        var of = function (i) { return (ko ? PEOPLE[i].letter_ko : PEOPLE[i].letter) || ""; };
+        // The letter is printed once per run, not once per person: sixteen
+        // letters where five of them read L is a row of Ls, not an index.
+        STRIP.letters.innerHTML = order
+          .map(function (i, n) {
+            var here = of(i);
+            return "<i>" + (n === 0 || here !== of(order[n - 1]) ? esc(here) : "") + "</i>";
+          })
+          .join("");
+        STRIP.bar.innerHTML = order
+          .map(function (i) {
+            return '<button class="spk-tick' + (i === cur ? " is-current" : "") +
+                   '" data-i="' + i + '" tabindex="-1"></button>';
+          })
+          .join("");
+        STRIP.ticks = [].slice.call(STRIP.bar.children);
+      }
+
+      // Only while the pointer is on a tick. The rail says where you are by
+      // marking the tick, which does not need saying again in words — the
+      // panel above is already the person you are on.
+      // Each tick rises with how near the pointer is and its neighbours rise
+      // less — the dock's falloff. A raised cosine rather than a squared
+      // linear one: squaring gives a peak with a kink at the base, and what
+      // makes a dock read is that the curve leaves the line flat and comes
+      // back to it flat. --k is the nearness, 0 to 1; the stylesheet decides
+      // what height that buys, so the shape can be tuned without touching this.
+      // Four or five ticks either side, which at a 14px pitch is 62px.
+      var REACH = 62;
+      function swell(x) {
+        STRIP.ticks.forEach(function (t) {
+          if (x === null) return t.style.setProperty("--k", 0);
+          var r = t.getBoundingClientRect();
+          var d = Math.abs(x - (r.left + r.width / 2));
+          var k = d >= REACH ? 0 : 0.5 * (1 + Math.cos((Math.PI * d) / REACH));
+          t.style.setProperty("--k", k.toFixed(3));
+        });
+      }
+
+      // The tick nearest a page x, so a drag can pick one out of the gaps
+      // between them as well as off the marks themselves.
+      function nearestTick(x) {
+        var best = null, bestD = Infinity;
+        STRIP.ticks.forEach(function (t, n) {
+          var r = t.getBoundingClientRect();
+          var d = Math.abs(x - (r.left + r.width / 2));
+          if (d < bestD) { bestD = d; best = n; }
+        });
+        return best === null ? null : STRIP.order[best];
+      }
+
+      function point(i) {
+        var s = PEOPLE[i], n = STRIP.order.indexOf(i);
+        if (!s || n < 0) return;
+        STRIP.tip.innerHTML = s.nameHtml + (s.affil ? ' <em>' + s.affilHtml + "</em>" : "");
+        var bar = STRIP.bar.getBoundingClientRect();
+        var tick = STRIP.ticks[n].getBoundingClientRect();
+        // Centred on the tick, and kept inside the rail — over the first or
+        // last tick the label is wider than the room left beside it.
+        var half = STRIP.tip.offsetWidth / 2;
+        var x = tick.left + tick.width / 2 - bar.left;
+        STRIP.tip.style.left = Math.max(half, Math.min(bar.width - half, x)) + "px";
+      }
+
       function openSpeaker(i) {
         var s = PEOPLE[i];
         if (!s) return;
@@ -2275,6 +2370,7 @@
         document.getElementById("spk-count").textContent = pos + 1 + " / " + order.length;
         document.getElementById("spk-prev").disabled = pos === 0;
         document.getElementById("spk-next").disabled = pos === order.length - 1;
+        drawStrip(order, i);
         if (TALK_MODAL.open) TALK_MODAL.close();
         if (!SPEAKER_MODAL.open) SPEAKER_MODAL.showModal();
       }
@@ -2293,6 +2389,60 @@
         if (pos < 0 || pos >= order.length) return;
         openSpeaker(order[pos]);
       }
+      // Hover to read a name, click to go there. Delegated, because the ticks
+      // are rewritten on every step.
+      (function () {
+        var rail = document.getElementById("spk-rail");
+        // On the rail, not on each tick, and by nearness rather than by what
+        // is under the pointer: the gaps between the marks are two pixels
+        // wide, and a label that goes out every time the cursor crosses one
+        // would spend the crossing blinking.
+        STRIP.bar.addEventListener("mousemove", function (ev) {
+          swell(ev.clientX);
+          var i = nearestTick(ev.clientX);
+          if (i === null) return;
+          point(i);
+          rail.classList.add("is-pointing");
+        });
+        STRIP.bar.addEventListener("mouseleave", function () {
+          if (dragging) return;
+          swell(null);
+          rail.classList.remove("is-pointing");
+        });
+
+        // Held and dragged, the way a scrollbar is. Pointer capture, so the
+        // drag survives leaving the rail — a scrollbar you lose the moment
+        // your hand strays off it is not one anybody would use.
+        var dragging = false;
+        var scrub = function (x) {
+          swell(x);
+          var i = nearestTick(x);
+          if (i === null) return;
+          point(i);
+          rail.classList.add("is-pointing");
+          if (i !== spkAt) openSpeaker(i);
+        };
+        STRIP.bar.addEventListener("pointerdown", function (ev) {
+          dragging = true;
+          rail.classList.add("is-dragging");
+          STRIP.bar.setPointerCapture(ev.pointerId);
+          scrub(ev.clientX);
+          ev.preventDefault();
+        });
+        STRIP.bar.addEventListener("pointermove", function (ev) {
+          if (dragging) scrub(ev.clientX);
+        });
+        var release = function (ev) {
+          if (!dragging) return;
+          dragging = false;
+          rail.classList.remove("is-dragging");
+          try { STRIP.bar.releasePointerCapture(ev.pointerId); } catch (e) {}
+        };
+        STRIP.bar.addEventListener("pointerup", release);
+        STRIP.bar.addEventListener("pointercancel", release);
+        // No click handler: pointerdown already lands on the right person, and
+        // a click firing after it would only repeat the move.
+      })();
       document.getElementById("spk-prev").onclick = function () { stepSpeaker(-1); };
       document.getElementById("spk-next").onclick = function () { stepSpeaker(1); };
       SPEAKER_MODAL.addEventListener("keydown", function (ev) {

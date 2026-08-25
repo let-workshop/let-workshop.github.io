@@ -1825,6 +1825,170 @@ a.spk-card {
   font-size: 1.12rem;
 }
 
+/* The rail between the arrows: where you are among sixteen, somewhere to drag
+   to, and a name while you are pointing.
+
+   Its look is the section rail on dongyeoplee2.github.io — 2px ticks in a
+   quiet grey, the accent for the one you are on and the one under the pointer,
+   and a label that is plain text in that accent rather than a bubble laid over
+   the page. Its motion is the dock's: every tick rises with how near the
+   pointer is and its neighbours rise less.
+
+   It sits at its own width rather than spanning the sheet. Stretched across
+   600px the ticks stood forty pixels apart — specks, not a rail — and a swell
+   passing along it had nothing to pass through. At a 10px pitch the wave
+   covers four or five of them and reads as one movement. */
+.spk-rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Over the tick it belongs to, and it slides between them: the distance it
+   travels is what says how far along you moved. */
+.spk-tip {
+  position: absolute;
+  bottom: calc(100% + 1px);
+  left: 0;
+  transform: translateX(-50%);
+  /* A little ground under it. Not a bubble with a border and a shadow — that
+     was the version that read as furniture — just enough to lift the name off
+     whichever line of the panel happens to be behind it. */
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--wash);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--accent);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.2s ease,
+    left 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.spk-rail.is-pointing .spk-tip {
+  opacity: 1;
+}
+.spk-tip em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 5px;
+}
+/* One cell per tick, the same width and gap, so the letters line up over them
+   without any arithmetic — and empty in every cell that is not the first of
+   its group. */
+.spk-letters {
+  display: flex;
+  gap: 4px;
+  height: 13px;
+}
+.spk-letters i {
+  width: 10px;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.68rem;
+  line-height: 13px;
+  letter-spacing: 0;
+  text-align: center;
+  color: var(--meta);
+}
+/* The line the ticks stand on. Without it a row of marks at rest is a dotted
+   line that has lost its rule; with it the rail has a length, which is the
+   thing a scrollbar is mostly telling you. */
+.spk-strip-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 2px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  /* A drag along it is a drag along it, not a scroll of the sheet under it. */
+  touch-action: none;
+}
+/* Sixteen ticks say how many there are and which one you are on, but not in
+   numbers, and a number is what you read back to yourself. Under the rail, in
+   the small mono the sheet uses for figures. */
+.spk-count {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--meta);
+}
+
+/* The tick is an 8px hit area; the 2px mark inside it is what you see. Two
+   pixels is not something a pointer can be asked to find, and the taller box
+   gives a drag some room to be sloppy in. */
+.spk-tick {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 10px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: inherit;
+  appearance: none;
+}
+/* --k is how near the pointer is, 0 to 1, set from script. Height and colour
+   both follow it, so a tick brightens as it rises instead of switching on at
+   the moment it is touched. */
+.spk-tick::before {
+  content: "";
+  width: 3px;
+  height: calc(9px + var(--k, 0) * 12px);
+  border-radius: 2px;
+  /* Said twice: color-mix arrived in Safari 16.4, and an engine that does not
+     know it drops the whole declaration — leaving the ticks with no colour at
+     all rather than with a flat one. */
+  background: var(--label);
+  background: color-mix(in srgb, var(--accent) calc(var(--k, 0) * 100%), var(--label));
+  transition:
+    height 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.16s ease;
+}
+/* Where you are: always the accent, whatever the pointer is doing. Which of
+   the marks is which is answered by the label standing over one of them. */
+.spk-tick.is-current::before {
+  height: 17px;
+  background: var(--accent);
+}
+.spk-tick.is-current[style*="--k"]::before {
+  height: max(17px, calc(9px + var(--k, 0) * 12px));
+}
+/* Nothing eases while a finger is dragging: the ticks have to be where the
+   hand is, not where they were a sixth of a second ago. */
+.spk-rail.is-dragging .spk-tick::before,
+.spk-rail.is-dragging .spk-tip {
+  transition: none;
+}
+/* On a phone the rail shares a row with two pills. At the wide pitch that row
+   comes to about 348px inside a 350px box, which is not a margin — and when it
+   does not fit, the wrap puts the rail and the Next arrow on a line together
+   and leaves Previous by itself. A narrower pitch keeps all three on one line:
+   16 cells of 7px, 3px apart, is 157px against 188. */
+@media (max-width: 620px) {
+  .spk-letters,
+  .spk-strip-bar {
+    gap: 3px;
+  }
+  .spk-letters i,
+  .spk-tick {
+    width: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spk-tip,
+  .spk-tick::before {
+    transition: none;
+  }
+}
+
 /* The talk, as a door rather than as more prose. The speaker window answers
    who this is; what they are giving is a second question, and an abstract
    standing under a bio made the bio read as the first paragraph of it. */
