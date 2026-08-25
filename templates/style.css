@@ -1661,9 +1661,13 @@ a.spk-card {
    stepping through sessions slid the ribbon and the arrows up and down under
    the cursor. Pinning the bottom edge holds the footer still and lets the top
    edge do the moving, which is the half nobody is aiming at. */
+/* pan-y, so a finger going down still scrolls the panel while one going
+   across arrives here to be read as a page turn. Without it the browser owns
+   both axes and the swipe cannot cancel the scroll it would otherwise cause. */
 #event-modal,
 #speaker-modal,
 #talk-modal {
+  touch-action: pan-y;
   width: min(660px, calc(100% - 32px));
   max-height: min(86vh, 760px);
   margin: auto auto 0;

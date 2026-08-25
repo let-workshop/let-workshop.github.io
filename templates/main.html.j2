@@ -2226,6 +2226,48 @@
         addEventListener("blur", stop);
       }
 
+      // And a swipe across the sheet, which is the arrows without the arrows.
+      // Touch only: a mouse dragging left across a paragraph is selecting it,
+      // and a trackpad's two fingers arrive as wheel events, not as this.
+      //
+      // The first dozen pixels decide what the gesture is. Past that it is
+      // either ours — horizontal, and the page must not scroll under it — or
+      // the reader's, scrolling the panel, and we never hear about it again.
+      // 1.4 rather than 1: a gesture that is only just more sideways than it
+      // is downward is a thumb travelling in an arc, not a page turn.
+      function swipeToStep(sheet, step, skip) {
+        var MIN = 12, COMMIT = 56;
+        var id = null, x0 = 0, y0 = 0, axis = 0;
+        sheet.addEventListener("pointerdown", function (ev) {
+          if (ev.pointerType !== "touch" || !ev.isPrimary) return;
+          if (skip && skip(ev.target)) return;
+          id = ev.pointerId;
+          x0 = ev.clientX;
+          y0 = ev.clientY;
+          axis = 0;
+        });
+        sheet.addEventListener("pointermove", function (ev) {
+          if (ev.pointerId !== id) return;
+          var dx = ev.clientX - x0, dy = ev.clientY - y0;
+          if (!axis) {
+            if (Math.abs(dx) < MIN && Math.abs(dy) < MIN) return;
+            axis = Math.abs(dx) > Math.abs(dy) * 1.4 ? 1 : -1;
+          }
+          if (axis === 1 && ev.cancelable) ev.preventDefault();
+        });
+        sheet.addEventListener("pointerup", function (ev) {
+          if (ev.pointerId !== id) return;
+          var dx = ev.clientX - x0;
+          id = null;
+          // Left takes you forward, as a page does.
+          if (axis === 1 && Math.abs(dx) >= COMMIT) step(dx < 0 ? 1 : -1);
+          axis = 0;
+        });
+        sheet.addEventListener("pointercancel", function (ev) {
+          if (ev.pointerId === id) { id = null; axis = 0; }
+        });
+      }
+
       holdToRepeat(
         [
           ["modal-prev", -1],
@@ -2235,6 +2277,7 @@
         function () { return at; },
         MODAL
       );
+      swipeToStep(MODAL, stepEvent);
 
       // Card order, not id: the cards are written in one order and rearranged
       // by CSS for the Korean view, so an index into the list they were
@@ -2524,6 +2567,11 @@
         function () { return spkAt; },
         SPEAKER_MODAL
       );
+      // Not one that starts on the rail: that is already a drag along it, and
+      // it means something else.
+      swipeToStep(SPEAKER_MODAL, stepSpeaker, function (target) {
+        return !!(target.closest && target.closest(".spk-strip-bar"));
+      });
       SPEAKER_MODAL.addEventListener("keydown", function (ev) {
         if (ev.key === "ArrowLeft") stepSpeaker(-1);
         if (ev.key === "ArrowRight") stepSpeaker(1);
