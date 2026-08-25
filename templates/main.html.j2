@@ -2294,8 +2294,13 @@
         ticks: [],
       };
 
+      // Only when the set or its order changes — opening the window, or the
+      // language switching under it. Rebuilding these on every step was what
+      // broke the drag: replacing the elements a pointer is captured on loses
+      // the capture, and with it the pointerup that ends the drag.
       function drawStrip(order, cur) {
         STRIP.order = order;
+        STRIP.key = order.join(",");
         var ko = document.documentElement.getAttribute("data-lang") === "ko";
         var of = function (i) { return (ko ? PEOPLE[i].letter_ko : PEOPLE[i].letter) || ""; };
         // The letter is printed once per run, not once per person: sixteen
@@ -2313,6 +2318,14 @@
           })
           .join("");
         STRIP.ticks = [].slice.call(STRIP.bar.children);
+      }
+
+      // Moving the mark is not redrawing the rail.
+      function markStrip(cur) {
+        var pos = STRIP.order.indexOf(cur);
+        STRIP.ticks.forEach(function (t, n) {
+          t.classList.toggle("is-current", n === pos);
+        });
       }
 
       // Only while the pointer is on a tick. The rail says where you are by
@@ -2370,7 +2383,8 @@
         document.getElementById("spk-count").textContent = pos + 1 + " / " + order.length;
         document.getElementById("spk-prev").disabled = pos === 0;
         document.getElementById("spk-next").disabled = pos === order.length - 1;
-        drawStrip(order, i);
+        if (STRIP.key !== order.join(",")) drawStrip(order, i);
+        else markStrip(i);
         if (TALK_MODAL.open) TALK_MODAL.close();
         if (!SPEAKER_MODAL.open) SPEAKER_MODAL.showModal();
       }
@@ -2425,11 +2439,15 @@
         STRIP.bar.addEventListener("pointerdown", function (ev) {
           dragging = true;
           rail.classList.add("is-dragging");
-          STRIP.bar.setPointerCapture(ev.pointerId);
+          try { STRIP.bar.setPointerCapture(ev.pointerId); } catch (e) {}
           scrub(ev.clientX);
           ev.preventDefault();
         });
         STRIP.bar.addEventListener("pointermove", function (ev) {
+          // Nothing held means nothing is being dragged, whatever the flag
+          // says. The belt to the braces below: a mouse that comes back over
+          // the rail with no button down can never scrub.
+          if (dragging && ev.buttons === 0) release(ev);
           if (dragging) scrub(ev.clientX);
         });
         var release = function (ev) {
@@ -2438,8 +2456,12 @@
           rail.classList.remove("is-dragging");
           try { STRIP.bar.releasePointerCapture(ev.pointerId); } catch (e) {}
         };
-        STRIP.bar.addEventListener("pointerup", release);
-        STRIP.bar.addEventListener("pointercancel", release);
+        // On the window as well as the rail: a press that ends anywhere else —
+        // off the rail, off the sheet, in another window — still has to end.
+        ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (e) {
+          STRIP.bar.addEventListener(e, release);
+          addEventListener(e, release);
+        });
         // No click handler: pointerdown already lands on the right person, and
         // a click firing after it would only repeat the move.
       })();
