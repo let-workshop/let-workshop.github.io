@@ -131,6 +131,8 @@ days:
             affil: KAIST
             topic: "river valley, Muon"
             home: https://chulheeyun.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
           - name: Namhoon Lee
             role: Prof.
             role_ko: 교수
@@ -207,6 +209,11 @@ days:
             topic: linear propagation
             note: Verbal yes via Chulhee Yun; no formal confirmation yet.
             home: https://coallaoh.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=kmXOOdsAAAAJ
+              github: https://github.com/coallaoh
+              x: https://x.com/coallaoh
+              linkedin: https://www.linkedin.com/in/seong-joon-oh-32113479/
 
       # Fifteen rather than twenty, and the afternoon starts five minutes
       # earlier, which is where the room for the fourth session comes from.
@@ -241,6 +248,9 @@ days:
               Form (8/24): free in every session on both days.
             topic: martingale posterior
             home: https://juho-lee.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=Py4URJUAAAAJ
+              github: https://github.com/juho-lee
           - name: Sangdon Park
             role: Prof.
             role_ko: 교수
@@ -263,6 +273,8 @@ days:
               2.
             topic: conformal/selective
             home: https://sangdon.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=Vi2E2F4AAAAJ
 
       # Two things in the same hours, in the two halves of the day's column.
       # The poster line sits on the break that runs into the poster session
@@ -299,6 +311,8 @@ days:
               among them. Abstract given as TBA.
             topic: minimax optimization
             home: https://mathsci.kaist.ac.kr/~donghwankim/
+            links:
+              scholar: https://scholar.google.com/citations?user=G74RcZQAAAAJ
 
       - type: poster
         title: Poster Session
@@ -369,6 +383,8 @@ days:
             photo: se-young-yun.jpg
             affil: KAIST
             home: https://fbsqkd.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=X_IAjb8AAAAJ
         notes:
           - RL · LLMs
         anon_note: 1 tutorial · 60 min
@@ -392,6 +408,8 @@ days:
             photo: kwang-sung-jun.jpg
             affil: POSTECH
             home: https://kwangsungjun.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=VgvC7o8AAAAJ
           - name: Min-hwan Oh
             role: Prof.
             role_ko: 교수
@@ -427,6 +445,8 @@ days:
             name_ko: 이종영
             photo: jongyeong-lee.jpg
             affil: KIST
+            links:
+              scholar: https://scholar.google.com/citations?user=ZNLjOlEAAAAJ
             talk: "Toward Simple Best-of-Both-Worlds Algorithms: Insights from Follow-the-Perturbed-Leader"
             abstract: >-
               In online learning, a best-of-both-worlds (BOBW) policy provides strong
@@ -478,6 +498,9 @@ days:
             photo: kyoungseok-jang.jpg
             affil: CAU
             home: https://jajajang.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=hDqIvzAAAAAJ
+              linkedin: https://www.linkedin.com/in/kyoungseok-jang-856440219
           - name: Kihyuk Hong
             role: Prof.
             role_ko: 교수
@@ -538,6 +561,8 @@ days:
             # Was "theory of KD"; the title he sent is about initialization scale.
             topic: initialization scale
             home: https://jaeho-lee.github.io/
+            links:
+              x: https://x.com/jaeho_lee_
           - name: Sung Whan Yoon
             role: Prof.
             role_ko: 교수

@@ -1006,6 +1006,14 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             "photo": s.get("photo"),
             "slides": s.get("slides"),
             "home": s.get("home"),
+            # The row of icons under the name. `home` leads because it is the
+            # one everybody has and the one the others hang off; the rest are
+            # in the order they were written in the data.
+            "links": {
+                k: v
+                for k, v in [("home", s.get("home"))] + list((s.get("links") or {}).items())
+                if v
+            },
             # What the rail groups this person under: the initial of the
             # romanised surname, and in Korean its 초성 — the letter, not the
             # syllable, which is how a Korean index is written. It groups more

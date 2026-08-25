@@ -2252,9 +2252,12 @@
       // always in the markup; the language switch shows one, as everywhere
       // else on the page.
       function titled(s) {
-        return (s.role ? '<span class="t-en">' + esc(s.role) + " </span>" : "") +
+        // In the same small caps the cards set it in: a title is not the name
+        // and should not be read at the name's size or weight.
+        var mark = function (t) { return '<span class="role">' + esc(t) + "</span>"; };
+        return (s.role ? '<span class="t-en">' + mark(s.role) + " </span>" : "") +
                s.nameHtml +
-               (s.role_ko ? '<span class="t-ko"> ' + esc(s.role_ko) + "</span>" : "");
+               (s.role_ko ? '<span class="t-ko"> ' + mark(s.role_ko) + "</span>" : "");
       }
 
       function speakerPanel(s, i) {
@@ -2267,6 +2270,15 @@
         var bits = '<div class="sp-name">' + name;
         if (s.affil) bits += " <em>" + s.affilHtml + "</em>";
         bits += "</div>";
+        // The same icons the organisers' cards carry, from the same sprite.
+        var kinds = Object.keys(s.links || {});
+        if (kinds.length) {
+          bits += '<div class="sp-links">' + kinds.map(function (kind) {
+            return '<a href="' + esc(s.links[kind]) + '" target="_blank" rel="noopener"' +
+                   ' title="' + esc(kind) + '"><svg aria-hidden="true"><use href="#i-' +
+                   esc(kind) + '"></use></svg></a>';
+          }).join("") + "</div>";
+        }
         bits += s.bio
           ? '<div class="sp-bio">' + s.bio + "</div>"
           : '<div class="sp-bio is-todo">' + tbd("Speaker bio to be added", "연사 소개 준비 중") + "</div>";
@@ -2362,14 +2374,21 @@
       // makes a dock read is that the curve leaves the line flat and comes
       // back to it flat. --k is the nearness, 0 to 1; the stylesheet decides
       // what height that buys, so the shape can be tuned without touching this.
-      // Four or five ticks either side, which at a 14px pitch is 62px.
-      var REACH = 62;
+      // Four or five ticks either side, whatever a tick is worth here. The
+      // rail gives up width to the arrows beside it, so the pitch is about
+      // 11px on a laptop and 6 on a small phone; a reach written in pixels
+      // would be four ticks on one and ten on the other.
       function swell(x) {
+        var first = STRIP.ticks[0], second = STRIP.ticks[1];
+        var pitch = second
+          ? second.getBoundingClientRect().left - first.getBoundingClientRect().left
+          : 14;
+        var reach = pitch * 4.5;
         STRIP.ticks.forEach(function (t) {
           if (x === null) return t.style.setProperty("--k", 0);
           var r = t.getBoundingClientRect();
           var d = Math.abs(x - (r.left + r.width / 2));
-          var k = d >= REACH ? 0 : 0.5 * (1 + Math.cos((Math.PI * d) / REACH));
+          var k = d >= reach ? 0 : 0.5 * (1 + Math.cos((Math.PI * d) / reach));
           t.style.setProperty("--k", k.toFixed(3));
         });
       }

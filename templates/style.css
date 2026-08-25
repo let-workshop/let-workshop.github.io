@@ -1501,7 +1501,10 @@ a.spk-card {
    Korean reads "윤철희 교수". Same size and colour as before — inline instead
    of a block, and it must not take the name's weight. */
 .spk-card .role,
-.org-card .role {
+.org-card .role,
+.sp-name .role,
+.spk-tip .role,
+.tk-back .role {
   font-size: 0.74em;
   font-weight: 400;
   text-transform: uppercase;
@@ -1838,11 +1841,20 @@ a.spk-card {
    600px the ticks stood forty pixels apart — specks, not a rail — and a swell
    passing along it had nothing to pass through. At a 10px pitch the wave
    covers four or five of them and reads as one movement. */
+/* Between the arrows on every width, and it gives up its own width to keep
+   them company: 1 1 auto with nothing to stop it shrinking, capped at the size
+   it wants. The two rows inside take the width it ends up with and the cells
+   divide that, so the pitch falls out of the room there is rather than out of
+   a number written down per breakpoint — about 11px beside a laptop's arrows,
+   about 6 beside a 320px phone's. */
 .spk-rail {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 220px;
 }
 /* Over the tick it belongs to, and it slides between them: the distance it
    travels is what says how far along you moved. */
@@ -1882,11 +1894,13 @@ a.spk-card {
    its group. */
 .spk-letters {
   display: flex;
-  gap: 4px;
+  width: 100%;
+  gap: 3px;
   height: 13px;
 }
 .spk-letters i {
-  width: 10px;
+  flex: 1 1 0;
+  min-width: 0;
   font-family: var(--mono);
   font-style: normal;
   font-size: 0.68rem;
@@ -1901,7 +1915,8 @@ a.spk-card {
 .spk-strip-bar {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  width: 100%;
+  gap: 3px;
   margin-top: 2px;
   padding-bottom: 3px;
   border-bottom: 1px solid var(--line);
@@ -1927,7 +1942,8 @@ a.spk-card {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: 10px;
+  flex: 1 1 0;
+  min-width: 0;
   height: 22px;
   padding: 0;
   border: 0;
@@ -1967,30 +1983,25 @@ a.spk-card {
 .spk-rail.is-dragging .spk-tip {
   transition: none;
 }
-/* A narrower pitch on a phone: 16 cells of 8px, 3px apart, is 173px against
-   220. */
-@media (max-width: 620px) {
+/* The room a phone has to give it back. The rail had a line to itself here,
+   which fit but spent a whole row on sixteen marks; taking the padding in
+   instead leaves it on the arrows' line with about 6px of pitch, which is
+   still a mark you can drag along. Measured at 320px: the two pills come to
+   153px, the padding and gaps to 36, and the rail takes the 131 that is left.
+   The arrows are not in Inter's Latin subset, so their width is an estimate
+   and the slack is left for them. */
+@media (max-width: 440px) {
+  .modal-nav {
+    gap: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .modal-nav .pill {
+    padding: 8px 10px;
+  }
   .spk-letters,
   .spk-strip-bar {
-    gap: 3px;
-  }
-  .spk-letters i,
-  .spk-tick {
-    width: 8px;
-  }
-}
-/* And below that, the rail takes a line of its own above the two arrows.
-   Measured from the shipped fonts: "← Previous" is a 94px pill and "Next →" a
-   67px one, which with the rail and the row's own padding comes to 394px —
-   four more than an iPhone has, and thirty-four more than a small one. The
-   words could be dropped to fit, but a rail nobody has to share a line with is
-   the better of the two answers: it gets the width, the arrows keep their
-   labels, and the label over a tick has nothing beside it to collide with.
-   Korean fits either way — 이전 and 다음 are half the width. */
-@media (max-width: 440px) {
-  .spk-rail {
-    order: -1;
-    flex: 1 1 100%;
+    gap: 2px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2003,6 +2014,29 @@ a.spk-card {
 /* The talk, as a door rather than as more prose. The speaker window answers
    who this is; what they are giving is a second question, and an abstract
    standing under a bio made the bio read as the first paragraph of it. */
+/* The row of profile icons under the name, the organisers' cards' own row in
+   a window rather than on a card — same sprite, same size, and left-ranged
+   under the name instead of centred under a photograph. */
+.sp-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 7px;
+}
+.sp-links a {
+  display: inline-flex;
+  color: var(--label);
+  transition: color 0.15s ease;
+}
+.sp-links a:hover,
+.sp-links a:focus-visible {
+  color: var(--accent);
+}
+.sp-links svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 .sp-talk-link {
   display: flex;
   flex-direction: column;
@@ -2019,7 +2053,30 @@ a.spk-card {
   text-align: left;
   transition: border-color 0.15s ease;
 }
-button.sp-talk-link {
+button/* The row of profile icons under the name, the organisers' cards' own row in
+   a window rather than on a card — same sprite, same size, and left-ranged
+   under the name instead of centred under a photograph. */
+.sp-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 7px;
+}
+.sp-links a {
+  display: inline-flex;
+  color: var(--label);
+  transition: color 0.15s ease;
+}
+.sp-links a:hover,
+.sp-links a:focus-visible {
+  color: var(--accent);
+}
+.sp-links svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.sp-talk-link {
   cursor: pointer;
 }
 button.sp-talk-link:hover,
