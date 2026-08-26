@@ -2227,20 +2227,64 @@
       }
 
       // And a swipe across the sheet, which is the arrows without the arrows.
-      // Touch only: a mouse dragging left across a paragraph is selecting it,
-      // and a trackpad's two fingers arrive as wheel events, not as this.
+      // The card under the finger goes with it and the sheet's furniture does
+      // not: the head, the rail and the arrows are the frame, and it is the
+      // page inside them that turns.
       //
-      // The first dozen pixels decide what the gesture is. Past that it is
-      // either ours — horizontal, and the page must not scroll under it — or
-      // the reader's, scrolling the panel, and we never hear about it again.
-      // 1.4 rather than 1: a gesture that is only just more sideways than it
-      // is downward is a thumb travelling in an arc, not a page turn.
-      function swipeToStep(sheet, step, skip) {
-        var MIN = 12, COMMIT = 56;
-        var id = null, x0 = 0, y0 = 0, axis = 0;
+      // Touch only. A mouse dragging left across a paragraph is selecting it,
+      // and a trackpad's two fingers arrive as wheel events rather than as
+      // this, so neither can turn a page by accident.
+      //
+      // The first dozen pixels decide whose gesture it is. Past that it is
+      // either horizontal and ours — and the panel must not scroll under it,
+      // which is what preventDefault and touch-action: pan-y between them
+      // arrange — or it is the reader scrolling, and we never hear about it
+      // again. The axis test is 1.4 rather than 1: a gesture only just more
+      // sideways than it is downward is a thumb travelling in an arc.
+      function swipeToStep(sheet, step, o) {
+        o = o || {};
+        var cards = o.cards || [];
+        var MIN = 12, COMMIT = 56, OUT = 170, IN = 230;
+        var still = matchMedia("(prefers-reduced-motion: reduce)");
+        var id = null, x0 = 0, y0 = 0, axis = 0, busy = false;
+
+        // The end of the list is the disabled arrow, which the sheet already
+        // works out for itself every time it steps.
+        function canStep(dir) {
+          var btn = document.getElementById(dir < 0 ? o.prev : o.next);
+          return !btn || !btn.disabled;
+        }
+        function place(dx, ms) {
+          var span = sheet.getBoundingClientRect().width || 1;
+          cards.forEach(function (el) {
+            el.style.transition = ms
+              ? "transform " + ms + "ms cubic-bezier(0.22, 1, 0.36, 1), opacity " + ms + "ms ease"
+              : "none";
+            el.style.transform = dx ? "translate3d(" + dx + "px,0,0)" : "";
+            // Fading as it goes, so the card leaves rather than slides under
+            // the edge of a window it is the same colour as.
+            el.style.opacity = dx ? Math.max(0, 1 - Math.abs(dx) / (span * 0.85)) : "";
+          });
+        }
+        function turn(dir) {
+          var span = sheet.getBoundingClientRect().width || 1;
+          busy = true;
+          place(dir * span, OUT);
+          setTimeout(function () {
+            step(dir);
+            place(-dir * span, 0);   // the next one, waiting on the far side
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                place(0, IN);
+                setTimeout(function () { place(0, 0); busy = false; }, IN);
+              });
+            });
+          }, OUT);
+        }
+
         sheet.addEventListener("pointerdown", function (ev) {
-          if (ev.pointerType !== "touch" || !ev.isPrimary) return;
-          if (skip && skip(ev.target)) return;
+          if (busy || ev.pointerType !== "touch" || !ev.isPrimary) return;
+          if (o.skip && o.skip(ev.target)) return;
           id = ev.pointerId;
           x0 = ev.clientX;
           y0 = ev.clientY;
@@ -2253,18 +2297,31 @@
             if (Math.abs(dx) < MIN && Math.abs(dy) < MIN) return;
             axis = Math.abs(dx) > Math.abs(dy) * 1.4 ? 1 : -1;
           }
-          if (axis === 1 && ev.cancelable) ev.preventDefault();
+          if (axis !== 1) return;
+          if (ev.cancelable) ev.preventDefault();
+          // Past the last card there is nothing to pull in, so the card gives
+          // a third of what the finger asks for and the reader feels the end.
+          place(canStep(dx < 0 ? 1 : -1) ? dx : dx * 0.32, 0);
         });
         sheet.addEventListener("pointerup", function (ev) {
           if (ev.pointerId !== id) return;
-          var dx = ev.clientX - x0;
+          var dx = ev.clientX - x0, dir = dx < 0 ? 1 : -1;
           id = null;
-          // Left takes you forward, as a page does.
-          if (axis === 1 && Math.abs(dx) >= COMMIT) step(dx < 0 ? 1 : -1);
+          if (axis !== 1) return void (axis = 0);
           axis = 0;
+          if (Math.abs(dx) >= COMMIT && canStep(dir)) {
+            // Left takes you forward, as a page does.
+            if (still.matches) { step(dir); return place(0, 0); }
+            return turn(dir);
+          }
+          place(0, IN);
+          setTimeout(function () { place(0, 0); }, IN);
         });
         sheet.addEventListener("pointercancel", function (ev) {
-          if (ev.pointerId === id) { id = null; axis = 0; }
+          if (ev.pointerId !== id) return;
+          id = null;
+          axis = 0;
+          place(0, IN);
         });
       }
 
@@ -2277,7 +2334,13 @@
         function () { return at; },
         MODAL
       );
-      swipeToStep(MODAL, stepEvent);
+      swipeToStep(MODAL, stepEvent, {
+        prev: "modal-prev",
+        next: "modal-next",
+        // The title moves with the body: they are one card, and the head above
+        // them is the frame it sits in.
+        cards: [document.getElementById("modal-title"), document.getElementById("modal-body")],
+      });
 
       // Card order, not id: the cards are written in one order and rearranged
       // by CSS for the Korean view, so an index into the list they were
@@ -2567,10 +2630,15 @@
         function () { return spkAt; },
         SPEAKER_MODAL
       );
-      // Not one that starts on the rail: that is already a drag along it, and
-      // it means something else.
-      swipeToStep(SPEAKER_MODAL, stepSpeaker, function (target) {
-        return !!(target.closest && target.closest(".spk-strip-bar"));
+      swipeToStep(SPEAKER_MODAL, stepSpeaker, {
+        prev: "spk-prev",
+        next: "spk-next",
+        cards: [document.getElementById("speaker-body")],
+        // Not a swipe that starts on the rail: that is already a drag along
+        // it, and it means something else.
+        skip: function (target) {
+          return !!(target.closest && target.closest(".spk-strip-bar"));
+        },
       });
       SPEAKER_MODAL.addEventListener("keydown", function (ev) {
         if (ev.key === "ArrowLeft") stepSpeaker(-1);
