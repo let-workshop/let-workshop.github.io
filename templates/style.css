@@ -1093,9 +1093,19 @@ body {
    reads as a block under the button rather than as a third item in a stack of
    evenly spaced things. A step back in strength, and no further: at the same
    size and colour the thanks competed with the fact for the same glance. */
-.btn-thanks {
+/* `.btn-wait small` is a class and a type, and this was a class alone — so it
+   lost the size and kept only the properties that rule does not set. It set
+   opacity and margin and they applied; it set font-size and that did not, and
+   the line went on being 10.24px while looking as though it had been changed.
+   Named the same way as what it is overriding, so it outranks it. */
+.btn-wait small.btn-thanks,
+.btn-note small.btn-thanks {
   margin-top: -4px;
-  opacity: 0.74;
+  font-size: 0.56rem;
+  /* Back up from 0.74. The step back was doing two jobs — smaller and fainter
+     — and now that the size does one of them on its own, the other was taking
+     a 9px line further down than 9px can afford. */
+  opacity: 0.86;
 }
 .btn-wait small,
 .btn-note small {
@@ -1172,9 +1182,19 @@ body {
    reads as a block under the button rather than as a third item in a stack of
    evenly spaced things. A step back in strength, and no further: at the same
    size and colour the thanks competed with the fact for the same glance. */
-.btn-thanks {
+/* `.btn-wait small` is a class and a type, and this was a class alone — so it
+   lost the size and kept only the properties that rule does not set. It set
+   opacity and margin and they applied; it set font-size and that did not, and
+   the line went on being 10.24px while looking as though it had been changed.
+   Named the same way as what it is overriding, so it outranks it. */
+.btn-wait small.btn-thanks,
+.btn-note small.btn-thanks {
   margin-top: -4px;
-  opacity: 0.74;
+  font-size: 0.56rem;
+  /* Back up from 0.74. The step back was doing two jobs — smaller and fainter
+     — and now that the size does one of them on its own, the other was taking
+     a 9px line further down than 9px can afford. */
+  opacity: 0.86;
 }
 .btn-wait small,
 .btn-note small {
