@@ -183,7 +183,7 @@ days:
         start: "13:30"
         end: "14:50"
         speakers:
-          - name: Jy-Yong Sohn
+          - name: Jy-yong Sohn
             role: Prof.
             role_ko: 교수
             name_ko: 손지용
@@ -206,8 +206,21 @@ days:
             name_ko: 오성준
             photo: seong-joon-oh.jpg
             affil: KAIST
-            topic: linear propagation
-            note: Verbal yes via Chulhee Yun; no formal confirmation yet.
+            topic: agent learning
+            talk: From AI learning to agent learning
+            bio: >-
+              Seong Joon Oh is an associate professor at KAIST AI, where he leads the
+              Scalable Trustworthy AI (STAI) group. He works on making AI systems
+              reliable, explainable and aligned with human intent at scale. He moved the
+              group from the University of Tübingen to KAIST in February 2026. Before
+              that he spent 4 years as a research scientist at NAVER AI Lab. He received
+              his PhD at the Max Planck Institute for Informatics in 2018 under Bernt
+              Schiele and Mario Fritz, and read mathematics at the University of
+              Cambridge.
+            note: >-
+              Form (8/27): confirmed, with bio and title — the verbal yes via Chulhee Yun
+              is now on the record. Free in both morning and early-afternoon sessions on
+              both days; placed in the second of them.
             home: https://coallaoh.github.io/
             links:
               scholar: https://scholar.google.com/citations?user=kmXOOdsAAAAJ
