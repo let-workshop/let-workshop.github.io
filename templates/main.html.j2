@@ -317,6 +317,13 @@
           <span class="btn-wait{{ ' is-primary' if a.primary }}">
             <button class="btn{{ ' btn-primary' if a.primary }}" disabled>{{ t(a.label, a.label_ko) }}</button>
             {% if a.note %}<small>{{ t(a.note, a.note_ko) }}</small>{% endif %}
+            <!-- A second line, and deliberately not a second <small>: that one
+                 is mono, uppercase and letterspaced, which is the voice the
+                 page names fields in. A thank-you set that way reads as another
+                 label rather than as a thank-you. This one is the body face, in
+                 a sentence, because it is the only line in the row addressed to
+                 a person rather than describing a state. -->
+            {% if a.thanks %}<em class="btn-thanks">{{ t(a.thanks, a.thanks_ko) }}</em>{% endif %}
           </span>
           {% endif %}
           {% endfor %}

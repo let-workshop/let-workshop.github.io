@@ -1083,6 +1083,22 @@ body {
   align-items: center;
   width: max-content;
 }
+/* The line under the note, when a shut button has something to say to the
+   reader rather than about itself. Not the mono the note is set in — see the
+   comment in main.html.j2 — and a step further back than it, so the order down
+   the stack is button, then why, then thanks. */
+.btn-thanks {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--hero-mute);
+  opacity: 0.82;
+  text-align: center;
+}
 .btn-wait small,
 .btn-note small {
   width: max-content;
@@ -1147,6 +1163,22 @@ body {
   background: var(--wait-fill);
   border-color: var(--wait-line);
   color: var(--hero-mute);
+}
+/* The line under the note, when a shut button has something to say to the
+   reader rather than about itself. Not the mono the note is set in — see the
+   comment in main.html.j2 — and a step further back than it, so the order down
+   the stack is button, then why, then thanks. */
+.btn-thanks {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--hero-mute);
+  opacity: 0.82;
+  text-align: center;
 }
 .btn-wait small,
 .btn-note small {
