@@ -95,8 +95,8 @@ hero_actions:
     note_ko: 정원 마감 · 신청 종료
     # The one line in the button row addressed to a person. Turning people away
     # is the moment to say it, and the note above only says what happened.
-    thanks: Thank you for the interest.
-    thanks_ko: 많은 관심 감사합니다.
+    thanks: Thank you for the interest
+    thanks_ko: 많은 관심 감사드립니다
     primary: true
   - label: See speakers
     label_ko: 연사 보기

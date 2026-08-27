@@ -1084,20 +1084,18 @@ body {
   width: max-content;
 }
 /* The line under the note, when a shut button has something to say to the
-   reader rather than about itself. Not the mono the note is set in — see the
-   comment in main.html.j2 — and a step further back than it, so the order down
-   the stack is button, then why, then thanks. */
+   reader rather than about itself. It is a <small> like the note, so it takes
+   the note's mono, size and tracking untouched — the two are one remark in two
+   sentences, not two remarks.
+   What separates them is that this one closes up against the line above
+   instead of standing off it. The column's own gap is 6px, which is the space
+   between the button and the note; -4px of it leaves 2px here, so the pair
+   reads as a block under the button rather than as a third item in a stack of
+   evenly spaced things. A step back in strength, and no further: at the same
+   size and colour the thanks competed with the fact for the same glance. */
 .btn-thanks {
-  display: block;
-  margin-top: 5px;
-  font-family: var(--body);
-  font-size: 0.78rem;
-  font-style: normal;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--hero-mute);
-  opacity: 0.82;
-  text-align: center;
+  margin-top: -4px;
+  opacity: 0.74;
 }
 .btn-wait small,
 .btn-note small {
@@ -1165,20 +1163,18 @@ body {
   color: var(--hero-mute);
 }
 /* The line under the note, when a shut button has something to say to the
-   reader rather than about itself. Not the mono the note is set in — see the
-   comment in main.html.j2 — and a step further back than it, so the order down
-   the stack is button, then why, then thanks. */
+   reader rather than about itself. It is a <small> like the note, so it takes
+   the note's mono, size and tracking untouched — the two are one remark in two
+   sentences, not two remarks.
+   What separates them is that this one closes up against the line above
+   instead of standing off it. The column's own gap is 6px, which is the space
+   between the button and the note; -4px of it leaves 2px here, so the pair
+   reads as a block under the button rather than as a third item in a stack of
+   evenly spaced things. A step back in strength, and no further: at the same
+   size and colour the thanks competed with the fact for the same glance. */
 .btn-thanks {
-  display: block;
-  margin-top: 5px;
-  font-family: var(--body);
-  font-size: 0.78rem;
-  font-style: normal;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--hero-mute);
-  opacity: 0.82;
-  text-align: center;
+  margin-top: -4px;
+  opacity: 0.74;
 }
 .btn-wait small,
 .btn-note small {
