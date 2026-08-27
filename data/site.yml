@@ -75,23 +75,24 @@ analytics_id: G-DN4LGBW9YN
 hero_actions:
   - label: Registration
     label_ko: 참가 신청
-    href: https://docs.google.com/forms/d/e/1FAIpQLSe4zlakGy6_rJ6KcT_ovDc1dD08mYEoOOFTeuiBm9hxfXGy-w/viewform
-    # Open now, so there is no hour to wait for. The two lines that schedule it
-    # stay here rather than in the history: setting them again is what shuts
-    # the button until a stated time, and the offset is the part that is easy
-    # to leave off — a bare "18:00" means six in the evening wherever the
+    # Closed: the room filled before September 1, which is the half of
+    # "until September 1, or until full" that turned out to matter. An action
+    # with no `href` renders as the disabled button — dead pill, muted ink and
+    # the 45-degree hatch across it — with this note underneath saying why.
+    # Put the line back and it is live again, unchanged:
+    #
+    # href: https://docs.google.com/forms/d/e/1FAIpQLSe4zlakGy6_rJ6KcT_ovDc1dD08mYEoOOFTeuiBm9hxfXGy-w/viewform
+    #
+    # And the two that shut it against a clock rather than a headcount. They
+    # stay here rather than in the history: the offset is the part that is easy
+    # to leave off, and a bare "18:00" means six in the evening wherever the
     # reader happens to be.
     #
     # opens_at: 2026-08-24T18:00:00+09:00
     # shut_note: Opens August 24, 18:00
     # shut_note_ko: 8월 24일 18시 오픈
-    # Two facts, because the date on its own is the one that misleads. A form
-    # with a closing date reads as one you can come back to until then, and
-    # this one shuts the moment the room is full — which, at a venue with a
-    # fixed number of seats, may well be first. Whichever comes first is the
-    # deadline, so both are named.
-    note: Until September 1, or until full
-    note_ko: 9월 1일까지 · 정원 차면 조기 마감
+    note: Closed — we are full
+    note_ko: 정원 마감 · 신청 종료
     primary: true
   - label: See speakers
     label_ko: 연사 보기
