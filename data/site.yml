@@ -85,8 +85,13 @@ hero_actions:
     # opens_at: 2026-08-24T18:00:00+09:00
     # shut_note: Opens August 24, 18:00
     # shut_note_ko: 8월 24일 18시 오픈
-    note: Until September 1
-    note_ko: 9월 1일까지
+    # Two facts, because the date on its own is the one that misleads. A form
+    # with a closing date reads as one you can come back to until then, and
+    # this one shuts the moment the room is full — which, at a venue with a
+    # fixed number of seats, may well be first. Whichever comes first is the
+    # deadline, so both are named.
+    note: Until September 1, or until full
+    note_ko: 9월 1일까지 · 정원 차면 조기 마감
     primary: true
   - label: See speakers
     label_ko: 연사 보기
@@ -109,8 +114,11 @@ nav:
 # The files are NOT in this repo — download the official assets and drop them
 # into static/logos/. Both universities publish brand kits with usage rules,
 # and neither logo is ours to redistribute:
-#   POSTECH  https://www.postech.ac.kr/symbol-mark/
-#   KAIST    https://www.kaist.ac.kr/kr/html/kaist/010801.html
+# Both of these moved and neither redirects — they 404 as of 2026-08-27, so
+# start from the university's own site and find the identity page from there.
+#   POSTECH  https://www.postech.ac.kr/
+#   KAIST    https://www.kaist.ac.kr/kr/
+#   NRF      https://eng.nrf.re.kr/
 # Prefer SVG, or a PNG at least 200px tall with a transparent background.
 # Delete this whole block and the strip disappears.
 sponsors:
@@ -161,7 +169,7 @@ sponsors:
   logos:
     - { name: KAIST, file: kaist.webp, small: kaist-sm.webp, ratio: 1.618, baseline: 0.618, nudge: 1.12, url: https://www.kaist.ac.kr/en/ }
     - { name: POSTECH, file: postech.webp, small: postech-sm.webp, ratio: 1.714, baseline: 0.583, url: https://www.postech.ac.kr/eng/ }
-    - { name: NRF, file: nrf.webp, small: nrf-sm.webp, ratio: 2.779, baseline: 0.784, url: https://www.nrf.re.kr/eng/main }
+    - { name: NRF, file: nrf.webp, small: nrf-sm.webp, ratio: 2.779, baseline: 0.784, url: https://eng.nrf.re.kr/ }
 
 # The particulars under the hero title. `icon` names a symbol in the inline
 # sprite: cal, pin, globe, mic. `mono` sets the value in the monospace face —
