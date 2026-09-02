@@ -429,6 +429,37 @@ days:
             name_ko: 오민환
             photo: min-hwan-oh.jpg
             affil: SNU
+            talk: >-
+              Provably Optimal Exploration with Quasi-Optimism
+            abstract: >-
+              Many multi-armed bandit and reinforcement learning algorithms rely on full
+              optimism, using confidence bonuses large enough to upper-bound unknown
+              values with high probability. This talk presents quasi-optimism, a new
+              exploration principle that allows a controlled degree of underestimation
+              while retaining provably optimal regret guarantees. We first introduce
+              this principle in tabular reinforcement learning, where a simple
+              inverse-count bonus achieves minimax-optimal regret without empirical
+              variance estimation. We then discuss its extension to
+              distribution-dependent and instance-dependent regret guarantees in bandits
+              and reinforcement learning. Finally, we extend quasi-optimism to linear
+              contextual bandits using a quadratic–linear bonus. Despite not being
+              pointwise optimistic, the resulting algorithm simultaneously achieves
+              minimax-optimal and tight margin-dependent regret guarantees while
+              substantially reducing unnecessary exploration in empirical evaluations.
+              Together, these results suggest that quasi-optimism is both theoretically
+              optimal and practically effective.
+            bio: >-
+              Min-hwan Oh is an Associate Professor in the Graduate School of Data
+              Science at Seoul National University. His research focuses on sequential
+              decision-making under uncertainty, reinforcement learning, bandit
+              algorithms, stochastic optimization, and statistical machine learning. He
+              received his Ph.D. from Columbia University.
+            note: >-
+              Form (8/31): free in every session on Day 2, nothing on Day 1 — placed in
+              the first of them. Sent a Drive link with the submission
+              (drive.google.com/open?id=1kqppielU3DPKsTEO54bCekWcZrX60JIV); it is not
+              shared publicly, so it is not linked from the page. Ask him to open it or
+              to send the file if it should be.
             home: https://minoh.io/
 
       - type: break
