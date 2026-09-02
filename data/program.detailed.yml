@@ -120,6 +120,8 @@ days:
             affil: POSTECH
             topic: theory of KD
             home: https://jaeho-lee.github.io/
+            links:
+              lab: https://effl.postech.ac.kr/
           - name: Sung Whan Yoon
             role: Prof.
             role_ko: 교수
@@ -161,6 +163,8 @@ days:
             note: replaced Sejun Park (Korea)
             home: https://namhoonlee.github.io/
 
+            links:
+              lab: https://opt.postech.ac.kr/
       - type: break
         title: Lunch Break [On Your Own]
         emoji: "🍽"
@@ -182,6 +186,8 @@ days:
             topic: in-context learning
             note: Prefers Day 1 afternoon (not strict) — satisfied here.
             home: https://sites.google.com/view/jsohn
+            links:
+              lab: https://itml.yonsei.ac.kr/
           - name: Seong Joon Oh
             role: Prof.
             role_ko: 교수
@@ -190,8 +196,10 @@ days:
             affil: KAIST
             topic: linear propagation
             note: Verbal yes via Chulhee Yun; no formal confirmation yet.
-            home: https://coallaoh.github.io/
+            home: https://seongjoonoh.com/
 
+            links:
+              lab: https://stai-lab.org/
       - type: break
         title: Coffee Break (20 min)
         start: "14:50"
@@ -222,6 +230,8 @@ days:
             note: Wednesday only — satisfied here.
             home: https://sangdon.github.io/
 
+            links:
+              lab: https://ml.postech.ac.kr/
       - type: poster
         title: Poster Session
         start: "16:30"
@@ -259,6 +269,8 @@ days:
             photo: se-young-yun.jpg
             affil: KAIST
             home: https://fbsqkd.github.io/
+            links:
+              lab: https://osi.kaist.ac.kr/
         notes:
           - RL · LLMs
         anon_note: 1 tutorial · 60 min
