@@ -1155,7 +1155,7 @@ BANNER = """<!doctype html>
      `align-items:flex-start` keeps the blocks their own width rather than the
      column\'s, so the credit line does not stretch to meet the mark. */
   .wrap {{
-    position:absolute; inset:56mm; padding:104mm 120mm 116mm;
+    position:absolute; inset:56mm; padding:144mm 120mm 76mm;
     display:flex; flex-direction:column; align-items:flex-start;
     justify-content:space-between;
   }}
