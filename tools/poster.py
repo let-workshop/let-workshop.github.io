@@ -1119,22 +1119,22 @@ BANNER = """<!doctype html>
      small, so the artwork is cropped around the tower rather than scaled down
      from the band. */
   .stage {{
-    position:absolute; top:0; right:0; bottom:0; width:2600mm; overflow:hidden;
-    /* Bled off three edges, faded on the fourth. The fade is what keeps this
-       from reading as a photograph pasted onto the cloth — the drawing thins
-       into the ground the type is set on rather than stopping at a line.
-       What was wrong before was the width, not the fade: at 1900mm the block
-       cut the picture short, so the fade was eating a quarter of what little
-       there was. At 2600 there is picture to spare.
-       The gradient holds at nothing for its first 15% and only then begins to
-       rise, reaching full at 33%. That is what keeps the credit line clear:
-       the logos end at 3891mm, which is 19% into the block, and a ramp that
-       started at the block's own left edge had the drawing at 70% strength
-       behind them — measured, the ground under the right-hand marks was three
-       times as busy as the ground under the rest of the row. Held back this
-       way it is 22% there instead. */
-    -webkit-mask-image:linear-gradient(to right, transparent 0, transparent 15%, #000 33%, #000 100%);
-    mask-image:linear-gradient(to right, transparent 0, transparent 15%, #000 33%, #000 100%);
+    position:absolute; top:0; right:0; bottom:0; width:2100mm; overflow:hidden;
+    /* The whole photograph, at full strength, in the space the type leaves.
+       Two things were wrong before and they pulled against each other. The
+       crop took the middle 74% of the frame, throwing away the observatory
+       dome and the trees on the left to centre the tower — and the block was
+       then widened to 3000mm to get that width back, which only bought picture
+       the fade had to hide again, because the credit line runs to 3891mm and a
+       drawing behind it is a drawing nobody looks at under type nobody can
+       read. Measured, the block's first third came out at ink 4 to 9 against
+       50 for the part that shows: a third of it was there and invisible.
+       So: nothing cropped off either end of the frame, and the block starts
+       where the type ends. Every millimetre of it is a millimetre someone can
+       see. The fade is 12% now, 252mm, which is an edge treatment rather than
+       a way of hiding a third of the picture. */
+    -webkit-mask-image:linear-gradient(to right, transparent 0, #000 12%, #000 100%);
+    mask-image:linear-gradient(to right, transparent 0, #000 12%, #000 100%);
   }}
   .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.3; }}
   .art {{ position:absolute; inset:0; overflow:hidden; }}
@@ -2060,7 +2060,7 @@ GHOST_SIZE = {
     "civic": (1700, 820),
     "listing": (1700, 1520),
     "bauhaus": (1000, 1360),
-    "banner": (1800, 623),      # the 2600 x 900mm block on the right, not the cloth
+    "banner": (1700, 729),      # the 2100 x 900mm block on the right, not the cloth
     "xbanner": (900, 2700),     # 600 x 1800mm
     "social": (1400, 1400),     # 1080 x 1080 square
     "badge": (900, 1300),       # 90 x 130mm
