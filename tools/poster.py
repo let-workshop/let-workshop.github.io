@@ -1109,12 +1109,29 @@ BANNER = """<!doctype html>
     background:{ground}; color:{ink}; font-family:"Satoshi",sans-serif;
     -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }}
+  /* The drawing is a block on the right, not a field under everything.
+     Across the whole cloth it had to be held back by a veil wherever type sat
+     on it, which is most of a six-metre banner — so the picture was faint
+     everywhere in order to be readable anywhere. Given a third of the width
+     and none of the type, it can be drawn at full strength. It is a different
+     picture at that size, too: the campus is not legible as a campus in
+     1900mm, and the clock tower is the one thing that survives being made
+     small, so the artwork is cropped around the tower rather than scaled down
+     from the band. */
+  .stage {{
+    position:absolute; top:0; right:0; bottom:0; width:1900mm; overflow:hidden;
+    /* No fade on the left. It was there so the block would not read as a
+       photograph pasted onto the cloth, but the fade erased the left quarter
+       of the drawing to do it — 494mm of picture spent on an edge treatment,
+       and what it bought was an edge that looked cut rather than one that
+       looked chosen. The drawing is made of formulas on the sheet's own
+       ground; it does not need to be dissolved into that ground, because it is
+       already the same ink. Bled off all four edges, and the left one is
+       simply where the picture starts. */
+  }}
   .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.3; }}
-  .art, .ghost svg {{ position:absolute; inset:0; }}
-  .art {{ overflow:hidden; }}
+  .art {{ position:absolute; inset:0; overflow:hidden; }}
   .art svg, .ghost svg {{ position:absolute; inset:0; width:100%; height:100%; display:block; }}
-  .veil {{ position:absolute; inset:0; }}
-  .veil svg {{ position:absolute; inset:0; width:100%; height:100%; display:block; }}
   /* A banner is hung, and the top and bottom 60mm go into the hem or round a
      pole. Nothing that has to be read lives there. */
   /* The same keyline the X-banner and the square set carry, inset to the line
@@ -1131,7 +1148,7 @@ BANNER = """<!doctype html>
      `align-items:flex-start` keeps the blocks their own width rather than the
      column\'s, so the credit line does not stretch to meet the mark. */
   .wrap {{
-    position:absolute; inset:56mm; padding:70mm 120mm 62mm;
+    position:absolute; inset:56mm; padding:104mm 120mm 116mm;
     display:flex; flex-direction:column; align-items:flex-start;
     justify-content:space-between;
   }}
@@ -1191,16 +1208,7 @@ BANNER = """<!doctype html>
   }}
 </style></head><body>
 <div class="sheet">
-  {ghost}<div class="art">{art}</div>
-  <div class="veil"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 10" preserveAspectRatio="none">
-    <defs><linearGradient id="v" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="{ground}" stop-opacity="{veil_b_end}"/>
-      <stop offset=".70" stop-color="{ground}" stop-opacity="{veil_b_mid1}"/>
-      <stop offset=".84" stop-color="{ground}" stop-opacity="{veil_b_mid2}"/>
-      <stop offset="1" stop-color="{ground}" stop-opacity="{veil_b_end}"/>
-    </linearGradient></defs>
-    <rect width="100" height="10" fill="url(#v)"/>
-  </svg></div>
+  <div class="stage">{ghost}<div class="art">{art}</div></div>
   <div class="frame"></div>
   <div class="wrap">
     <div class="lead">
@@ -2033,11 +2041,11 @@ def festival_bits(program, organizers, site):
 # print size — this is the raster the duotone is computed on, and it only has to
 # match the shape of the piece so nothing is cropped into or stretched across.
 ART_FIT = {
-    # The banner's drawing is made from a band cut out of the photograph at the
-    # banner's own shape, so there is nothing left to crop and nothing to
-    # squash. The band is chosen so the clock tower is whole inside it: its cap
-    # sits at 2% of the frame and the skyline at 11%; the band is 24% tall and
-    # cut from 30%, which is where the tower is whole and the buildings fill it.
+    # The banner's drawing is cut to the shape of the block it fills — 1900 x
+    # 900mm on the right of the cloth — so there is nothing left to crop and
+    # nothing to squash. It is cropped around the clock tower rather than taken
+    # across the campus: at a third of the cloth's width the campus stops being
+    # legible as a campus, and the tower is what survives being made small.
     "banner": "xMidYMid slice",
 }
 
@@ -2045,7 +2053,7 @@ GHOST_SIZE = {
     "civic": (1700, 820),
     "listing": (1700, 1520),
     "bauhaus": (1000, 1360),
-    "banner": (3400, 510),      # 6000 x 900mm, from the pre-cut band
+    "banner": (1500, 710),      # the 1900 x 900mm block on the right, not the cloth
     "xbanner": (900, 2700),     # 600 x 1800mm
     "social": (1400, 1400),     # 1080 x 1080 square
     "badge": (900, 1300),       # 90 x 130mm
