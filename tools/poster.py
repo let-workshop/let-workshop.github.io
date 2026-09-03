@@ -1119,15 +1119,22 @@ BANNER = """<!doctype html>
      small, so the artwork is cropped around the tower rather than scaled down
      from the band. */
   .stage {{
-    position:absolute; top:0; right:0; bottom:0; width:1900mm; overflow:hidden;
-    /* No fade on the left. It was there so the block would not read as a
-       photograph pasted onto the cloth, but the fade erased the left quarter
-       of the drawing to do it — 494mm of picture spent on an edge treatment,
-       and what it bought was an edge that looked cut rather than one that
-       looked chosen. The drawing is made of formulas on the sheet's own
-       ground; it does not need to be dissolved into that ground, because it is
-       already the same ink. Bled off all four edges, and the left one is
-       simply where the picture starts. */
+    position:absolute; top:0; right:0; bottom:0; width:2600mm; overflow:hidden;
+    /* Bled off three edges, faded on the fourth. The fade is what keeps this
+       from reading as a photograph pasted onto the cloth — the drawing thins
+       into the ground the type is set on rather than stopping at a line.
+       What was wrong before was the width, not the fade: at 1900mm the block
+       cut the picture short, so the fade was eating a quarter of what little
+       there was. At 2600 there is picture to spare.
+       The gradient holds at nothing for its first 15% and only then begins to
+       rise, reaching full at 33%. That is what keeps the credit line clear:
+       the logos end at 3891mm, which is 19% into the block, and a ramp that
+       started at the block's own left edge had the drawing at 70% strength
+       behind them — measured, the ground under the right-hand marks was three
+       times as busy as the ground under the rest of the row. Held back this
+       way it is 22% there instead. */
+    -webkit-mask-image:linear-gradient(to right, transparent 0, transparent 15%, #000 33%, #000 100%);
+    mask-image:linear-gradient(to right, transparent 0, transparent 15%, #000 33%, #000 100%);
   }}
   .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.3; }}
   .art {{ position:absolute; inset:0; overflow:hidden; }}
@@ -2053,7 +2060,7 @@ GHOST_SIZE = {
     "civic": (1700, 820),
     "listing": (1700, 1520),
     "bauhaus": (1000, 1360),
-    "banner": (1500, 710),      # the 1900 x 900mm block on the right, not the cloth
+    "banner": (1800, 623),      # the 2600 x 900mm block on the right, not the cloth
     "xbanner": (900, 2700),     # 600 x 1800mm
     "social": (1400, 1400),     # 1080 x 1080 square
     "badge": (900, 1300),       # 90 x 130mm
