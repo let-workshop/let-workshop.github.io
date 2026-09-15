@@ -167,8 +167,8 @@ days:
               Google, ISTA, EPFL, and ANU, and has received his PhD from Oxford
               University.
             note: >-
-              replaced Sejun Park (Korea). Form (8/21): free Day 1 all three sessions and
-              Day 2 morning.
+              replaced Sejun Park (Korea). Form (8/26, resubmitted): free in all four Day
+              1 sessions, the new 16:40 one included, and Day 2 morning.
             home: https://namhoonlee.github.io/
 
             links:
@@ -427,6 +427,41 @@ days:
             name_ko: 전광성
             photo: kwang-sung-jun.jpg
             affil: POSTECH
+            talk: "Frontiers of Offline Interactive Machine Learning: From Contextual Bandits to LLM Alignment"
+            abstract: >-
+              At the heart of modern machine learning lies a fundamental challenge: how
+              can an intelligent system not just learn from data but also decide which
+              data to collect for learning? This is the essence of interactive machine
+              learning (IML) -- a paradigm that encompasses reinforcement learning,
+              contextual bandits, and active learning. Recently, the offline version of
+              IML has gained popularity because the traditional online version often
+              cannot be run due to real-world constraints. In this talk, I will show two
+              recent advances in offline IML problems. First, I will discuss the
+              contextual bandit problem that has applications in recommendation systems. I
+              will show how an improved confidence bound for [0,∞)-valued random variable
+              translates into a superior learning algorithm, both in theory and practice.
+              Second, I will show that the LLM alignment problem is an instance of offline
+              IML and that existing training objectives for it lack theoretical
+              justification, leaving us wondering if they are the right ones to use. As
+              such, I will present a novel theoretical framework for alignment from which
+              three different alignment algorithms are derived along with theoretical
+              guarantees, which is a strong form of justification. Surprisingly, two of
+              them are very similar to existing algorithms called Direct Policy
+              Optimization (DPO) and reinforcement learning from human feedback (RLHF),
+              respectively. Together with our theoretical guarantees, our work can be seen
+              as providing theoretical justifications to DPO and RLHF, with minor
+              corrections. Furthermore, our theory confirms the existing empirical finding
+              that RLHF performs better than DPO. I will conclude with empirical results
+              and exciting future research directions.
+            bio: >-
+              Kwang-Sung Jun is an associate professor in the Department of Computer
+              Science & Engineering at POSTECH. His research interest is interactive
+              machine learning in general, and, in particular, both theory and practice in
+              bandit problems, active learning, confidence bounds, and, more recently,
+              emerging problems in LLM post training. Before joining POSTECH, he was an
+              assistant professor at the University of Arizona.
+            note: >-
+              Form (9/14): free in every session on both days.
             home: https://kwangsungjun.github.io/
             links:
               scholar: https://scholar.google.com/citations?user=VgvC7o8AAAAJ
@@ -485,6 +520,16 @@ days:
             name_ko: 이다빈
             photo: dabeen-lee.jpg
             affil: SNU
+            talk: Algorithms for Constrained Online Convex Optimization
+            bio: >-
+              Dabeen Lee is an assistant professor in the Department of Mathematical
+              Sciences at the Seoul National University (SNU). Prior to joining SNU, he
+              was an assistant professor in the Department of Industrial and Systems
+              Engineering (ISysE) at the Korea Advanced Institute of Science and
+              Technology (KAIST).
+            note: >-
+              Form (9/15): free Day 1 16:40 and the first three Day 2 sessions — this slot
+              among them.
             home: https://dabeenl.github.io/
           # Confirmed 2026-08-19 from the shortlist for this slot. A
           # postdoc rather than a professor, so the card says Dr.
@@ -546,6 +591,10 @@ days:
             name_ko: 장경석
             photo: kyoungseok-jang.jpg
             affil: CAU
+            note: >-
+              Form (9/14): availability only — bio, title and abstract all sent as dashes,
+              so still to come. Free Day 2 11:10, 15:10 and 16:40, not 13:30; this 15:05
+              slot is among them.
             home: https://jajajang.github.io/
             links:
               scholar: https://scholar.google.com/citations?user=hDqIvzAAAAAJ
