@@ -2226,11 +2226,23 @@ button.sp-talk-link:focus-visible {
 .sp-name a:hover {
   color: var(--accent);
 }
+/* The affiliation reads as the title does — small caps at the same size and
+   in the same grey — because they are the same kind of thing beside a name:
+   neither is the name. At the name's own size it was competing with it. */
 .sp-name em {
   font-style: normal;
   font-weight: 400;
-  color: var(--muted);
-  margin-left: 4px;
+  font-size: 0.74em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--label);
+  margin-left: 5px;
+  white-space: nowrap;
+}
+/* The tracking is for a line of Latin capitals. Hangul is already spaced by
+   its own squares, and 포항공과대학교 comes apart at 1px. */
+.sp-name em .t-ko {
+  letter-spacing: 0.01em;
 }
 .sp-talk {
   margin-top: 2px;
