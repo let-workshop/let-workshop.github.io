@@ -376,14 +376,20 @@ def speaker_line(s: dict) -> Markup:
     # Names carry a Korean form where we have one; bilingual() emits both and
     # the language toggle picks. Without `name_ko` it renders once and shows in
     # either language, which is the right default for a romanisation.
-    shown = bilingual(s["name"], s.get("name_ko"))
-    if s.get("home"):
-        name = Markup('<a href="%s" target="_blank" rel="noopener">%s</a>') % (s["home"], shown)
-    else:
-        name = shown
+    name = bilingual(s["name"], s.get("name_ko"))
+    # No link on the name. The grid is a timetable, and a timetable in which
+    # every name is blue and underlined reads as a list of links rather than as
+    # the shape of two days. Clicking the session opens the sheet, which is
+    # where a person's page, their bio and their abstract all are.
     line = Markup("<b>%s</b> <em>%s</em>") % (name, bilingual(s.get("affil", ""), s.get("affil_ko")))
-    if s.get("topic"):
-        line += Markup(" · %s") % s["topic"]
+    # The title, not the subject. `topic` was a word for what someone works on,
+    # written while nobody had sent a title; fourteen of the sixteen have sent
+    # one now, and a title is the thing an attendee is choosing between. It
+    # falls back to the topic for whoever has not — the tutorial, which is a
+    # subject rather than a talk, keeps reading "RL · LLMs".
+    subject = s.get("talk") or s.get("topic")
+    if subject:
+        line += Markup(" · %s") % subject
     return line
 
 
