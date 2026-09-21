@@ -129,7 +129,27 @@ days:
             name_ko: 윤철희
             photo: chulhee-yun.jpg
             affil: KAIST
+            talk: Understanding Neural Network Optimization through River-Valley Dynamics
+            bio: >-
+              Chulhee “Charlie” Yun is an Associate Professor at the KAIST Kim Jaechul
+              Graduate School of AI and is jointly affiliated with the KAIST Graduate
+              School of AI for Math. He received his PhD from the Laboratory for
+              Information and Decision Systems at MIT, where he was co-advised by
+              Professors Suvrit Sra and Ali Jadbabaie. He previously received his MS from
+              Stanford University and his BS from KAIST. His research focuses on the
+              theoretical foundations of optimization, machine learning, and deep
+              learning, with an emphasis on bridging the gap between theory and practice.
+              His work has been recognized with honors including the Ewon Assistant
+              Professorship at KAIST and the KSIAM Outstanding Young Investigator Award.
+              He has served as an Area Chair for NeurIPS, ICML, and ICLR, and as a Social
+              Chair for ICML 2026. He is also a co-organizer of the Optimization for
+              Machine Learning workshop at NeurIPS 2026.
             topic: "river valley, Muon"
+            note: >-
+              CLASH — placed in this 11:10 session, and the form (9/21) does not tick it:
+              free Day 1 13:30, 15:10 and 16:40, and every session on Day 2. He was the
+              one speaker whose hours were unknown, so any placement that leaned on him
+              being free here has to be redone.
             home: https://chulheeyun.github.io/
             links:
               scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
