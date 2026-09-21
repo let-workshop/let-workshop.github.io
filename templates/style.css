@@ -1552,14 +1552,6 @@ a.spk-card {
 .org-card .role,
 .sp-name .role,
 .spk-tip .role,
-.tk-back .role {
-  font-size: 0.74em;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--label);
-  white-space: nowrap;
-}
 .org-card .name {
   font-weight: 600;
   color: var(--ink);
@@ -1713,8 +1705,7 @@ a.spk-card {
    across arrives here to be read as a page turn. Without it the browser owns
    both axes and the swipe cannot cancel the scroll it would otherwise cause. */
 #event-modal,
-#speaker-modal,
-#talk-modal {
+#speaker-modal {
   touch-action: pan-y;
   width: min(660px, calc(100% - 32px));
   max-height: min(86vh, 760px);
@@ -1725,10 +1716,29 @@ a.spk-card {
   color: var(--prose);
   box-shadow: 0 -12px 60px rgba(20, 33, 61, 0.28);
   overflow: hidden;
+  /* A column, so the arrows at the foot are laid out before the body is given
+     what is left. The body used to be capped in vh, which cannot know how tall
+     a head and a footer are: a title that wrapped to three lines pushed the
+     footer past the window's own max-height, and `overflow: hidden` cut it
+     off. Nothing about the sheet's height is guessed now. */
+  display: flex;
+  flex-direction: column;
+}
+/* Said because the rule above would otherwise show a closed dialog: `display`
+   from the browser's own sheet is what keeps one shut, and any author rule
+   setting display beats it. */
+#event-modal:not([open]),
+#speaker-modal:not([open]) {
+  display: none;
+}
+.modal-head,
+#modal-strip,
+.modal-nav,
+.spk-strip {
+  flex: none;
 }
 #event-modal::backdrop,
-#speaker-modal::backdrop,
-#talk-modal::backdrop {
+#speaker-modal::backdrop {
   background: rgba(20, 33, 61, 0.45);
 }
 /* The two-day ribbon above the dialog's head. Sits flush to the top edge and
@@ -1841,22 +1851,14 @@ a.spk-card {
   margin: 6px 20px 2px;
 }
 #modal-body,
-#speaker-body,
-#talk-body {
+#speaker-body {
   padding: 4px 20px 6px;
   overflow-y: auto;
-  max-height: 52vh;
-}
-/* Neither of the two person windows carries a ribbon, so both have more room
-   for the body than the session sheet does. The talk window has no footer at
-   all and its body ends at the window's edge, which is where the padding the
-   footer would have given has to come back. */
-#speaker-body,
-#talk-body {
-  max-height: 68vh;
-}
-#talk-body {
-  padding-bottom: 20px;
+  /* Whatever the head and the footer leave. min-height: 0 because a flex item
+     will not shrink below its content without it, which is the whole of how a
+     scrolling panel inside a flex column goes wrong. */
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 /* One person, not a list of them. .sp-photo is 46px because the session sheet
@@ -2186,36 +2188,6 @@ button.sp-talk-link:focus-visible {
 
 /* The way back, carrying the name: a button that says where it goes rather
    than only that it goes back. */
-.tk-back {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 7px;
-  margin: 4px 0 12px;
-  padding: 5px 12px 5px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: none;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-.tk-back:hover,
-.tk-back:focus-visible {
-  color: var(--ink);
-  border-color: var(--accent);
-}
-.tk-back em {
-  font-style: normal;
-  color: var(--faint);
-}
-.tk-title {
-  margin: 0 0 12px;
-  font-size: 1.06rem;
-  line-height: 1.35;
-  color: var(--ink);
-}
 .sp {
   display: flex;
   gap: 12px;
@@ -3660,8 +3632,7 @@ footer a:hover {
     margin: 0 0 0 10px;
   }
   #event-modal,
-  #speaker-modal,
-  #talk-modal {
+  #speaker-modal {
     /* No padding. It is a leftover from when the dialog laid its own content
        out; the head, the body and the footer each carry their own padding now,
        and 18px here inset all three from the card edge — so the day ribbon
@@ -3969,16 +3940,10 @@ footer a:hover {
   }
 
   #event-modal,
-  #speaker-modal,
-  #talk-modal {
+  #speaker-modal {
     width: 100%;
     max-width: 100%;
     max-height: 92vh;
-  }
-  #modal-body,
-  #speaker-body,
-  #talk-body {
-    max-height: 58vh;
   }
   .modal-nav .pill {
     padding: 8px 12px;

@@ -1029,6 +1029,10 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             # cluster; the ticks under it still say how many.
             "letter": s["name"].split()[-1][0].upper(),
             "letter_ko": choseong((s.get("name_ko") or s["name"])[0]),
+            # The session this person is in, so the panel's talk door can open
+            # the sheet the schedule itself opens rather than a window of its
+            # own saying the same thing twice.
+            "event": s["event_id"],
             # Where this card stands in the Korean arrangement. The cards are
             # written once and reordered by CSS, so previous/next has to be
             # told the other order rather than reading it off the document.

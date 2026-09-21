@@ -1140,20 +1140,6 @@
       </div>
     </dialog>
 
-    <!-- And the talk. It opens in place of the speaker window rather than on
-         top of it: two backdrops stacked make the page behind twice as dark
-         for a step that is sideways, not deeper. The way back is the first
-         thing in it, and it carries the name, so the button says where it
-         goes instead of only that it goes back. -->
-    <dialog id="talk-modal" aria-label="Talk detail">
-      <div class="modal-head">
-        <div>
-          <span class="badge"><span class="t-en">Talk</span><span class="t-ko">발표</span></span>
-        </div>
-        <form method="dialog"><button class="modal-x" aria-label="Close">&times;</button></form>
-      </div>
-      <div id="talk-body"></div>
-    </dialog>
 
 
     <!-- ===== FOOTER =====
@@ -2362,7 +2348,6 @@
       // written from survives the rearranging.
       var PEOPLE = {{ people | tojson }};
       var SPEAKER_MODAL = document.getElementById("speaker-modal");
-      var TALK_MODAL = document.getElementById("talk-modal");
       var spkAt = 0;
 
       // Who this is. Not the session sheet's speakerHtml — that renders a
@@ -2408,26 +2393,11 @@
         // than a line that says the room is empty.
         var label = '<span class="sp-talk-kicker">' + tbd("Talk", "발표") + "</span>";
         bits += s.talk
-          ? '<button class="sp-talk-link" onclick="openTalk(' + i + ')">' + label +
+          ? '<button class="sp-talk-link" onclick="sessionFromSpeaker(' + i + ')">' + label +
             '<span class="sp-talk-name">' + esc(s.talk) + "</span></button>"
           : '<div class="sp-talk-link is-todo">' + label +
             '<span class="sp-talk-name">' + tbd("Title to be announced", "발표 제목 미정") + "</span></div>";
         return '<div class="sp">' + head + "<div>" + bits + "</div></div>";
-      }
-
-      function talkPanel(s, i) {
-        var who = titled(s) + (s.affil ? ' <em>' + s.affilHtml + "</em>" : "");
-        var bits = '<button class="tk-back" onclick="openSpeaker(' + i + ')">' +
-                   '<span aria-hidden="true">&larr;</span> ' + who + "</button>";
-        bits += '<h4 class="tk-title">' + esc(s.talk) + "</h4>";
-        bits += s.abstract
-          ? '<div class="sp-abstract">' + s.abstract + "</div>"
-          : '<div class="sp-abstract is-todo">' + tbd("Abstract to be announced", "초록 준비 중") + "</div>";
-        bits += s.slides
-          ? '<a class="sp-slides" href="' + esc(s.slides) + '" target="_blank" rel="noopener">' +
-            tbd("Slides (PDF)", "발표자료 (PDF)") + "</a>"
-          : '<span class="sp-slides is-todo">' + tbd("Slides after the talk", "발표 후 자료 공개") + "</span>";
-        return bits;
       }
 
       // The order the arrows walk. Whichever order the cards are being shown
@@ -2554,7 +2524,6 @@
         document.getElementById("spk-next").disabled = pos === order.length - 1;
         if (STRIP.key !== order.join(",")) drawStrip(order, i);
         else markStrip(i);
-        if (TALK_MODAL.open) TALK_MODAL.close();
         if (!SPEAKER_MODAL.open) SPEAKER_MODAL.showModal();
       }
 
@@ -2566,13 +2535,14 @@
         openSpeaker(i);
       }
 
-      function openTalk(i) {
+      // The talk door goes where the schedule goes: the session sheet, which
+      // already carries the title, the abstract and the slide link, and which
+      // is the one place any of that has to be kept right.
+      function sessionFromSpeaker(i) {
         var s = PEOPLE[i];
-        if (!s || !s.talk) return;
-        spkAt = i;
-        document.getElementById("talk-body").innerHTML = talkPanel(s, i);
+        if (!s || !s.event) return;
         if (SPEAKER_MODAL.open) SPEAKER_MODAL.close();
-        if (!TALK_MODAL.open) TALK_MODAL.showModal();
+        openEvent(s.event);
       }
 
       function stepSpeaker(d) {
@@ -2668,7 +2638,7 @@
         if (ev.key === "ArrowRight") stepSpeaker(1);
       });
       // Clicking the backdrop closes either, as on the session sheet.
-      [SPEAKER_MODAL, TALK_MODAL].forEach(function (d) {
+      [SPEAKER_MODAL].forEach(function (d) {
         d.addEventListener("click", function (ev) { if (ev.target === d) d.close(); });
       });
 
