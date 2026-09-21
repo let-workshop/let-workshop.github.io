@@ -1553,7 +1553,20 @@ a.spk-card {
 .spk .role,
 .poster-list .role,
 .sp-name .role,
-.spk-tip .role,
+.spk-tip .role {
+  font-size: 0.74em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--label);
+  white-space: nowrap;
+}
+/* The tracking and the capitals are for "PROF.". 교수 is two Hangul squares
+   already spaced by their own frames, and uppercase does nothing to them. */
+.t-ko .role {
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
 .org-card .name {
   font-weight: 600;
   color: var(--ink);
@@ -2325,6 +2338,11 @@ button.sp-talk-link:focus-visible {
 }
 #modal-body .sp-name em {
   color: var(--faint);
+}
+/* 0.74em of a byline that is itself 0.84rem comes to under 10px, which is
+   small for two Hangul squares. Taken back up so it lands near eleven. */
+#modal-body .sp-name .role {
+  font-size: 0.82em;
 }
 #modal-body .sp-talk {
   margin-top: 1px;

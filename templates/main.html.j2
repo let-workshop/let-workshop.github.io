@@ -1985,10 +1985,7 @@
         var head = s.photo
           ? '<img class="sp-photo" src="' + esc(s.photo) + '" alt="" loading="lazy" />'
           : '<div class="sp-photo sp-blank" aria-hidden="true"></div>';
-        var name = s.home
-          ? '<a href="' + esc(s.home) + '" target="_blank" rel="noopener">' + titled(s) + "</a>"
-          : titled(s);
-        var bits = '<div class="sp-name">' + name;
+        var bits = '<div class="sp-name">' + titled(s);
         if (s.affil) bits += " <em>" + s.affilHtml + "</em>";
         bits += "</div>";
         if (s.talk) bits += '<div class="sp-talk">' + esc(s.talk) + "</div>";
@@ -2399,10 +2396,9 @@
         var head = s.photo
           ? '<img class="sp-photo" src="' + esc(s.photo) + '" alt="" loading="lazy" />'
           : '<div class="sp-photo sp-blank" aria-hidden="true"></div>';
-        var name = s.home
-          ? '<a href="' + esc(s.home) + '" target="_blank" rel="noopener">' + titled(s) + "</a>"
-          : titled(s);
-        var bits = '<div class="sp-name">' + name;
+        // No link on the name: the globe in the row below is the link, and one
+        // of them saying so is enough.
+        var bits = '<div class="sp-name">' + titled(s);
         if (s.affil) bits += " <em>" + s.affilHtml + "</em>";
         bits += "</div>";
         // The same icons the organisers' cards carry, from the same sprite.

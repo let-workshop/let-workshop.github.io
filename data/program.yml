@@ -105,8 +105,8 @@ days:
       - type: break
         title: Registration & Welcome Coffee
         detail:
-          - en: Coffee and something to eat while you sign in. A good half hour to find the people you came to meet.
-            ko: 등록하시면서 커피와 다과를 드실 수 있습니다. 만나러 오신 분들을 찾기 좋은 시간입니다.
+          - en: Coffee and something to eat while you sign in.
+            ko: 등록하시면서 커피와 다과를 드실 수 있습니다.
         emoji: "📝"
         start: "10:00"
         end: "11:00"
@@ -262,16 +262,16 @@ days:
         title: Coffee Break (15 min)
         start: "14:50"
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
         end: "15:05"
         bare: true
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
 
       - type: block
         title: UQ in LLMs
@@ -334,16 +334,16 @@ days:
         title: Coffee Break (15 min) · put your poster up
         start: "16:25"
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
         end: "16:40"
         bare: true
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
 
       # The afternoon's fourth session, and the reason the banquet moves. One
       # talk rather than two: it is what the hour between the last pair and the
@@ -480,8 +480,8 @@ days:
         title: Grand Banquet [Provided]
         start: "18:30"
         detail:
-          - en: A barbecue buffet. Everyone is welcome — speakers, participants and the people running the day.
-            ko: 바베큐 뷔페입니다. 연사·참가자·진행 인원 모두 함께합니다.
+          - en: A barbecue buffet, for everyone who is here.
+            ko: 바베큐 뷔페가 제공됩니다.
         end: "20:30"
         time_label: from 18:30
 
@@ -534,8 +534,8 @@ days:
         end: "11:10"
         bare: true
         detail:
-          - en: Coffee and something to eat. The breaks are as much of the point as the talks — this is where the workshop happens.
-            ko: 커피와 다과가 준비되어 있습니다. 쉬는 시간도 발표만큼이나 이 워크숍의 목적입니다 — 이야기는 여기서 시작됩니다.
+          - en: Coffee and something to eat. A good time to talk to somebody.
+            ko: 커피와 다과가 준비되어 있습니다. 편하게 이야기 나누세요.
 
       - type: block
         title: DL Theory IV
