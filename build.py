@@ -389,8 +389,21 @@ def speaker_line(s: dict) -> Markup:
     return line
 
 
-def note_line(text: str) -> Markup:
-    return Markup("<em>%s</em>") % text
+def note_text(note) -> Markup:
+    """A note, in both languages where the data gives both.
+
+    Written as a string it shows the same words to everyone, which is right for
+    a line like "Project members only" and wrong for a sentence about what is
+    being served. A mapping with `en` and `ko` gets the page's own language
+    switch, the same one every other pair of strings on it uses.
+    """
+    if isinstance(note, dict):
+        return bilingual(note.get("en", ""), note.get("ko"))
+    return escape(note)
+
+
+def note_line(note) -> Markup:
+    return Markup("<em>%s</em>") % note_text(note)
 
 
 def session_track(event: dict) -> str:
@@ -598,6 +611,11 @@ def fill_defaults(bundle: dict) -> None:
                 e.setdefault(key, None)
             for key in ("bare", "time_in_title"):
                 e.setdefault(key, False)
+            e.setdefault("posters", [])
+            # Shown in the sheet a cell opens, never in the cell. `notes` is a
+            # label short enough for the grid — "Project members only"; this is
+            # a sentence, and a sentence does not belong in a box an hour tall.
+            e.setdefault("detail", [])
             for key in ("speakers", "notes"):
                 e.setdefault(key, [])
             # The event's own mark wins; otherwise the type's.
@@ -982,7 +1000,22 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
                 }
                 for s in (e["speakers"] if not variant["anonymize"] else [])
             ],
-            "notes": e["notes"] if not variant["anonymize"] else [],
+            # Rendered here rather than in script: a note can be a pair of
+            # strings, and the language switch is CSS on two spans.
+            "notes": [str(note_text(n)) for n in e["notes"] + e["detail"]]
+            if not variant["anonymize"]
+            else [],
+            # The posters, which are not talks and must not reach the roster:
+            # the Speakers section is built from `speakers`, and fifteen poster
+            # authors in it would say the workshop has thirty-one speakers.
+            "posters": [
+                {
+                    "nameHtml": str(bilingual(p["name"], p.get("name_ko"))),
+                    "affil": p.get("affil"),
+                    "title": p.get("title"),
+                }
+                for p in (e.get("posters") or [])
+            ] if not variant["anonymize"] else [],
         }
         for day in program["days"]
         for e in day["events"]

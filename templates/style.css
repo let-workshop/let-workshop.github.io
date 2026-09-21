@@ -2200,6 +2200,41 @@ button.sp-talk-link:focus-visible {
 .sp:first-child {
   border-top: 0;
 }
+/* The posters, numbered, because a poster session is a room you walk along
+   and the number is how you find one. */
+.poster-list {
+  margin: 6px 0 0;
+  padding-left: 1.4em;
+}
+.poster-list li {
+  margin-bottom: 9px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.poster-list li::marker {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.78em;
+}
+.poster-list b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.poster-list em {
+  font-style: normal;
+  font-size: 0.74em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--label);
+  margin-left: 5px;
+  white-space: nowrap;
+}
+.poster-title {
+  margin-top: 1px;
+  color: var(--prose);
+}
+
 /* Shown when the sheet is open on one talk: the way to the other one. Quiet,
    and at the foot, because it is an offer rather than the point of the sheet. */
 .sp-rest {

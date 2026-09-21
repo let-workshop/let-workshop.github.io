@@ -2075,8 +2075,17 @@
                   tbd("The rest of this session", "이 세션의 나머지") +
                   ' <span aria-hidden="true">&darr;</span></button>';
         body += e.notes.map(function (n) {
-          return '<p class="sp-note">' + esc(n) + "</p>";
+          // Already rendered, and possibly a pair of language spans.
+          return '<p class="sp-note">' + n + "</p>";
         }).join("");
+        if (e.posters && e.posters.length) {
+          body += '<ol class="poster-list">' + e.posters.map(function (p) {
+            return "<li><b>" + p.nameHtml + "</b>" +
+                   (p.affil ? ' <em>' + esc(p.affil) + "</em>" : "") +
+                   (p.title ? '<div class="poster-title">' + esc(p.title) + "</div>" : "") +
+                   "</li>";
+          }).join("") + "</ol>";
+        }
         var panel = document.getElementById("modal-body");
         panel.innerHTML = body || '<p class="sp-note">No further detail yet.</p>';
         panel.scrollTop = 0;
