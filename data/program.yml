@@ -32,8 +32,8 @@
 # called what it is.
 title: Program
 title_ko: 프로그램
-title_note: speaker order to be confirmed
-title_note_ko: 연사 순서는 확정 전
+title_note: ~
+title_note_ko: ~
 
 # The schedule shown in simple form: every talk reads "Invited talk" with its
 # hour and TBD, and the names, topics and chairs are held back. The tutorial is
@@ -45,7 +45,7 @@ title_note_ko: 연사 순서는 확정 전
 # chairs and their speakers back in one move. data/program.detailed.yml is the
 # shape the programme had before the times were rearranged, kept for the same
 # reason.
-simple: true
+simple: false
 simple_label: Invited talk
 
 # Public page shows no subtitle. The invite build keeps `subtitle_anon`, which
@@ -118,41 +118,11 @@ days:
         time_in_title: true
 
       - type: block
-        title: DL Theory II
-        chair: TBD
+        title: DL Theory I
+        chair: ~
         start: "11:10"
         end: "12:30"
         speakers:
-          - name: Chulhee Yun
-            role: Prof.
-            role_ko: 교수
-            name_ko: 윤철희
-            photo: chulhee-yun.jpg
-            affil: KAIST
-            talk: Understanding Neural Network Optimization through River-Valley Dynamics
-            bio: >-
-              Chulhee “Charlie” Yun is an Associate Professor at the KAIST Kim Jaechul
-              Graduate School of AI and is jointly affiliated with the KAIST Graduate
-              School of AI for Math. He received his PhD from the Laboratory for
-              Information and Decision Systems at MIT, where he was co-advised by
-              Professors Suvrit Sra and Ali Jadbabaie. He previously received his MS from
-              Stanford University and his BS from KAIST. His research focuses on the
-              theoretical foundations of optimization, machine learning, and deep
-              learning, with an emphasis on bridging the gap between theory and practice.
-              His work has been recognized with honors including the Ewon Assistant
-              Professorship at KAIST and the KSIAM Outstanding Young Investigator Award.
-              He has served as an Area Chair for NeurIPS, ICML, and ICLR, and as a Social
-              Chair for ICML 2026. He is also a co-organizer of the Optimization for
-              Machine Learning workshop at NeurIPS 2026.
-            topic: "river valley, Muon"
-            note: >-
-              CLASH — placed in this 11:10 session, and the form (9/21) does not tick it:
-              free Day 1 13:30, 15:10 and 16:40, and every session on Day 2. He was the
-              one speaker whose hours were unknown, so any placement that leaned on him
-              being free here has to be redone.
-            home: https://chulheeyun.github.io/
-            links:
-              scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
           - name: Namhoon Lee
             role: Prof.
             role_ko: 교수
@@ -188,11 +158,40 @@ days:
               University.
             note: >-
               replaced Sejun Park (Korea). Form (8/26, resubmitted): free in all four Day
-              1 sessions, the new 16:40 one included, and Day 2 morning.
+              1 sessions and Day 2 morning.
             home: https://namhoonlee.github.io/
 
             links:
               lab: https://opt.postech.ac.kr/
+          - name: Jaeho Lee
+            role: Prof.
+            role_ko: 교수
+            name_ko: 이재호
+            photo: jaeho-lee.jpg
+            affil: POSTECH
+            talk: On the Scale Bias of Neural Network Training
+            abstract: >-
+              How do we initialize the neural network weights? Classic ideas have
+              focused on stabilizing the activation distributions of the networks, so
+              that one can train deeper nets without exploding or vanishing gradients.
+              In this talk, we study how the initialization scale can affect the
+              efficiency of model training. In particular, we describe modern theories
+              on how the weight scale shapes the training speed and the generalization
+              capabilities of the model, and recent breakthroughs in characterizing the
+              optimal speed-generalization tradeoff point.
+            bio: >-
+              Jaeho Lee is an associate professor at the POSTECH EE, where he leads
+              Efficient Learning (EffL) Lab. He is mainly interested in designing
+              theories and algorithms for making ML more efficient.
+            # He is sitting in a Day 2 block and has ticked nothing on Day 2.
+            note: >-
+              Form (8/25): Day 1 only — all four sessions. This is one of them.
+            # Was "theory of KD"; the title he sent is about initialization scale.
+            topic: initialization scale
+            home: https://jaeho-lee.github.io/
+            links:
+              x: https://x.com/jaeho_lee_
+              lab: https://effl.postech.ac.kr/
       - type: break
         title: Lunch Break [Provided]
         emoji: "🍽"
@@ -200,11 +199,37 @@ days:
         end: "13:30"
 
       - type: block
-        title: DL Theory III
-        chair: TBD
+        title: DL Theory II
+        chair: ~
         start: "13:30"
         end: "14:50"
         speakers:
+          - name: Sung Whan Yoon
+            role: Prof.
+            role_ko: 교수
+            name_ko: 윤성환
+            photo: sung-whan-yoon.jpg
+            affil: UNIST
+            talk: Understanding Model Flatness Across Learning Frameworks
+            bio: >-
+              Sung Whan Yoon received the B.S., M.S., and Ph.D. degrees from the
+              Department of Electrical Engineering, Korea Advanced Institute of Science
+              and Technology (KAIST), Daejeon, South Korea, in 2011, 2013, and 2017,
+              respectively. He was a Post-Doctoral Researcher at KAIST from 2017 to 2020.
+              He is currently an Associate Professor at the Artificial Intelligence
+              Graduate School (AIGS) and the Department of Electrical Engineering, Ulsan
+              National Institute of Science and Technology (UNIST), Ulsan, South Korea.
+              His research interests include machine learning with a special focus on
+              learning theory to reveal the principles of deep training via a lens of
+              information theory and signal processing, and deep algorithmic methods to
+              bolster the generalization of learners across diverse settings.
+            topic: flatness
+            note: >-
+              Form (9/21): Day 1 only — 13:30, 15:10 and 16:40. This is one of them. It
+              supersedes the childcare note it replaces, which had read Wed after
+              14:00–15:00 or any time Thu. The photograph he sent with the submission is
+              the one on the card.
+            home: https://sites.google.com/view/swyoon89
           - name: Jy-yong Sohn
             role: Prof.
             role_ko: 교수
@@ -218,40 +243,12 @@ days:
               Machine Learning (ITML) Lab. His research explains what foundation models
               are doing, and turns that understanding into better algorithms.
             note: >-
-              Prefers Day 1 afternoon (not strict). Form (8/26, resubmitted): free in
-              all four Day 1 sessions and the first two on Day 2.
+              Prefers Day 1 afternoon (not strict) — satisfied here. Form (8/26,
+              resubmitted): free in all four Day 1 sessions and the first two on Day 2.
             topic: in-context learning
             home: https://sites.google.com/view/jsohn
             links:
               lab: https://itml.yonsei.ac.kr/
-          - name: Seong Joon Oh
-            role: Prof.
-            role_ko: 교수
-            name_ko: 오성준
-            photo: seong-joon-oh.jpg
-            affil: KAIST
-            topic: agent learning
-            talk: From AI learning to agent learning
-            bio: >-
-              Seong Joon Oh is an associate professor at KAIST AI, where he leads the
-              Scalable Trustworthy AI (STAI) group. He works on making AI systems
-              reliable, explainable and aligned with human intent at scale. He moved the
-              group from the University of Tübingen to KAIST in February 2026. Before
-              that he spent 4 years as a research scientist at NAVER AI Lab. He received
-              his PhD at the Max Planck Institute for Informatics in 2018 under Bernt
-              Schiele and Mario Fritz, and read mathematics at the University of
-              Cambridge.
-            note: >-
-              Form (8/27): confirmed, with bio and title — the verbal yes via Chulhee Yun
-              is now on the record. Free in both morning and early-afternoon sessions on
-              both days; placed in the second of them.
-            home: https://seongjoonoh.com/
-            links:
-              scholar: https://scholar.google.com/citations?user=kmXOOdsAAAAJ
-              github: https://github.com/coallaoh
-              x: https://x.com/coallaoh
-              linkedin: https://www.linkedin.com/in/seong-joon-oh-32113479/
-              lab: https://stai-lab.org/
 
       # Fifteen rather than twenty, and the afternoon starts five minutes
       # earlier, which is where the room for the fourth session comes from.
@@ -263,32 +260,10 @@ days:
 
       - type: block
         title: UQ in LLMs
-        chair: TBD
+        chair: ~
         start: "15:05"
         end: "16:25"
         speakers:
-          - name: Juho Lee
-            role: Prof.
-            role_ko: 교수
-            name_ko: 이주호
-            photo: juho-lee.jpg
-            affil: KAIST
-            talk: Predictive Bayes with large language models
-            bio: >-
-              Juho Lee is an Associate Professor in the Kim Jaechul Graduate School of AI
-              at KAIST, where he leads the Statistical Inference and Machine Learning
-              (SIML) Lab. His research focuses on Bayesian deep learning, uncertainty
-              modeling, and statistical machine learning, with broader interests in
-              foundation models and reasoning in large language models. Before joining
-              KAIST, he worked as a Research Scientist at AITRICS, received his Ph.D. from
-              POSTECH and completed a postdoctoral fellowship at the University of Oxford.
-            note: >-
-              Form (8/24): free in every session on both days.
-            topic: martingale posterior
-            home: https://juho-lee.github.io/
-            links:
-              scholar: https://scholar.google.com/citations?user=Py4URJUAAAAJ
-              github: https://github.com/juho-lee
           - name: Sangdon Park
             role: Prof.
             role_ko: 교수
@@ -314,6 +289,28 @@ days:
             links:
               scholar: https://scholar.google.com/citations?user=Vi2E2F4AAAAJ
               lab: https://ml.postech.ac.kr/
+          - name: Juho Lee
+            role: Prof.
+            role_ko: 교수
+            name_ko: 이주호
+            photo: juho-lee.jpg
+            affil: KAIST
+            talk: Predictive Bayes with large language models
+            bio: >-
+              Juho Lee is an Associate Professor in the Kim Jaechul Graduate School of AI
+              at KAIST, where he leads the Statistical Inference and Machine Learning
+              (SIML) Lab. His research focuses on Bayesian deep learning, uncertainty
+              modeling, and statistical machine learning, with broader interests in
+              foundation models and reasoning in large language models. Before joining
+              KAIST, he worked as a Research Scientist at AITRICS, received his Ph.D. from
+              POSTECH and completed a postdoctoral fellowship at the University of Oxford.
+            note: >-
+              Form (8/24): free in every session on both days.
+            topic: martingale posterior
+            home: https://juho-lee.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=Py4URJUAAAAJ
+              github: https://github.com/juho-lee
 
       # Two things in the same hours, in the two halves of the day's column.
       # The poster line sits on the break that runs into the poster session
@@ -328,8 +325,8 @@ days:
       # talk rather than two: it is what the hour between the last pair and the
       # posters holds, and it is the slot Donghwan Kim ticked.
       - type: block
-        title: Optimization
-        chair: TBD
+        title: DL Theory III
+        chair: ~
         start: "16:40"
         end: "17:20"
         speakers:
@@ -393,7 +390,7 @@ days:
   - label: Day 2 · Oct 8 (Thu)
     short: Day 2
     date: 2026-10-08
-    theme: RL · Bandits · Offline RL
+    theme: DL Theory · Bandits · Offline RL
     events:
       - type: break
         title: Arrival & Morning Coffee
@@ -436,91 +433,67 @@ days:
         bare: true
 
       - type: block
-        title: Bandits I
-        chair: TBD
+        title: DL Theory IV
+        chair: ~
         start: "11:10"
         end: "12:30"
         speakers:
-          - name: Kwang-Sung Jun
+          - name: Seong Joon Oh
             role: Prof.
             role_ko: 교수
-            name_ko: 전광성
-            photo: kwang-sung-jun.jpg
-            affil: POSTECH
-            talk: "Frontiers of Offline Interactive Machine Learning: From Contextual Bandits to LLM Alignment"
-            abstract: >-
-              At the heart of modern machine learning lies a fundamental challenge: how
-              can an intelligent system not just learn from data but also decide which
-              data to collect for learning? This is the essence of interactive machine
-              learning (IML) -- a paradigm that encompasses reinforcement learning,
-              contextual bandits, and active learning. Recently, the offline version of
-              IML has gained popularity because the traditional online version often
-              cannot be run due to real-world constraints. In this talk, I will show two
-              recent advances in offline IML problems. First, I will discuss the
-              contextual bandit problem that has applications in recommendation systems. I
-              will show how an improved confidence bound for [0,∞)-valued random variable
-              translates into a superior learning algorithm, both in theory and practice.
-              Second, I will show that the LLM alignment problem is an instance of offline
-              IML and that existing training objectives for it lack theoretical
-              justification, leaving us wondering if they are the right ones to use. As
-              such, I will present a novel theoretical framework for alignment from which
-              three different alignment algorithms are derived along with theoretical
-              guarantees, which is a strong form of justification. Surprisingly, two of
-              them are very similar to existing algorithms called Direct Policy
-              Optimization (DPO) and reinforcement learning from human feedback (RLHF),
-              respectively. Together with our theoretical guarantees, our work can be seen
-              as providing theoretical justifications to DPO and RLHF, with minor
-              corrections. Furthermore, our theory confirms the existing empirical finding
-              that RLHF performs better than DPO. I will conclude with empirical results
-              and exciting future research directions.
+            name_ko: 오성준
+            photo: seong-joon-oh.jpg
+            affil: KAIST
+            topic: agent learning
+            talk: From AI learning to agent learning
             bio: >-
-              Kwang-Sung Jun is an associate professor in the Department of Computer
-              Science & Engineering at POSTECH. His research interest is interactive
-              machine learning in general, and, in particular, both theory and practice in
-              bandit problems, active learning, confidence bounds, and, more recently,
-              emerging problems in LLM post training. Before joining POSTECH, he was an
-              assistant professor at the University of Arizona.
+              Seong Joon Oh is an associate professor at KAIST AI, where he leads the
+              Scalable Trustworthy AI (STAI) group. He works on making AI systems
+              reliable, explainable and aligned with human intent at scale. He moved the
+              group from the University of Tübingen to KAIST in February 2026. Before
+              that he spent 4 years as a research scientist at NAVER AI Lab. He received
+              his PhD at the Max Planck Institute for Informatics in 2018 under Bernt
+              Schiele and Mario Fritz, and read mathematics at the University of
+              Cambridge.
             note: >-
-              Form (9/14): free in every session on both days.
-            home: https://kwangsungjun.github.io/
+              Form (8/27): confirmed, with bio and title — the verbal yes via Chulhee Yun
+              is now on the record. Free in the morning and early-afternoon sessions on
+              both days; this is one of them.
+            home: https://seongjoonoh.com/
             links:
-              scholar: https://scholar.google.com/citations?user=VgvC7o8AAAAJ
-          - name: Min-hwan Oh
+              scholar: https://scholar.google.com/citations?user=kmXOOdsAAAAJ
+              github: https://github.com/coallaoh
+              x: https://x.com/coallaoh
+              linkedin: https://www.linkedin.com/in/seong-joon-oh-32113479/
+              lab: https://stai-lab.org/
+          - name: Chulhee Yun
             role: Prof.
             role_ko: 교수
-            name_ko: 오민환
-            photo: min-hwan-oh.jpg
-            affil: SNU
-            talk: >-
-              Provably Optimal Exploration with Quasi-Optimism
-            abstract: >-
-              Many multi-armed bandit and reinforcement learning algorithms rely on full
-              optimism, using confidence bonuses large enough to upper-bound unknown
-              values with high probability. This talk presents quasi-optimism, a new
-              exploration principle that allows a controlled degree of underestimation
-              while retaining provably optimal regret guarantees. We first introduce
-              this principle in tabular reinforcement learning, where a simple
-              inverse-count bonus achieves minimax-optimal regret without empirical
-              variance estimation. We then discuss its extension to
-              distribution-dependent and instance-dependent regret guarantees in bandits
-              and reinforcement learning. Finally, we extend quasi-optimism to linear
-              contextual bandits using a quadratic–linear bonus. Despite not being
-              pointwise optimistic, the resulting algorithm simultaneously achieves
-              minimax-optimal and tight margin-dependent regret guarantees while
-              substantially reducing unnecessary exploration in empirical evaluations.
-              Together, these results suggest that quasi-optimism is both theoretically
-              optimal and practically effective.
+            name_ko: 윤철희
+            photo: chulhee-yun.jpg
+            affil: KAIST
+            talk: Understanding Neural Network Optimization through River-Valley Dynamics
             bio: >-
-              Min-hwan Oh is an Associate Professor in the Graduate School of Data
-              Science at Seoul National University. His research focuses on sequential
-              decision-making under uncertainty, reinforcement learning, bandit
-              algorithms, stochastic optimization, and statistical machine learning. He
-              received his Ph.D. from Columbia University.
+              Chulhee “Charlie” Yun is an Associate Professor at the KAIST Kim Jaechul
+              Graduate School of AI and is jointly affiliated with the KAIST Graduate
+              School of AI for Math. He received his PhD from the Laboratory for
+              Information and Decision Systems at MIT, where he was co-advised by
+              Professors Suvrit Sra and Ali Jadbabaie. He previously received his MS from
+              Stanford University and his BS from KAIST. His research focuses on the
+              theoretical foundations of optimization, machine learning, and deep
+              learning, with an emphasis on bridging the gap between theory and practice.
+              His work has been recognized with honors including the Ewon Assistant
+              Professorship at KAIST and the KSIAM Outstanding Young Investigator Award.
+              He has served as an Area Chair for NeurIPS, ICML, and ICLR, and as a Social
+              Chair for ICML 2026. He is also a co-organizer of the Optimization for
+              Machine Learning workshop at NeurIPS 2026.
+            topic: "river valley, Muon"
             note: >-
-              Form (8/31): free in every session on Day 2, nothing on Day 1 — placed in
-              the first of them. The Drive link that came with the submission was his
-              photograph; it is in static/speakers/ now, so the link is not needed.
-            home: https://minoh.io/
+              Form (9/21): free Day 1 13:30, 15:10 and 16:40, and every session on Day 2.
+              Not the Day 1 11:10 session, which is where he used to be.
+            home: https://chulheeyun.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
 
       - type: break
         title: Lunch Break [Provided]
@@ -529,8 +502,8 @@ days:
         end: "13:30"
 
       - type: block
-        title: Bandits II
-        chair: TBD
+        title: Bandits I
+        chair: ~
         start: "13:30"
         end: "14:50"
         speakers:
@@ -593,6 +566,29 @@ days:
               Day 1 16:40 slot included.
             home: https://jongyeong.github.io
 
+
+              In this talk, I will review our recent progress on establishing BOBW
+              guarantees for FTPL across several online learning problems, with particular
+              emphasis on multi-armed bandits and structured feedback settings. I will
+              discuss the main ideas behind these results, including adaptive learning
+              rates, surrogate probabilities, perturbation-based stability analysis, and
+              efficient loss estimation. Rather than focusing on a single result, the talk
+              will discuss broader insights gained from this line of work, including how
+              simple randomized decision rules can achieve strong theoretical guarantees
+              while maintaining computational efficiency.
+            bio: >-
+              Jongyeong Lee is a postdoctoral researcher at KIST. His research focuses on
+              statistical learning theory, with a particular focus on sequential
+              decision-making, bandit algorithms, and online learning. A central goal of
+              his research is to develop simple and computationally efficient learning
+              algorithms with strong theoretical guarantees. He received his Ph.D. in
+              Computer Science from The University of Tokyo under the supervision of Prof.
+              Masashi Sugiyama.
+            note: >-
+              Form (8/25, resubmitted): free in every session on both days, the new
+              Day 1 16:40 slot included.
+            home: https://jongyeong.github.io
+
       - type: break
         title: Coffee Break (15 min)
         start: "14:50"
@@ -601,7 +597,7 @@ days:
 
       - type: block
         title: Offline RL
-        chair: TBD
+        chair: ~
         start: "15:05"
         end: "16:25"
         speakers:
@@ -634,7 +630,8 @@ days:
               algorithms with provable guarantees. He received his Ph.D. in Statistics
               from the University of Michigan.
             note: >-
-              Thursday only (teaching). Form (8/23): free Day 2 first three sessions.
+              Thursday only (teaching). Form (8/23): free Day 2's first three sessions;
+              this is the third.
             home: https://www.kihyukhong.com
             topic: offline RL
 
@@ -647,68 +644,91 @@ days:
         bare: true
 
       - type: block
-        title: DL Theory I
-        chair: TBD
+        title: Bandits II
+        chair: ~
         start: "16:40"
         end: "18:00"
         speakers:
-          - name: Jaeho Lee
+          - name: Min-hwan Oh
             role: Prof.
             role_ko: 교수
-            name_ko: 이재호
-            photo: jaeho-lee.jpg
-            affil: POSTECH
-            talk: On the Scale Bias of Neural Network Training
+            name_ko: 오민환
+            photo: min-hwan-oh.jpg
+            affil: SNU
+            talk: >-
+              Provably Optimal Exploration with Quasi-Optimism
             abstract: >-
-              How do we initialize the neural network weights? Classic ideas have
-              focused on stabilizing the activation distributions of the networks, so
-              that one can train deeper nets without exploding or vanishing gradients.
-              In this talk, we study how the initialization scale can affect the
-              efficiency of model training. In particular, we describe modern theories
-              on how the weight scale shapes the training speed and the generalization
-              capabilities of the model, and recent breakthroughs in characterizing the
-              optimal speed-generalization tradeoff point.
+              Many multi-armed bandit and reinforcement learning algorithms rely on full
+              optimism, using confidence bonuses large enough to upper-bound unknown
+              values with high probability. This talk presents quasi-optimism, a new
+              exploration principle that allows a controlled degree of underestimation
+              while retaining provably optimal regret guarantees. We first introduce
+              this principle in tabular reinforcement learning, where a simple
+              inverse-count bonus achieves minimax-optimal regret without empirical
+              variance estimation. We then discuss its extension to
+              distribution-dependent and instance-dependent regret guarantees in bandits
+              and reinforcement learning. Finally, we extend quasi-optimism to linear
+              contextual bandits using a quadratic–linear bonus. Despite not being
+              pointwise optimistic, the resulting algorithm simultaneously achieves
+              minimax-optimal and tight margin-dependent regret guarantees while
+              substantially reducing unnecessary exploration in empirical evaluations.
+              Together, these results suggest that quasi-optimism is both theoretically
+              optimal and practically effective.
             bio: >-
-              Jaeho Lee is an associate professor at the POSTECH EE, where he leads
-              Efficient Learning (EffL) Lab. He is mainly interested in designing
-              theories and algorithms for making ML more efficient.
-            # He is sitting in a Day 2 block and has ticked nothing on Day 2.
+              Min-hwan Oh is an Associate Professor in the Graduate School of Data
+              Science at Seoul National University. His research focuses on sequential
+              decision-making under uncertainty, reinforcement learning, bandit
+              algorithms, stochastic optimization, and statistical machine learning. He
+              received his Ph.D. from Columbia University.
             note: >-
-              CLASH — placed here on Day 2, but the form (8/25) says Day 1 only: all
-              four Day 1 sessions, nothing on Day 2.
-            # Was "theory of KD"; the title he sent is about initialization scale.
-            topic: initialization scale
-            home: https://jaeho-lee.github.io/
-            links:
-              x: https://x.com/jaeho_lee_
-              lab: https://effl.postech.ac.kr/
-          - name: Sung Whan Yoon
+              Form (8/31): free in every session on Day 2, nothing on Day 1. The Drive
+              link that came with the submission was his photograph; it is in
+              static/speakers/ now, so the link is not needed.
+            home: https://minoh.io/
+          - name: Kwang-Sung Jun
             role: Prof.
             role_ko: 교수
-            name_ko: 윤성환
-            photo: sung-whan-yoon.jpg
-            affil: UNIST
-            talk: Understanding Model Flatness Across Learning Frameworks
+            name_ko: 전광성
+            photo: kwang-sung-jun.jpg
+            affil: POSTECH
+            talk: "Frontiers of Offline Interactive Machine Learning: From Contextual Bandits to LLM Alignment"
+            abstract: >-
+              At the heart of modern machine learning lies a fundamental challenge: how
+              can an intelligent system not just learn from data but also decide which
+              data to collect for learning? This is the essence of interactive machine
+              learning (IML) -- a paradigm that encompasses reinforcement learning,
+              contextual bandits, and active learning. Recently, the offline version of
+              IML has gained popularity because the traditional online version often
+              cannot be run due to real-world constraints. In this talk, I will show two
+              recent advances in offline IML problems. First, I will discuss the
+              contextual bandit problem that has applications in recommendation systems. I
+              will show how an improved confidence bound for [0,∞)-valued random variable
+              translates into a superior learning algorithm, both in theory and practice.
+              Second, I will show that the LLM alignment problem is an instance of offline
+              IML and that existing training objectives for it lack theoretical
+              justification, leaving us wondering if they are the right ones to use. As
+              such, I will present a novel theoretical framework for alignment from which
+              three different alignment algorithms are derived along with theoretical
+              guarantees, which is a strong form of justification. Surprisingly, two of
+              them are very similar to existing algorithms called Direct Policy
+              Optimization (DPO) and reinforcement learning from human feedback (RLHF),
+              respectively. Together with our theoretical guarantees, our work can be seen
+              as providing theoretical justifications to DPO and RLHF, with minor
+              corrections. Furthermore, our theory confirms the existing empirical finding
+              that RLHF performs better than DPO. I will conclude with empirical results
+              and exciting future research directions.
             bio: >-
-              Sung Whan Yoon received the B.S., M.S., and Ph.D. degrees from the
-              Department of Electrical Engineering, Korea Advanced Institute of Science
-              and Technology (KAIST), Daejeon, South Korea, in 2011, 2013, and 2017,
-              respectively. He was a Post-Doctoral Researcher at KAIST from 2017 to 2020.
-              He is currently an Associate Professor at the Artificial Intelligence
-              Graduate School (AIGS) and the Department of Electrical Engineering, Ulsan
-              National Institute of Science and Technology (UNIST), Ulsan, South Korea.
-              His research interests include machine learning with a special focus on
-              learning theory to reveal the principles of deep training via a lens of
-              information theory and signal processing, and deep algorithmic methods to
-              bolster the generalization of learners across diverse settings.
-            topic: flatness
+              Kwang-Sung Jun is an associate professor in the Department of Computer
+              Science & Engineering at POSTECH. His research interest is interactive
+              machine learning in general, and, in particular, both theory and practice in
+              bandit problems, active learning, confidence bounds, and, more recently,
+              emerging problems in LLM post training. Before joining POSTECH, he was an
+              assistant professor at the University of Arizona.
             note: >-
-              CLASH — placed here on Day 2, and the form (9/21) says Day 1 only: 13:30,
-              15:10 and 16:40, nothing on Day 2. It supersedes the childcare note it
-              replaces, which had read Wed after 14:00–15:00 or any time Thu. Jaeho Lee,
-              the other half of this block, is Day 1 only as well. The photograph he sent with
-              the submission is the one on the card now.
-            home: https://sites.google.com/view/swyoon89
+              Form (9/14): free in every session on both days.
+            home: https://kwangsungjun.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=VgvC7o8AAAAJ
 
       # No awards. There is nothing to give one for, and a line promising a
       # prize is a thing people plan around.
