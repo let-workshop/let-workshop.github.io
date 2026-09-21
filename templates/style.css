@@ -2159,6 +2159,31 @@ button.sp-talk-link:focus-visible {
   font-weight: 400;
   color: var(--muted);
 }
+/* The door from a session to the person giving the talk — the talk window's
+   way back, pointing the other way. */
+.sp-who {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 4px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.sp-who:hover,
+.sp-who:focus-visible {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
 /* The way back, carrying the name: a button that says where it goes rather
    than only that it goes back. */
 .tk-back {
@@ -2244,9 +2269,12 @@ button.sp-talk-link:focus-visible {
 .sp-name em .t-ko {
   letter-spacing: 0.01em;
 }
+/* The title is what the row is about, so it carries the weight — the name
+   above it says who, and this says what. */
 .sp-talk {
-  margin-top: 2px;
-  color: var(--prose);
+  margin-top: 3px;
+  font-weight: 600;
+  color: var(--ink);
 }
 .sp-abstract {
   margin-top: 8px;

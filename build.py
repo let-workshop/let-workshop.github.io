@@ -382,14 +382,10 @@ def speaker_line(s: dict) -> Markup:
     # the shape of two days. Clicking the session opens the sheet, which is
     # where a person's page, their bio and their abstract all are.
     line = Markup("<b>%s</b> <em>%s</em>") % (name, bilingual(s.get("affil", ""), s.get("affil_ko")))
-    # The title, not the subject. `topic` was a word for what someone works on,
-    # written while nobody had sent a title; fourteen of the sixteen have sent
-    # one now, and a title is the thing an attendee is choosing between. It
-    # falls back to the topic for whoever has not — the tutorial, which is a
-    # subject rather than a talk, keeps reading "RL · LLMs".
-    subject = s.get("talk") or s.get("topic")
-    if subject:
-        line += Markup(" · %s") % subject
+    # The name and where they are from, and nothing else. On the grid a title
+    # is a third thing on a line that has to fit a box an hour tall, and in the
+    # list view it was being printed twice — once here and once as the row's
+    # own .talk-title underneath.
     return line
 
 

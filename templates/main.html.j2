@@ -2008,10 +2008,14 @@
         if (s.talk) bits += '<div class="sp-talk">' + esc(s.talk) + "</div>";
         else if (s.topic) bits += '<div class="sp-talk">' + esc(s.topic) + "</div>";
         else bits += '<div class="sp-talk is-todo">' + tbd("Talk title to be announced", "발표 제목 미정") + "</div>";
-
-        bits += s.bio
-          ? '<div class="sp-bio">' + s.bio + "</div>"
-          : '<div class="sp-bio is-todo">' + tbd("Speaker bio to be added", "연사 소개 준비 중") + "</div>";
+        // No bio here. This sheet is a session — what is being given, in what
+        // order — and who the speaker is has a window of its own. Two
+        // paragraphs about a person between two talks is the session's own
+        // shape lost; a door to them is not.
+        var who = PEOPLE.findIndex(function (p) { return p.nameHtml === s.nameHtml; });
+        if (who >= 0)
+          bits += '<button class="sp-who" onclick="speakerFromSession(' + who + ')">' +
+                  tbd("About the speaker", "연사 소개") + ' <span aria-hidden="true">&rarr;</span></button>';
 
         if (!compact)
           bits += s.abstract
@@ -2552,6 +2556,14 @@
         else markStrip(i);
         if (TALK_MODAL.open) TALK_MODAL.close();
         if (!SPEAKER_MODAL.open) SPEAKER_MODAL.showModal();
+      }
+
+      // The session sheet hands over to the speaker's own window rather than
+      // opening it on top: the same sideways step the talk and speaker windows
+      // already make between themselves.
+      function speakerFromSession(i) {
+        if (MODAL.open) MODAL.close();
+        openSpeaker(i);
       }
 
       function openTalk(i) {
