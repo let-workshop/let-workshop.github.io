@@ -1550,6 +1550,8 @@ a.spk-card {
    of a block, and it must not take the name's weight. */
 .spk-card .role,
 .org-card .role,
+.spk .role,
+.poster-list .role,
 .sp-name .role,
 .spk-tip .role,
 .org-card .name {

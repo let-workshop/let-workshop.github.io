@@ -1986,8 +1986,8 @@
           ? '<img class="sp-photo" src="' + esc(s.photo) + '" alt="" loading="lazy" />'
           : '<div class="sp-photo sp-blank" aria-hidden="true"></div>';
         var name = s.home
-          ? '<a href="' + esc(s.home) + '" target="_blank" rel="noopener">' + s.nameHtml + "</a>"
-          : s.nameHtml;
+          ? '<a href="' + esc(s.home) + '" target="_blank" rel="noopener">' + titled(s) + "</a>"
+          : titled(s);
         var bits = '<div class="sp-name">' + name;
         if (s.affil) bits += " <em>" + s.affilHtml + "</em>";
         bits += "</div>";

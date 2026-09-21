@@ -376,7 +376,16 @@ def speaker_line(s: dict) -> Markup:
     # Names carry a Korean form where we have one; bilingual() emits both and
     # the language toggle picks. Without `name_ko` it renders once and shows in
     # either language, which is the right default for a romanisation.
-    name = bilingual(s["name"], s.get("name_ko"))
+    # Prof. before the name in English, 교수 after it in Korean, in the small
+    # caps the cards set it in — the same pair, in the same order, everywhere a
+    # name appears on this page.
+    role, role_ko = s.get("role"), s.get("role_ko") or s.get("role")
+    mark = Markup('<span class="role">%s</span>')
+    en = Markup("%s %s") % (mark % role, s["name"]) if role else escape(s["name"])
+    ko = None
+    if s.get("name_ko"):
+        ko = (Markup("%s %s") % (s["name_ko"], mark % role_ko)) if role_ko else escape(s["name_ko"])
+    name = bilingual(en, ko)
     # No link on the name. The grid is a timetable, and a timetable in which
     # every name is blue and underlined reads as a list of links rather than as
     # the shape of two days. Clicking the session opens the sheet, which is
@@ -990,6 +999,10 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
                     "nameHtml": str(bilingual(s["name"], s.get("name_ko"))),
                     "affilHtml": str(bilingual(s.get("affil") or "", s.get("affil_ko"))),
                     "affil": s.get("affil"),
+                    # The session sheet names people too, and a title belongs
+                    # with a name wherever it is printed.
+                    "role": s.get("role"),
+                    "role_ko": s.get("role_ko") or s.get("role"),
                     "topic": s.get("topic"),
                     "talk": s.get("talk"),
                     "abstract": md.markdown(s["abstract"]) if s.get("abstract") else None,

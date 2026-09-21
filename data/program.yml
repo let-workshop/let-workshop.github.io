@@ -466,7 +466,7 @@ days:
       # Ten minutes is two grid rows, and the label did not fit in them —
       # tiny is the size the other ten-minute slots on this grid are set at.
       - type: break
-        title: Break (10 min) · take your poster off
+        title: Break (10 min) · take your poster down
         emoji: "🧘"
         start: "18:20"
         end: "18:30"
