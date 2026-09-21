@@ -2012,8 +2012,7 @@
           ? '<a class="sp-slides" href="' + esc(s.slides) + '" target="_blank" rel="noopener">' +
             tbd("Slides (PDF)", "발표자료 (PDF)") + "</a>"
           : '<span class="sp-slides is-todo">' + tbd("Slides after the talk", "발표 후 자료 공개") + "</span>";
-        return '<div class="sp"' + (who >= 0 ? ' data-who="' + who + '"' : "") +
-               ">" + head + "<div>" + bits + "</div></div>";
+        return '<div class="sp">' + head + "<div>" + bits + "</div></div>";
       }
 
       // Each day is its own flex row, and a slice grows in proportion to its
@@ -2057,18 +2056,29 @@
         document.getElementById("modal-title").innerHTML =
           mark(e) + esc(e.title) + (e.chair ? "  (Chair: " + esc(e.chair) + ")" : "");
 
+        // One talk or the session, depending on how the sheet was opened.
+        var shown = e.speakers, only = false;
+        if (focusWho !== null && PEOPLE[focusWho]) {
+          var mine = e.speakers.filter(function (s) {
+            return s.nameHtml === PEOPLE[focusWho].nameHtml;
+          });
+          if (mine.length) { shown = mine; only = true; }
+        }
         // Not `.map(speakerHtml)`: map hands the callback an index as its
         // second argument, which speakerHtml reads as `compact` — so every
         // speaker after the first had their abstract quietly dropped.
-        var body = e.speakers.map(function (s) { return speakerHtml(s); }).join("");
+        var body = shown.map(function (s) { return speakerHtml(s); }).join("");
+        // And a way back to the rest of it, since the other talk is otherwise
+        // not reachable from here at all.
+        if (only && e.speakers.length > 1)
+          body += '<button class="sp-rest" onclick="showWholeSession()">' +
+                  tbd("The rest of this session", "이 세션의 나머지") +
+                  ' <span aria-hidden="true">&darr;</span></button>';
         body += e.notes.map(function (n) {
           return '<p class="sp-note">' + esc(n) + "</p>";
         }).join("");
         var panel = document.getElementById("modal-body");
         panel.innerHTML = body || '<p class="sp-note">No further detail yet.</p>';
-        // Any room made for a talk to be scrolled to the top belongs to that
-        // one arrival, not to the next session stepped into.
-        panel.style.paddingBottom = "";
         panel.scrollTop = 0;
 
         document.getElementById("modal-count").textContent = at + 1 + " / " + EVENTS.length;
@@ -2080,6 +2090,8 @@
         var next = at + by;
         if (next < 0 || next >= EVENTS.length) return;
         at = next;
+        // Stepping is a move through the programme, so it shows sessions.
+        focusWho = null;
         renderEvent();
       }
 
@@ -2550,28 +2562,12 @@
         var s = PEOPLE[i];
         if (!s || !s.event) return;
         if (SPEAKER_MODAL.open) SPEAKER_MODAL.close();
-        openEvent(s.event);
-        // Opened on the person you came from. A session holds two talks, and
-        // arriving at the top of somebody else's is the wrong answer to
-        // "show me this talk" — so the sheet scrolls to their block and marks
-        // it for a moment, which also says the sheet holds more than one.
-        var body = document.getElementById("modal-body");
-        var block = body.querySelector('.sp[data-who="' + i + '"]');
-        if (!block) return;
-        // Far enough that their talk is at the top, not merely on screen. The
-        // last talk in a session has nothing below it to scroll against, so
-        // the room to do it has to be made: without this the sheet stops with
-        // the other speaker's abstract still filling most of it, which is the
-        // question "show me this talk" answered with somebody else's.
-        var want = block.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop;
-        var short = want - (body.scrollHeight - body.clientHeight);
-        if (short > 0) {
-          var pad = parseFloat(getComputedStyle(body).paddingBottom) || 0;
-          body.style.paddingBottom = pad + short + "px";
-        }
-        body.scrollTop = want;
-        block.classList.add("is-picked");
-        setTimeout(function () { block.classList.remove("is-picked"); }, 1500);
+        // Opened on them: the sheet shows their talk alone and is the height
+        // of it. Scrolling to the block was the first answer and a worse one —
+        // the last talk in a session has nothing below it to scroll against,
+        // so it never reached the top and the sheet stayed the height of
+        // somebody else's abstract.
+        openEvent(s.event, i);
       }
 
       function stepSpeaker(d) {
@@ -2671,14 +2667,24 @@
         d.addEventListener("click", function (ev) { if (ev.target === d) d.close(); });
       });
 
-      function openEvent(id) {
+      // `who`, when given, is the PEOPLE index the sheet is opened on: it shows
+      // that talk alone and takes the height of it. Opened from the grid there
+      // is no such person and the whole session is drawn.
+      var focusWho = null;
+      function openEvent(id, who) {
         var found = EVENTS.findIndex(function (e) {
           return e.id === id;
         });
         if (found < 0) return;
         at = found;
+        focusWho = who === undefined ? null : who;
         renderEvent();
         MODAL.showModal();
+      }
+
+      function showWholeSession() {
+        focusWho = null;
+        renderEvent();
       }
 
       MODAL.addEventListener("keydown", function (ev) {

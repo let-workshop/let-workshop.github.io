@@ -2200,24 +2200,26 @@ button.sp-talk-link:focus-visible {
 .sp:first-child {
   border-top: 0;
 }
-/* Arrived at from a speaker's own window: the block is lit for a moment and
-   fades, which points at the right one of the two without leaving a mark on
-   the sheet afterwards. */
-.sp.is-picked {
-  animation: picked 1.5s ease-out;
+/* Shown when the sheet is open on one talk: the way to the other one. Quiet,
+   and at the foot, because it is an offer rather than the point of the sheet. */
+.sp-rest {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 7px 0 3px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s ease;
 }
-@keyframes picked {
-  from {
-    background: var(--wash);
-  }
-  to {
-    background: transparent;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sp.is-picked {
-    animation: none;
-  }
+.sp-rest:hover,
+.sp-rest:focus-visible {
+  color: var(--accent);
 }
 .sp-photo {
   width: 46px;
