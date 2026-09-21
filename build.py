@@ -868,7 +868,12 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
                             "day": day["short"],
                             "time": f"{e['start']} {EN_DASH} {e['end']}",
                             "event_id": e["id"],
-                            "photo": f"speakers/{s['photo']}" if s.get("photo") else None,
+                            # Stamped like the poster is. A photograph replaced
+                            # under its own name is a file every returning
+                            # reader already has, and GitHub Pages tells them
+                            # to keep it — the address has to change when the
+                            # bytes do or nobody sees the new one.
+                            "photo": asset_url(f"speakers/{s['photo']}") if s.get("photo") else None,
                             "initials": "".join(p[0] for p in s["name"].split()[:2]).upper(),
                             # The card's copy of the title, with its break
                             # points marked. The plain one goes everywhere
@@ -969,7 +974,7 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
                     "talk": s.get("talk"),
                     "abstract": md.markdown(s["abstract"]) if s.get("abstract") else None,
                     "bio": md.markdown(s["bio"]) if s.get("bio") else None,
-                    "photo": f"speakers/{s['photo']}" if s.get("photo") else None,
+                    "photo": asset_url(f"speakers/{s['photo']}") if s.get("photo") else None,
                     "slides": s.get("slides"),
                     "home": s.get("home"),
                 }

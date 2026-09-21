@@ -635,7 +635,7 @@
           {% for m in organizers.members %}
           <div class="org-card">
             {% if m.photo %}
-            <img class="org-photo" src="organizers/{{ m.photo }}" alt="{{ m.name }}" loading="lazy" width="256" height="256" />
+            <img class="org-photo" src="{{ ('organizers/' ~ m.photo) | asset }}" alt="{{ m.name }}" loading="lazy" width="256" height="256" />
             {% else %}
             <div class="org-photo org-initials" aria-hidden="true">{{ m.initials }}</div>
             {% endif %}
