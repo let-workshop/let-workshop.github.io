@@ -2012,7 +2012,8 @@
           ? '<a class="sp-slides" href="' + esc(s.slides) + '" target="_blank" rel="noopener">' +
             tbd("Slides (PDF)", "발표자료 (PDF)") + "</a>"
           : '<span class="sp-slides is-todo">' + tbd("Slides after the talk", "발표 후 자료 공개") + "</span>";
-        return '<div class="sp">' + head + "<div>" + bits + "</div></div>";
+        return '<div class="sp"' + (who >= 0 ? ' data-who="' + who + '"' : "") +
+               ">" + head + "<div>" + bits + "</div></div>";
       }
 
       // Each day is its own flex row, and a slice grows in proportion to its
@@ -2056,12 +2057,19 @@
         document.getElementById("modal-title").innerHTML =
           mark(e) + esc(e.title) + (e.chair ? "  (Chair: " + esc(e.chair) + ")" : "");
 
-        var body = e.speakers.map(speakerHtml).join("");
+        // Not `.map(speakerHtml)`: map hands the callback an index as its
+        // second argument, which speakerHtml reads as `compact` — so every
+        // speaker after the first had their abstract quietly dropped.
+        var body = e.speakers.map(function (s) { return speakerHtml(s); }).join("");
         body += e.notes.map(function (n) {
           return '<p class="sp-note">' + esc(n) + "</p>";
         }).join("");
-        document.getElementById("modal-body").innerHTML =
-          body || '<p class="sp-note">No further detail yet.</p>';
+        var panel = document.getElementById("modal-body");
+        panel.innerHTML = body || '<p class="sp-note">No further detail yet.</p>';
+        // Any room made for a talk to be scrolled to the top belongs to that
+        // one arrival, not to the next session stepped into.
+        panel.style.paddingBottom = "";
+        panel.scrollTop = 0;
 
         document.getElementById("modal-count").textContent = at + 1 + " / " + EVENTS.length;
         document.getElementById("modal-prev").disabled = at === 0;
@@ -2543,6 +2551,27 @@
         if (!s || !s.event) return;
         if (SPEAKER_MODAL.open) SPEAKER_MODAL.close();
         openEvent(s.event);
+        // Opened on the person you came from. A session holds two talks, and
+        // arriving at the top of somebody else's is the wrong answer to
+        // "show me this talk" — so the sheet scrolls to their block and marks
+        // it for a moment, which also says the sheet holds more than one.
+        var body = document.getElementById("modal-body");
+        var block = body.querySelector('.sp[data-who="' + i + '"]');
+        if (!block) return;
+        // Far enough that their talk is at the top, not merely on screen. The
+        // last talk in a session has nothing below it to scroll against, so
+        // the room to do it has to be made: without this the sheet stops with
+        // the other speaker's abstract still filling most of it, which is the
+        // question "show me this talk" answered with somebody else's.
+        var want = block.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop;
+        var short = want - (body.scrollHeight - body.clientHeight);
+        if (short > 0) {
+          var pad = parseFloat(getComputedStyle(body).paddingBottom) || 0;
+          body.style.paddingBottom = pad + short + "px";
+        }
+        body.scrollTop = want;
+        block.classList.add("is-picked");
+        setTimeout(function () { block.classList.remove("is-picked"); }, 1500);
       }
 
       function stepSpeaker(d) {

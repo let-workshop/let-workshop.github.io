@@ -2200,6 +2200,25 @@ button.sp-talk-link:focus-visible {
 .sp:first-child {
   border-top: 0;
 }
+/* Arrived at from a speaker's own window: the block is lit for a moment and
+   fades, which points at the right one of the two without leaving a mark on
+   the sheet afterwards. */
+.sp.is-picked {
+  animation: picked 1.5s ease-out;
+}
+@keyframes picked {
+  from {
+    background: var(--wash);
+  }
+  to {
+    background: transparent;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp.is-picked {
+    animation: none;
+  }
+}
 .sp-photo {
   width: 46px;
   height: 46px;
