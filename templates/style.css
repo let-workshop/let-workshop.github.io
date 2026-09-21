@@ -2269,6 +2269,32 @@ button.sp-talk-link:focus-visible {
   font-weight: 600;
   color: var(--ink);
 }
+/* On the session sheet the row is about the talk, and the name and the title
+   were the same size, the same weight and the same colour — two headings, one
+   above the other, neither of them winning. The name becomes a byline and the
+   title takes the size: who is a smaller question than what, here. In the
+   speaker's own window it is the other way round, and stays that way. */
+#modal-body .sp-name {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+#modal-body .sp-name a {
+  color: inherit;
+  border-bottom-color: var(--line);
+}
+#modal-body .sp-name a:hover {
+  color: var(--accent);
+}
+#modal-body .sp-name em {
+  color: var(--faint);
+}
+#modal-body .sp-talk {
+  margin-top: 1px;
+  font-size: 1.04rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
 .sp-abstract {
   margin-top: 8px;
   font-size: 0.93em;
