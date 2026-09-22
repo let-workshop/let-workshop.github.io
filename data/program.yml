@@ -618,7 +618,7 @@ days:
             name_ko: 이다빈
             photo: dabeen-lee.jpg
             affil: SNU
-            talk: Algorithms for Constrained Online Convex Optimization
+            talk: Learning Infinite-Horizon Average-Reward CMDPs via State Augmentation
             bio: >-
               Dabeen Lee is an assistant professor in the Department of Mathematical
               Sciences at the Seoul National University (SNU). Prior to joining SNU, he
@@ -626,8 +626,9 @@ days:
               Engineering (ISysE) at the Korea Advanced Institute of Science and
               Technology (KAIST).
             note: >-
-              Form (9/15): free Day 1 16:40 and the first three Day 2 sessions — this slot
-              among them.
+              Form (9/22, resubmitted with a new title — it had been Algorithms for
+              Constrained Online Convex Optimization): free Day 1 16:40 and the first
+              three Day 2 sessions, this slot among them.
             home: https://dabeenl.github.io/
           # Confirmed 2026-08-19 from the shortlist for this slot. A
           # postdoc rather than a professor, so the card says Dr.
