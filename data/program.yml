@@ -210,32 +210,35 @@ days:
         start: "13:30"
         end: "14:50"
         speakers:
-          - name: Sung Whan Yoon
+          - name: Chulhee Yun
             role: Prof.
             role_ko: 교수
-            name_ko: 윤성환
-            photo: sung-whan-yoon.jpg
-            affil: UNIST
-            talk: Understanding Model Flatness Across Learning Frameworks
+            name_ko: 윤철희
+            photo: chulhee-yun.jpg
+            affil: KAIST
+            talk: Understanding Neural Network Optimization through River-Valley Dynamics
             bio: >-
-              Sung Whan Yoon received the B.S., M.S., and Ph.D. degrees from the
-              Department of Electrical Engineering, Korea Advanced Institute of Science
-              and Technology (KAIST), Daejeon, South Korea, in 2011, 2013, and 2017,
-              respectively. He was a Post-Doctoral Researcher at KAIST from 2017 to 2020.
-              He is currently an Associate Professor at the Artificial Intelligence
-              Graduate School (AIGS) and the Department of Electrical Engineering, Ulsan
-              National Institute of Science and Technology (UNIST), Ulsan, South Korea.
-              His research interests include machine learning with a special focus on
-              learning theory to reveal the principles of deep training via a lens of
-              information theory and signal processing, and deep algorithmic methods to
-              bolster the generalization of learners across diverse settings.
-            topic: flatness
+              Chulhee “Charlie” Yun is an Associate Professor at the KAIST Kim Jaechul
+              Graduate School of AI and is jointly affiliated with the KAIST Graduate
+              School of AI for Math. He received his PhD from the Laboratory for
+              Information and Decision Systems at MIT, where he was co-advised by
+              Professors Suvrit Sra and Ali Jadbabaie. He previously received his MS from
+              Stanford University and his BS from KAIST. His research focuses on the
+              theoretical foundations of optimization, machine learning, and deep
+              learning, with an emphasis on bridging the gap between theory and practice.
+              His work has been recognized with honors including the Ewon Assistant
+              Professorship at KAIST and the KSIAM Outstanding Young Investigator Award.
+              He has served as an Area Chair for NeurIPS, ICML, and ICLR, and as a Social
+              Chair for ICML 2026. He is also a co-organizer of the Optimization for
+              Machine Learning workshop at NeurIPS 2026.
+            topic: "river valley, Muon"
             note: >-
-              Form (9/21): Day 1 only — 13:30, 15:10 and 16:40. This is one of them. It
-              supersedes the childcare note it replaces, which had read Wed after
-              14:00–15:00 or any time Thu. The photograph he sent with the submission is
-              the one on the card.
-            home: https://sites.google.com/view/swyoon89
+              Form (9/21): free Day 1 13:30, 15:10 and 16:40, and every session on Day 2 —
+              this slot among them. Took it in a one-for-one swap with Sung Whan Yoon, who
+              had to move off the 7th.
+            home: https://chulheeyun.github.io/
+            links:
+              scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
           - name: Jy-yong Sohn
             role: Prof.
             role_ko: 교수
@@ -571,34 +574,33 @@ days:
               x: https://x.com/coallaoh
               linkedin: https://www.linkedin.com/in/seong-joon-oh-32113479/
               lab: https://stai-lab.org/
-          - name: Chulhee Yun
+          - name: Sung Whan Yoon
             role: Prof.
             role_ko: 교수
-            name_ko: 윤철희
-            photo: chulhee-yun.jpg
-            affil: KAIST
-            talk: Understanding Neural Network Optimization through River-Valley Dynamics
+            name_ko: 윤성환
+            photo: sung-whan-yoon.jpg
+            affil: UNIST
+            talk: Understanding Model Flatness Across Learning Frameworks
             bio: >-
-              Chulhee “Charlie” Yun is an Associate Professor at the KAIST Kim Jaechul
-              Graduate School of AI and is jointly affiliated with the KAIST Graduate
-              School of AI for Math. He received his PhD from the Laboratory for
-              Information and Decision Systems at MIT, where he was co-advised by
-              Professors Suvrit Sra and Ali Jadbabaie. He previously received his MS from
-              Stanford University and his BS from KAIST. His research focuses on the
-              theoretical foundations of optimization, machine learning, and deep
-              learning, with an emphasis on bridging the gap between theory and practice.
-              His work has been recognized with honors including the Ewon Assistant
-              Professorship at KAIST and the KSIAM Outstanding Young Investigator Award.
-              He has served as an Area Chair for NeurIPS, ICML, and ICLR, and as a Social
-              Chair for ICML 2026. He is also a co-organizer of the Optimization for
-              Machine Learning workshop at NeurIPS 2026.
-            topic: "river valley, Muon"
+              Sung Whan Yoon received the B.S., M.S., and Ph.D. degrees from the
+              Department of Electrical Engineering, Korea Advanced Institute of Science
+              and Technology (KAIST), Daejeon, South Korea, in 2011, 2013, and 2017,
+              respectively. He was a Post-Doctoral Researcher at KAIST from 2017 to 2020.
+              He is currently an Associate Professor at the Artificial Intelligence
+              Graduate School (AIGS) and the Department of Electrical Engineering, Ulsan
+              National Institute of Science and Technology (UNIST), Ulsan, South Korea.
+              His research interests include machine learning with a special focus on
+              learning theory to reveal the principles of deep training via a lens of
+              information theory and signal processing, and deep algorithmic methods to
+              bolster the generalization of learners across diverse settings.
+            topic: flatness
             note: >-
-              Form (9/21): free Day 1 13:30, 15:10 and 16:40, and every session on Day 2.
-              Not the Day 1 11:10 session, which is where he used to be.
-            home: https://chulheeyun.github.io/
-            links:
-              scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
+              Moved to Day 2 at his own request (9/22): a national-programme commitment
+              landed on the 7th that he cannot step out of, and he is free all day on the
+              8th. Swapped one-for-one with Chulhee Yun, who had this slot and can make
+              the one it came from. The photograph he sent with the form is the one on the
+              card.
+            home: https://sites.google.com/view/swyoon89
 
       - type: break
         title: Lunch Break [Provided]
