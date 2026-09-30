@@ -1481,7 +1481,7 @@ XBANNER = """<!doctype html>
      each edge of a panel only 600mm wide — a third of it gone before
      anything was set on it. */
   .wrap {{
-    position:absolute; inset:22mm; padding:34mm 22mm 26mm;
+    position:absolute; inset:22mm; padding:34mm 22mm 76mm;
     display:flex; flex-direction:column;
   }}
   /* The three facts, evenly spaced between the title and the foot, each opened
@@ -1546,22 +1546,24 @@ XBANNER = """<!doctype html>
     font-family:"Satoshi",sans-serif; font-weight:700; font-size:37mm;
     letter-spacing:-.014em; color:{ink}; margin:0;
   }}
-  .stack small {{
-    font-family:"JetBrains Mono",monospace; font-size:.40em; font-weight:400;
-    letter-spacing:.06em; opacity:.66; margin-left:.16em;
-  }}
-  /* 44mm, against the venue's 37. It was 66 and the two facts under the
+  /* 40mm, against the venue's 37. It was 44 while the weekday was a small mono
+     word tucked after the figure; written out as the cloth writes it, "2026.
+     10.7 (Wed) – 10.8 (Thu)" needs 512mm at 44 and that is the column exactly,
+     so it wrapped. At 40 it sets 498 and stays on one line. It was 66 and the two facts under the
      same rule were a headline and a caption rather than a pair — the dates
      are not more important than where to go, they are just shorter. A
      little larger and not much: they are figures, and figures read smaller
      than letters at the same size. */
   .stack {{
-    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:44mm;
+    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:40mm;
     line-height:1.02; letter-spacing:-.03em; color:{ink}; margin:0;
   }}
   /* Full width, and said so. The foot came out 420mm inside a 508mm column
      and the rule above the marks was then shorter than the marks under it.
      The row is what sets the width here, so the rule has to match it. */
+  /* The marks ended 48mm off the bottom of the cloth, which on a stand is
+     inside the rail that holds it — the row was correct on screen and half
+     gone in the room. 76mm of bottom padding puts them 98mm up, clear of it. */
   .foot {{
     display:flex; align-items:flex-end; justify-content:space-between;
     width:100%; align-self:stretch; gap:30mm;
@@ -1578,17 +1580,12 @@ XBANNER = """<!doctype html>
      height and then pushes each down by how far its letters sit above
      its own bottom edge. */
   /* The code, above the marks and against the right edge, in the empty lower
-     half where the drawing is faint. It is read from a metre with a phone held
-     up, which 110mm carries; the address is under it in type for everyone not
-     holding a phone, because a code with nothing written beside it asks people
-     to scan to find out whether they wanted to. */
+     half where the drawing is faint. Read from a metre with a phone held up,
+     which 110mm carries. The address was set under it in type and is not any
+     more: the panel already says the name of the workshop, and a line of URL
+     is the one thing on it nobody was going to type in. */
   .scan {{
-    margin-top:auto; display:flex; flex-direction:column;
-    align-items:flex-end; gap:9mm; margin-bottom:34mm;
-  }}
-  .scan p {{
-    font-family:"JetBrains Mono",monospace; font-size:20mm; font-weight:400;
-    letter-spacing:.06em; color:{ink}; opacity:.66; margin:0;
+    margin-top:auto; display:flex; justify-content:flex-end; margin-bottom:34mm;
   }}
   .marks {{ display:flex; align-items:flex-end;
              justify-content:space-between; flex:1 0 auto; gap:26mm; }}
@@ -1608,12 +1605,11 @@ XBANNER = """<!doctype html>
       </div>
 {theme_fact}      <div class="fact">
         <p class="field">{lbl_dates}</p>
-        <p class="stack">{yyyy}. {md1}<small>{dow1}</small> – {md2}<small>{dow2}</small></p>
+        <p class="stack">{dates_num}</p>
       </div>
     </div>
     <div class="scan">
       <div class="qr-plate">{qr}</div>
-      <p>{url}</p>
     </div>
     <div class="foot">
       <span class="marks">{logos_colour_x}</span>
