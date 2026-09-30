@@ -399,9 +399,22 @@ days:
               Sciences and an affiliated faculty member of the Graduate School of AI for
               Math at KAIST. His research focuses on optimization and learning theory for
               deep learning and generative models.
+            abstract: >-
+              The Edge of Stability (EoS) is widely observed in neural network training
+              for minimization, where gradient methods continue to make progress while
+              operating near their stability thresholds. Yet an analogous phenomenon has
+              not been clearly identified in minimax optimization. In this talk, I will
+              formulate minimax EoS using possibly complex Jacobian eigenvalues and show
+              that it arises in two-player zero-sum games trained with Extragradient
+              (EG) and Optimistic Gradient Descent Ascent (OGDA). Interestingly, when
+              the dominant eigenvalues lie near the real axis, OGDA continues to exhibit
+              EoS whereas EG becomes unstable. I will also describe how the
+              self-stabilization mechanism from minimization extends to explain these
+              EoS behaviors.
             note: >-
               Form (8/25): free Day 1 in all four sessions and Day 2 morning — this slot
-              among them. Abstract given as TBA.
+              among them. The abstract came with the 9/29 resubmission; the first form
+              gave it as TBA.
             topic: minimax optimization
             home: https://mathsci.kaist.ac.kr/~donghwankim/
             links:
