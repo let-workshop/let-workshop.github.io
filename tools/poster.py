@@ -1343,7 +1343,7 @@ BANNER_COLUMNS = """<!doctype html>
      particulars a column of their own rather than a row they share with the
      marks. */
   .wrap {{
-    position:absolute; inset:0; padding:96mm 0 96mm 176mm;
+    position:absolute; inset:0; padding:80mm 0 80mm 176mm;
     display:flex; align-items:stretch; gap:0;
   }}
   .col {{ display:flex; flex-direction:column; justify-content:center; }}
@@ -1358,10 +1358,13 @@ BANNER_COLUMNS = """<!doctype html>
      the right edge, so it does not move either. 224mm left of where it
      started; this is the one number that makes it. */
   .col.name {{ flex:none; width:2600mm; }}
-  /* The other half carries the particulars and the drawing. The column is
-     1100mm wide and ends at 4230mm, which clears 4320 where the drawing
-     starts to come up — at 1250 it ran 61mm past it and the venue sat on
-     the picture. */
+  /* The other half carries the particulars and the drawing. 1250mm wide,
+     ending at 4157mm, which clears 4320 where the drawing starts to come up;
+     1350 ends at 4257 and puts the column on the picture. It was 1100 while
+     the venue was building-only; the room name went in, the venue ran to
+     three lines, the strip stood 988mm tall on a 900mm cloth and the marks
+     were cut off at the hem. The room has come off the English printings
+     since, and the wider column is what is left of that. */
   .col.facts {{ flex:none; width:1250mm; }}
   /* A hairline between columns, at the weight the credit line's own dividers
      use. It is a separator, not a border: it stops short of the top and bottom
@@ -1392,7 +1395,7 @@ BANNER_COLUMNS = """<!doctype html>
   .strip {{ display:flex; flex-direction:column; gap:36mm; }}
   .fact {{ display:flex; flex-direction:column; gap:10mm; color:{ink}; }}
   .fact span {{
-    font-family:"Satoshi",sans-serif; font-weight:700; font-size:72mm;
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:88mm;
     letter-spacing:-.014em;
   }}
   .fact b {{
@@ -1513,8 +1516,11 @@ XBANNER = """<!doctype html>
      broke over two lines under a mark that is already two; the keyline since
      took the column to 414mm, and 24mm would clear it by three millimetres,
      which is not a margin. At 22 it sets 377mm and stays whole. */
+  /* 22mm under a 118mm mark made this a caption to the logotype rather than
+     the workshop's name written out, which is the one line on the panel that
+     says what the thing actually is. */
   .longname {{
-    font-family:"Satoshi",sans-serif; font-weight:500; font-size:22mm;
+    font-family:"Satoshi",sans-serif; font-weight:500; font-size:32mm;
     letter-spacing:-.01em; color:{ink}; opacity:.58; margin:14mm 0 0 6mm;
   }}
   .field {{
@@ -1557,7 +1563,7 @@ XBANNER = """<!doctype html>
      and the rule above the marks was then shorter than the marks under it.
      The row is what sets the width here, so the rule has to match it. */
   .foot {{
-    margin-top:auto; display:flex; align-items:flex-end; justify-content:space-between;
+    display:flex; align-items:flex-end; justify-content:space-between;
     width:100%; align-self:stretch; gap:30mm;
     padding-top:16mm; border-top:.8mm solid {rule_soft};
   }}
@@ -1571,6 +1577,19 @@ XBANNER = """<!doctype html>
      stand. Bottom-aligned, because logo_row sets every mark to one cap
      height and then pushes each down by how far its letters sit above
      its own bottom edge. */
+  /* The code, above the marks and against the right edge, in the empty lower
+     half where the drawing is faint. It is read from a metre with a phone held
+     up, which 110mm carries; the address is under it in type for everyone not
+     holding a phone, because a code with nothing written beside it asks people
+     to scan to find out whether they wanted to. */
+  .scan {{
+    margin-top:auto; display:flex; flex-direction:column;
+    align-items:flex-end; gap:9mm; margin-bottom:34mm;
+  }}
+  .scan p {{
+    font-family:"JetBrains Mono",monospace; font-size:20mm; font-weight:400;
+    letter-spacing:.06em; color:{ink}; opacity:.66; margin:0;
+  }}
   .marks {{ display:flex; align-items:flex-end;
              justify-content:space-between; flex:1 0 auto; gap:26mm; }}
   .marks img {{ width:auto; display:block; }}  .qr-plate {{ width:110mm; height:110mm; background:{art_ink}; padding:5mm; box-sizing:border-box; }}
@@ -1591,6 +1610,10 @@ XBANNER = """<!doctype html>
         <p class="field">{lbl_dates}</p>
         <p class="stack">{yyyy}. {md1}<small>{dow1}</small> – {md2}<small>{dow2}</small></p>
       </div>
+    </div>
+    <div class="scan">
+      <div class="qr-plate">{qr}</div>
+      <p>{url}</p>
     </div>
     <div class="foot">
       <span class="marks">{logos_colour_x}</span>
@@ -2697,15 +2720,20 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
             d = datetime.date.fromisoformat(d)
         return _DOW["ko" if lang == "ko" else "en"][d.weekday()]
 
+    # The room's name stays on the Korean printings and comes off the English
+    # ones. "포스코국제관 대회의실" is three short words and reads as one address;
+    # "POSCO International Center, Grand Conference Room" is five long ones, and
+    # in the column layout it pushed the venue onto a third line. Whoever reads
+    # the English is being got to the building, which is the hard part.
     _rooms = venue.get("rooms") or []
-    _room = (_rooms[0].get("name", "") if _rooms else "").split("·")
-    _room_en, _room_ko = (_room + [""])[0].strip(), (_room + ["", ""])[1].strip()
+    _room_ko = ((_rooms[0].get("name", "") if _rooms else "")
+                .split("·") + ["", ""])[1].strip()
     if lang == "ko":
         venue_line = esc(" ".join(x for x in
                          (venue.get("name_ko") or venue["name"], _room_ko) if x)
                          + f', {site.get("city_ko") or site["city"]}')
     else:
-        venue_line = esc(", ".join(x for x in (venue["name"], _room_en) if x))
+        venue_line = esc(f'{venue["name"]}, {site["city"]}')
 
     _d0, _d1 = program["days"][0]["date"], program["days"][-1]["date"]
     dates_numeric = esc(f'{str(_d0).split("-")[0]}. '
@@ -2865,10 +2893,6 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         lbl_date=("일시" if lang == "ko" else "Date"),
         lbl_venue=("장소" if lang == "ko" else "Venue"),
         lbl_dates=("일시" if lang == "ko" else "Dates"),
-        # The building and the room in it. "POSCO International Center" alone
-        # gets someone to the right door of the wrong floor. The room's name is
-        # written "Grand Conference Room · 대회의실" in venue.yml, one string
-        # carrying both, so each printing takes its own half.
         venue_line=venue_line,
         dates_long=esc(site["dates"]),
         city=esc(site["city"]),
