@@ -192,18 +192,20 @@ def name_width(s, tracking=-0.016):
     return max(total + tracking * len(s), 0.1)
 
 
-# One size, and the script decides how many lines it takes. Fitting each name
-# to the measure gave a stack where no two cards were set alike; stepping it
-# gave three sizes, and 22mm for a Korean name of three syllables was bigger
-# than the card wanted. At 15 every Korean name sets on one line — 44mm of the
-# 66 there is, 59 for the four-syllable ones — and every name in Latin letters
-# takes two, which is fine on a badge and is what the extra length asks for.
-NAME_SIZE = 15.0
+# Two sizes, one per script, because the two scripts are not the same problem.
+# A Korean name is two to four syllables of even width and wants to be as large
+# as one line allows; a name in Latin letters is a dozen-odd narrow letters with
+# a space in it and will wrap, so its size is set by the longest one having to
+# come out in two lines. Fitting each name to the measure gave a stack where no
+# two cards were set alike, which is worse than either.
+NAME_SIZE_KO = 17.0     # 노알버트, four syllables, 58mm of the 66 there is
+NAME_SIZE_LATIN = 13.0  # Viacheslav Sinii in two lines; 14 makes it three
+_HANGUL = re.compile(r"[\uac00-\ud7a3\u1100-\u11ff\u3130-\u318f]")
 
 
-def name_size(s, measure_mm, size=NAME_SIZE):
-    """One size for every card; `measure_mm` is what it is checked against."""
-    return size
+def name_size(s, measure_mm=None):
+    """The size for this name, by the script it is written in."""
+    return NAME_SIZE_KO if _HANGUL.search(s) else NAME_SIZE_LATIN
 
 
 def logo_row(logos, colour, cap=3.4, flat=True):
@@ -1925,6 +1927,10 @@ BADGE = """<!doctype html>
   .name {{
     font-family:"Satoshi",sans-serif; font-weight:700; font-size:11mm;
     line-height:1.12; letter-spacing:-.016em; color:{ink}; margin:0;
+    /* Nobody on this roster has a single word longer than the plate, and the
+       plate should not be relying on that: without this such a name runs off
+       the card instead of breaking. */
+    overflow-wrap:break-word;
   }}
   /* The line under the name. It used to be the Korean one, under a romanised
      name; it is the romanised one now, under the Korean. Everyone at this
