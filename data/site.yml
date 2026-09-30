@@ -41,6 +41,9 @@ theme: ""
 dates: October 7–8, 2026
 venue: POSTECH
 city: Pohang
+# For the Korean printings. The pieces that take --lang ko use it beside
+# venue.yml's name_ko; everything else stays as it is written above.
+city_ko: 포항
 country: South Korea
 # Fallback for local builds only. In CI the deployed URL is derived from
 # GITHUB_REPOSITORY, so the same commit is correct on every target — the live

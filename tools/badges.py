@@ -65,6 +65,28 @@ def chrome(*args):
 
 
 
+def background_geometry(png, shift_mm):
+    """Where the background sits, and how big, to move it `shift_mm` right.
+
+    `cover` scales the picture until it covers the card, and the sheet is
+    426:600 against the card's 90:130 — so it covers by height and hangs over
+    the sides by 2.3mm in total, which is all the room there is to move it.
+    Asking for more than that with `cover` would drag a corner off the card and
+    leave the ground showing.
+
+    So the picture is enlarged by exactly what the shift needs: enough width to
+    hold the card plus the shift on both sides, and not a millimetre more. At
+    the default 3mm it grows 4%.
+    """
+    from PIL import Image
+    Image.MAX_IMAGE_PIXELS = None
+    w, h = Image.open(png).size
+    r = w / h
+    need_w = 90 + 2 * abs(shift_mm)
+    height_mm = max(130.0, need_w / r)
+    return f"calc(50% + {shift_mm:.2f}mm) center", f"auto {height_mm:.2f}mm"
+
+
 def poster_png(work, port, poster_art, ghost, scheme, out_png, dpi=600):
     """The poster's background, as a picture, at badge resolution.
 
@@ -167,6 +189,12 @@ def main():
     ap.add_argument("--style", choices=("plate", "open"), default="plate",
                     help="how the name stays legible over the drawing — see "
                          "BADGE_STYLES in poster.py. The file is named after it.")
+    ap.add_argument("--shift", type=float, default=0.0, metavar="MM",
+                    help="move the picture right by this many millimetres "
+                         "(negative moves it left). `cover` leaves only 2.3mm "
+                         "of slack on a 90mm card, so anything more enlarges "
+                         "the background by exactly as much as it shifts it "
+                         "and no more")
     ap.add_argument("--dpi", type=int, default=600,
                     help="what the background picture is baked at (default 600; "
                          "the formulas are 4.5px a row at 300)")
@@ -190,12 +218,17 @@ def main():
     server = subprocess.Popen([sys.executable, "-m", "http.server", str(args.port)],
                               cwd=work, stdout=subprocess.DEVNULL,
                               stderr=subprocess.DEVNULL)
-    pdfs, png = [], None
+    pdfs = []
     try:
         time.sleep(2)
         batches = [people[i:i + args.chunk] for i in range(0, len(people), args.chunk)]
         if args.blanks:
             batches.append([])          # the spares, drawn by the same template
+        # The picture first: its shape decides how the page has to place it,
+        # and the page is written with those numbers in it.
+        png = poster_png(work, args.port, args.poster_art, args.ghost,
+                         args.scheme, work / f"poster-bg-{args.dpi}.png", args.dpi)
+        bg_pos, bg_size = background_geometry(png, args.shift)
         for n, batch in enumerate(batches):
             blanks = args.blanks if not batch else 0
             tsv = work / f"chunk-{n}.tsv"
@@ -205,10 +238,8 @@ def main():
                 "--ghost", args.ghost, "--layout", "badge", "--scheme", args.scheme,
                 "--roster", tsv, "--roster-sort", "file",   # the order was chosen above
                 "--badge-style", args.style,
+                "--badge-bg-pos", bg_pos, "--badge-bg-size", bg_size,
                 "--roster-blanks", str(blanks), "-o", page, cwd=ROOT)
-            png = png or poster_png(work, args.port, args.poster_art,
-                                     args.ghost, args.scheme,
-                                     work / f"poster-bg-{args.dpi}.png", args.dpi)
             page = with_raster_art(page, png)
             pdf = work / f"badges-{n}.pdf"
             pdf.unlink(missing_ok=True)

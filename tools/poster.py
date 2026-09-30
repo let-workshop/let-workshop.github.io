@@ -164,6 +164,48 @@ def photo_svg(source, shadow, highlight, width, height, contrast=0.92):
     )
 
 
+# The width of a string in the badge's own face, in ems, so a name can be set
+# to the measure instead of to a size chosen for the longest one.
+_NAME_FACE, _NAME_W = None, {}
+
+
+def name_width(s, tracking=-0.016):
+    """How many ems `s` sets in Satoshi 700, counting Hangul as one em each.
+
+    Latin comes from the font's own advance widths. Hangul does not: it is not
+    in Satoshi and falls through to the platform's UI face, as it does on the
+    page, where a syllable is one em square. That is an approximation for one
+    script and an exact number for the other, which is the right way round —
+    a Korean name here is three or four syllables and the slack does not
+    matter, while "Kwang-Sung Jun" is fourteen characters and it does.
+    """
+    global _NAME_FACE
+    if _NAME_FACE is None:
+        from fontTools.ttLib import TTFont
+        f = TTFont(ROOT / "static" / "fonts" / "satoshi-700.woff2")
+        upem, cmap, hmtx = f["head"].unitsPerEm, f.getBestCmap(), f["hmtx"]
+        for code, glyph in cmap.items():
+            if glyph in hmtx.metrics:
+                _NAME_W[chr(code)] = hmtx[glyph][0] / upem
+        _NAME_FACE = f
+    total = sum(_NAME_W.get(ch, 1.0) for ch in s)
+    return max(total + tracking * len(s), 0.1)
+
+
+# One size, and the script decides how many lines it takes. Fitting each name
+# to the measure gave a stack where no two cards were set alike; stepping it
+# gave three sizes, and 22mm for a Korean name of three syllables was bigger
+# than the card wanted. At 15 every Korean name sets on one line — 44mm of the
+# 66 there is, 59 for the four-syllable ones — and every name in Latin letters
+# takes two, which is fine on a badge and is what the extra length asks for.
+NAME_SIZE = 15.0
+
+
+def name_size(s, measure_mm, size=NAME_SIZE):
+    """One size for every card; `measure_mm` is what it is checked against."""
+    return size
+
+
 def logo_row(logos, colour, cap=3.4, flat=True):
     """The host marks, embedded — flattened to one tone, or as their owners drew them.
 
@@ -1128,21 +1170,28 @@ BANNER = """<!doctype html>
      What made a block necessary was that the drawing and the type were at the
      same strength wherever they met. The gradient does that job instead: the
      picture is held to an eighth across the left, where the name and the
-     credit line are, and comes up to three quarters from 71% — 4260mm,
-     which clears 3891mm where the type ends, and puts the clock tower at
-     4210mm just inside the rise rather than halfway down it. Three quarters rather than full: the
+     credit line are, and comes up to three quarters from 81% — 4860mm,
+     which clears 4457mm where the credit line now ends — it grew when the
+     date and the venue did — and leaves the clock tower at 5005mm well
+     inside the lit part rather than on the ramp. Three quarters rather than full: the
      drawing is a ground for a banner, and at full strength it stopped being
      behind the thing and started being the thing. So it is one picture across the whole cloth, quiet where it is
      read over and loud where it is not. */
   .stage {{
     position:absolute; inset:0; overflow:hidden;
     -webkit-mask-image:linear-gradient(to right, rgba(0,0,0,.13) 0,
-      rgba(0,0,0,.13) 66%, rgba(0,0,0,.76) 71%, rgba(0,0,0,.76) 100%);
+      rgba(0,0,0,.13) 76%, rgba(0,0,0,.76) 81%, rgba(0,0,0,.76) 100%);
     mask-image:linear-gradient(to right, rgba(0,0,0,.13) 0,
-      rgba(0,0,0,.13) 66%, rgba(0,0,0,.76) 71%, rgba(0,0,0,.76) 100%);
+      rgba(0,0,0,.13) 76%, rgba(0,0,0,.76) 81%, rgba(0,0,0,.76) 100%);
   }}
-  .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.3; }}
-  .art {{ position:absolute; inset:0; overflow:hidden; }}
+  /* The two layers are held separately, because they are doing different
+     jobs. The writing is the identity and the photograph is the subject; at
+     full strength the formulas won, and what you saw across a courtyard was
+     texture rather than a campus. The writing comes down and the photograph
+     comes up until the campus is the thing you recognise and the formulas are
+     what it is made of. */
+  .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.52; }}
+  .art {{ position:absolute; inset:0; overflow:hidden; opacity:.60; }}
   .art svg, .ghost svg {{ position:absolute; inset:0; width:100%; height:100%; display:block; }}
   /* Everything the banner says is set against the left edge, in one column:
      the name, then the credit line under it. The right of the cloth is left to
@@ -1172,7 +1221,7 @@ BANNER = """<!doctype html>
      Workshop, which is the Learning Theory Workshop" — in one pass. */
   .lead {{ display:flex; align-items:baseline; gap:70mm; }}
   .longname {{
-    font-family:"Satoshi",sans-serif; font-weight:500; font-size:76mm;
+    font-family:"Satoshi",sans-serif; font-weight:500; font-size:100mm;
     letter-spacing:-.01em; color:{ink}; opacity:.58; margin:0;
   }}
   /* The credit line every Korean banner carries: when, where, and under whose
@@ -1183,11 +1232,15 @@ BANNER = """<!doctype html>
   .strip {{ display:flex; align-items:center; gap:64mm; margin-left:13mm; }}
   .fact {{
     display:flex; align-items:baseline; gap:26mm;
-    font-family:"Satoshi",sans-serif; font-weight:700; font-size:78mm;
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:92mm;
     letter-spacing:-.014em; color:{ink};
   }}
+  /* The label was 40mm against a 92mm fact, which is the ratio a caption has
+     to its picture — right on a sheet held at arm's length, too timid on a
+     six-metre cloth read from across a lobby, where the small line simply
+     goes missing. At 56 it is a word you read, not a marking. */
   .fact b {{
-    font-family:"JetBrains Mono",monospace; font-size:34mm; font-weight:400;
+    font-family:"JetBrains Mono",monospace; font-size:56mm; font-weight:400;
     letter-spacing:.16em; text-transform:uppercase; color:{hot};
   }}
   .rule {{ width:1.3mm; height:70mm; background:{ink}; opacity:.24; }}
@@ -1201,14 +1254,6 @@ BANNER = """<!doctype html>
      credit row is not the place for a silhouette. Height is not set here —
      logo_row writes it per mark, from the ratios in data/site.yml. */
   .marks img {{ width:auto; display:block; }}
-  /* The funder\'s own sentence. Smallest thing on a six-metre banner and the
-     only one nobody will read from across the courtyard, which is right: it is
-     there for the record, not for the passer-by. */
-  .grant {{
-    font-family:"JetBrains Mono",monospace; font-size:11mm; font-weight:400;
-    letter-spacing:.06em; line-height:1.5; color:{ink}; opacity:.5;
-    margin:24mm 0 0 13mm; max-width:2400mm;
-  }}
 </style></head><body>
 <div class="sheet">
   <div class="stage">{ghost}<div class="art">{art}</div></div>
@@ -1219,13 +1264,157 @@ BANNER = """<!doctype html>
     </div>
     <div class="foot">
       <div class="strip">
-        <span class="fact"><b>Date</b>{dates_long}</span>
+        <span class="fact"><b>{lbl_date}</b>{dates_num}</span>
         <span class="rule"></span>
-        <span class="fact"><b>Venue</b>{venue_name}, {city}</span>
+        <span class="fact"><b>{lbl_venue}</b>{venue_line}</span>
         <span class="rule"></span>
         <span class="marks">{logos_colour}</span>
       </div>
-      <p class="grant">{grant}</p>
+    </div>
+  </div>
+</div>
+</body></html>
+"""
+
+
+BANNER_COLUMNS = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>LeT Workshop — banner in columns, 6000x900mm</title>
+<style>
+  @page {{ size: 6000mm 900mm; margin: 0; }}
+  @font-face {{ font-family:"Jost"; font-weight:100 900; src:url("fonts/jost-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Inter Tight"; font-weight:100 900; src:url("fonts/inter-tight-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"JetBrains Mono"; font-weight:400 600; src:url("fonts/jetbrains-mono-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:300; src:url("fonts/satoshi-300.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:400; src:url("fonts/satoshi-400.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:500; src:url("fonts/satoshi-500.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:700; src:url("fonts/satoshi-700.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:900; src:url("fonts/satoshi-900.woff2") format("woff2"); }}
+  html, body {{ margin:0; padding:0; }}
+  .sheet {{
+    position:relative; width:6000mm; height:900mm; overflow:hidden;
+    background:{ground}; color:{ink}; font-family:"Satoshi",sans-serif;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }}
+  /* The drawing is a block on the right, not a field under everything.
+     Across the whole cloth it had to be held back by a veil wherever type sat
+     on it, which is most of a six-metre banner — so the picture was faint
+     everywhere in order to be readable anywhere. Given a third of the width
+     and none of the type, it can be drawn at full strength. It is a different
+     picture at that size, too: the campus is not legible as a campus in
+     1900mm, and the clock tower is the one thing that survives being made
+     small, so the artwork is cropped around the tower rather than scaled down
+     from the band. */
+  /* The drawing covers the cloth. It was a 2100mm block on the right, which
+     kept it clear of the type at the cost of leaving two thirds of a
+     six-metre banner as flat ground — and the picture is the reason anyone
+     looks at the banner twice.
+     What made a block necessary was that the drawing and the type were at the
+     same strength wherever they met. The gradient does that job instead: the
+     picture is held to an eighth across the left, where the name and the
+     credit line are, and comes up to three quarters from 73% — 4380mm,
+     which clears 3891mm where the type ends and leaves the clock tower at
+     4626mm well inside the lit part rather than on the ramp. Three quarters rather than full: the
+     drawing is a ground for a banner, and at full strength it stopped being
+     behind the thing and started being the thing. So it is one picture across the whole cloth, quiet where it is
+     read over and loud where it is not. */
+  .stage {{
+    position:absolute; inset:0; overflow:hidden;
+    -webkit-mask-image:linear-gradient(to right, rgba(0,0,0,.13) 0,
+      rgba(0,0,0,.13) 76%, rgba(0,0,0,.76) 80%, rgba(0,0,0,.76) 100%);
+    mask-image:linear-gradient(to right, rgba(0,0,0,.13) 0,
+      rgba(0,0,0,.13) 76%, rgba(0,0,0,.76) 80%, rgba(0,0,0,.76) 100%);
+  }}
+  /* The two layers are held separately, because they are doing different
+     jobs. The writing is the identity and the photograph is the subject; at
+     full strength the formulas won, and what you saw across a courtyard was
+     texture rather than a campus. The writing comes down and the photograph
+     comes up until the campus is the thing you recognise and the formulas are
+     what it is made of. */
+  .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.52; }}
+  .art {{ position:absolute; inset:0; overflow:hidden; opacity:.60; }}
+  .art svg, .ghost svg {{ position:absolute; inset:0; width:100%; height:100%; display:block; }}
+  /* Three columns across the cloth: the name, the particulars, the drawing.
+     The other arrangement stacks the name over a credit line that runs the
+     width of the type area, which reads down. This one reads across, which is
+     how a six-metre banner is actually walked past — and it gives the
+     particulars a column of their own rather than a row they share with the
+     marks. */
+  .wrap {{
+    position:absolute; inset:0; padding:96mm 0 96mm 176mm;
+    display:flex; align-items:stretch; gap:0;
+  }}
+  .col {{ display:flex; flex-direction:column; justify-content:center; }}
+  /* The column is half the cloth — 176mm to the middle of the 6000. The
+     name sits in it rather than filling it. At 485mm the letters ran the
+     full 2824 and the half stopped reading as a column and started
+     reading as a word stretched to a measure; the size is the one the
+     other layout uses, 360, and the column is what changed. */
+  /* 2704, not 2824. The name is ranged left inside this column, so its
+     width is what decides where the divider and the particulars sit
+     without moving the name at all — and the drawing is positioned from
+     the right edge, so it does not move either. 224mm left of where it
+     started; this is the one number that makes it. */
+  .col.name {{ flex:none; width:2600mm; }}
+  /* The other half carries the particulars and the drawing. The column is
+     1100mm wide and ends at 4230mm, which clears 4320 where the drawing
+     starts to come up — at 1250 it ran 61mm past it and the venue sat on
+     the picture. */
+  .col.facts {{ flex:none; width:1250mm; }}
+  /* A hairline between columns, at the weight the credit line's own dividers
+     use. It is a separator, not a border: it stops short of the top and bottom
+     so it reads as a gap made visible rather than a box. */
+  .col + .col {{ border-left:1.1mm solid {ink}; padding-left:130mm; }}
+  /* The mark takes the accent here, as it does on the sheet. On the banner it
+     used to be white with the accent spent on the date, on the reasoning that
+     the loudest element should not also carry the colour — but the banner no
+     longer has a date the size of the name to compete with, and a five-metre
+     cloth read at forty metres is one word before it is anything else. */
+  .mark {{
+    font-family:"Jost",sans-serif; font-weight:700; font-size:360mm;
+    line-height:.92; color:{hot}; letter-spacing:-.02em; margin:0;
+  }}
+  .mark span {{ font-weight:300; }}
+  /* Beside the name, not under it. Six metres is a long line and a banner is
+     read across rather than down: set below, the long name was a second row
+     the eye had to come back for, and it is the same words as the mark said
+     already. On the baseline it reads as the name's own expansion — "LeT
+     Workshop, which is the Learning Theory Workshop" — in one pass. */
+  .longname {{
+    font-family:"Satoshi",sans-serif; font-weight:500; font-size:100mm;
+    letter-spacing:-.01em; color:{ink}; opacity:.58; margin:22mm 0 0 8mm;
+  }}
+  /* The particulars, stacked. Same type as the row version — the field name
+     in mono over the fact in Satoshi — just turned through ninety degrees, so
+     each is read as its own line rather than found inside a long one. */
+  .strip {{ display:flex; flex-direction:column; gap:36mm; }}
+  .fact {{ display:flex; flex-direction:column; gap:10mm; color:{ink}; }}
+  .fact span {{
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:72mm;
+    letter-spacing:-.014em;
+  }}
+  .fact b {{
+    font-family:"JetBrains Mono",monospace; font-size:58mm; font-weight:400;
+    letter-spacing:.16em; text-transform:uppercase; color:{hot};
+  }}
+  .rule {{ display:none; }}
+  .marks {{ display:flex; align-items:flex-end;
+             justify-content:space-between; gap:40mm; margin:14mm 0 0; }}
+  .marks img {{ width:auto; display:block; }}
+</style></head><body>
+<div class="sheet">
+  <div class="stage">{ghost}<div class="art">{art}</div></div>
+  <div class="wrap">
+    <div class="col name">
+      <h1 class="mark">{mark} <span>{year}</span></h1>
+      <p class="longname">{long_name_ed}</p>
+    </div>
+    <div class="col facts">
+      <div class="strip">
+        <span class="fact"><b>{lbl_date}</b><span>{dates_num}</span></span>
+        <span class="fact"><b>{lbl_venue}</b><span>{venue_line}</span></span>
+        <span class="marks">{logos_colour_col}</span>
+      </div>
     </div>
   </div>
 </div>
@@ -1252,38 +1441,70 @@ XBANNER = """<!doctype html>
     background:{ground}; color:{ink}; font-family:"Satoshi",sans-serif;
     -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }}
-  .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.3; }}
-  .art {{ position:absolute; inset:0; overflow:hidden; }}
+  /* The two layers are held separately, as on the banner: the writing is the
+     identity and the photograph is the subject, and at full strength the
+     formulas won. The writing comes down and the photograph comes up until
+     the campus is the thing you recognise and the formulas are what it is
+     made of. */
+  /* The drawing is masked rather than veiled, the way the banner's is. The
+     difference is where it can breathe: the banner keeps its type on the left
+     half and opens the right, and this stand has type from 7% to 94% of its
+     height, so there is no half to give away. What it has is gaps — the band
+     under the name at 20-34%, and the one above the foot at 72-85% — and the
+     gradient opens in those and closes over everything that has to be read.
+     The clock tower sits at 28-42% of the crop, which is why the upper band is
+     the wider of the two: it is the one with something in it. */
+  .stage {{
+    position:absolute; inset:0; overflow:hidden;
+    -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.08) 0,
+      rgba(0,0,0,.08) 17%, rgba(0,0,0,.50) 26%, rgba(0,0,0,.50) 41%,
+      rgba(0,0,0,.10) 50%, rgba(0,0,0,.10) 68%, rgba(0,0,0,.36) 76%,
+      rgba(0,0,0,.36) 84%, rgba(0,0,0,.10) 90%, rgba(0,0,0,.10) 100%);
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,.08) 0,
+      rgba(0,0,0,.08) 17%, rgba(0,0,0,.50) 26%, rgba(0,0,0,.50) 41%,
+      rgba(0,0,0,.10) 50%, rgba(0,0,0,.10) 68%, rgba(0,0,0,.36) 76%,
+      rgba(0,0,0,.36) 84%, rgba(0,0,0,.10) 90%, rgba(0,0,0,.10) 100%);
+  }}
+  .ghost {{ position:absolute; inset:0; overflow:hidden; opacity:.52; }}
+  .art {{ position:absolute; inset:0; overflow:hidden; opacity:.60; }}
   .art svg, .ghost svg {{ position:absolute; inset:0; width:100%; height:100%; display:block; }}
-  .veil {{ position:absolute; inset:0; }}
-  .veil svg {{ position:absolute; inset:0; width:100%; height:100%; display:block; }}
   /* An X-banner hangs from four corner eyelets and stands on the floor. The
      lower 250mm is below the knee of anyone reading it and is usually behind
-     the frame's foot, so it carries the marks and nothing that must be read. */
-  /* A keyline, as the square set has, inset to the line the type is set to.
-     A banner is seen against a wall, a window and a crowd, and an edge is what
-     stops it dissolving into whichever one is behind it. */
-  .frame {{
-    position:absolute; inset:46mm; border:1.2mm solid {keyline};
-    pointer-events:none;
-  }}
+     the foot of the stand, so it carries the marks and nothing that must be
+     read. (There was a keyline here; it went with the banner's.) */
+  /* Tighter than it was. inset 46 plus 44mm of side padding took 90mm off
+     each edge of a panel only 600mm wide — a third of it gone before
+     anything was set on it. */
   .wrap {{
-    position:absolute; inset:46mm; padding:80mm 44mm 60mm;
+    position:absolute; inset:22mm; padding:34mm 22mm 26mm;
     display:flex; flex-direction:column;
   }}
   /* The three facts, evenly spaced between the title and the foot, each opened
      by a rule its label sits on. Centred as one block they left a third of the
      banner empty under them and the spacing read as an accident; distributed,
      the same air is divided into equal parts and reads as a measure. */
-  .facts {{ flex:1; display:flex; flex-direction:column; justify-content:space-evenly; margin:0; }}
+  /* The name sits at the middle of the panel, not at the top of it. The
+     drawing's clock tower is in the upper third of the crop, so the top
+     is where the picture is; dropping the name to the middle gives the
+     tower the space it was sharing — but not all of it: at the halfway
+     line the name read as the middle of the panel rather than the top of
+     what it introduces. 424mm puts the block's centre on 600, a third of
+     the way down an 1800mm panel — 360 now, a little above that. */
+  .wrap > div:first-of-type {{ margin-top:360mm; }}
+  /* Packed under the name rather than spread down what is left of the
+     panel. space-evenly divided 960mm of column between two facts and
+     the foot, which put the venue a hand's width from the dates and
+     both of them adrift of the thing they belong to. */
+  .facts {{ flex:1; display:flex; flex-direction:column;
+            justify-content:flex-start; gap:40mm; margin:28mm 0 0; }}
   .fact {{ padding-top:12mm; border-top:.8mm solid {rule_soft}; }}
-  /* 100mm, not 132. The mark was cut when the name was four capitals over a
+  /* 118mm, not 132. The mark was cut when the name was four capitals over a
      year; it is two words now and the second is long. Measured on the rendered
      stand: at 132 the word "Workshop" set 532.6mm inside a 420mm column and
      hung 68.6mm past the keyline the rest of the banner is set inside. */
   .mark {{
-    font-family:"Jost",sans-serif; font-weight:700; font-size:100mm;
-    line-height:.98; color:{ink}; letter-spacing:-.02em; margin:0;
+    font-family:"Jost",sans-serif; font-weight:700; font-size:118mm;
+    line-height:.98; color:{hot}; letter-spacing:-.02em; margin:0;
   }}
   .mark span {{ font-weight:300; }}
   /* 22mm. At 33 the name ran 565mm inside what was then a 474mm column and
@@ -1295,61 +1516,65 @@ XBANNER = """<!doctype html>
     letter-spacing:-.01em; color:{ink}; opacity:.58; margin:14mm 0 0 6mm;
   }}
   .field {{
-    font-family:"JetBrains Mono",monospace; font-size:15mm; font-weight:400;
+    font-family:"JetBrains Mono",monospace; font-size:27mm; font-weight:400;
     letter-spacing:.16em; text-transform:uppercase; color:{hot};
-    margin:0 0 6mm;
+    margin:0 0 10mm;
   }}
   /* 30mm is the largest size at which both of the two lines this sets — the
      venue and the theme — stay whole in the 420mm column the keyline leaves:
      the venue 355mm with the city under it, the theme 407mm on one line. At
      40mm the venue broke into three and the theme into two, and a banner read
      from across a hall wants each fact in one piece. */
+  /* No line break written into it. The break used to sit between the
+     venue and the city, which looked like the sensible place until the
+     venue outgrew the column: "POSCO International Center" sets 553mm
+     inside 512, so it wrapped on its own and the city became a third
+     line. Left to wrap, it breaks after "International" and comes to
+     two, and the size decides where. At 42mm "POSCO International Center"
+     alone sets 553 inside a 512mm column, so it broke inside the venue's
+     own name and the city became a third line. At 37 it sets 487 and the
+     break falls at the comma, which is where a reader would put it. */
   .line {{
-    font-family:"Satoshi",sans-serif; font-weight:700; font-size:27mm;
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:37mm;
     letter-spacing:-.014em; color:{ink}; margin:0;
   }}
   .stack small {{
-    font-family:"JetBrains Mono",monospace; font-size:.26em; font-weight:400;
+    font-family:"JetBrains Mono",monospace; font-size:.40em; font-weight:400;
     letter-spacing:.06em; opacity:.66; margin-left:.16em;
   }}
+  /* 44mm, against the venue's 37. It was 66 and the two facts under the
+     same rule were a headline and a caption rather than a pair — the dates
+     are not more important than where to go, they are just shorter. A
+     little larger and not much: they are figures, and figures read smaller
+     than letters at the same size. */
   .stack {{
-    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:96mm;
+    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:44mm;
     line-height:1.02; letter-spacing:-.03em; color:{ink}; margin:0;
   }}
+  /* Full width, and said so. The foot came out 420mm inside a 508mm column
+     and the rule above the marks was then shorter than the marks under it.
+     The row is what sets the width here, so the rule has to match it. */
   .foot {{
-    display:flex; align-items:flex-end; justify-content:space-between; gap:30mm;
+    margin-top:auto; display:flex; align-items:flex-end; justify-content:space-between;
+    width:100%; align-self:stretch; gap:30mm;
     padding-top:16mm; border-top:.8mm solid {rule_soft};
   }}
   /* 22mm, not 34. At 34 the two marks measured 386mm and the foot needed
      386 + 30 of gap + 110 of code = 526mm inside a 420mm column, so the code
      hung 62mm off the edge of the banner. */
-  .marks {{ display:flex; align-items:flex-end; gap:24mm; }}
-  .marks img {{ width:auto; display:block; opacity:.72; }}
-  .cta {{ text-align:right; }}
-  .cta b {{
-    display:block; font-family:"Satoshi",sans-serif; font-size:16mm;
-    font-weight:700; color:{hot}; margin-bottom:8mm;
-  }}
-  .qr-plate {{ width:110mm; height:110mm; background:{art_ink}; padding:5mm; box-sizing:border-box; }}
-  .qr-plate svg {{ display:block; width:100%; height:100%; }}
-  .grant {{
-    font-family:"JetBrains Mono",monospace; font-size:5mm; font-weight:400;
-    letter-spacing:.06em; line-height:1.6; color:{ink}; opacity:.5;
-    margin:14mm 0 0;
-  }}
+  /* The institutions, as they draw themselves, at the size a stand can
+     give them. A 600mm panel is read from a metre or two and these are
+     the marks people recognise before they read anything; greyed out and
+     small they were a footnote on a poster rather than a credit on a
+     stand. Bottom-aligned, because logo_row sets every mark to one cap
+     height and then pushes each down by how far its letters sit above
+     its own bottom edge. */
+  .marks {{ display:flex; align-items:flex-end;
+             justify-content:space-between; flex:1 0 auto; gap:26mm; }}
+  .marks img {{ width:auto; display:block; }}  .qr-plate {{ width:110mm; height:110mm; background:{art_ink}; padding:5mm; box-sizing:border-box; }}
 </style></head><body>
 <div class="sheet">
-  {ghost}<div class="art">{art}</div>
-  <div class="veil"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 100" preserveAspectRatio="none">
-    <defs><linearGradient id="v" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="{ground}" stop-opacity="{veil_x3}"/>
-      <stop offset=".26" stop-color="{ground}" stop-opacity="{veil_x1}"/>
-      <stop offset=".58" stop-color="{ground}" stop-opacity="{veil_x2}"/>
-      <stop offset="1" stop-color="{ground}" stop-opacity="{veil_x4}"/>
-    </linearGradient></defs>
-    <rect width="10" height="100" fill="url(#v)"/>
-  </svg></div>
-  <div class="frame"></div>
+  <div class="stage">{ghost}<div class="art">{art}</div></div>
   <div class="wrap">
     <div>
       <h1 class="mark">{mark}<br><span>{year}</span></h1>
@@ -1357,19 +1582,17 @@ XBANNER = """<!doctype html>
     </div>
     <div class="facts">
       <div class="fact">
-        <p class="field">Venue</p>
-        <p class="line">{venue_name}<br>{city}</p>
+        <p class="field">{lbl_venue}</p>
+        <p class="line">{venue_line}</p>
       </div>
 {theme_fact}      <div class="fact">
-        <p class="field">Dates</p>
-        <p class="stack">{yyyy}.<br>{md1}<small>{hour1}</small> –<br>{md2}<small>{hour2}</small></p>
+        <p class="field">{lbl_dates}</p>
+        <p class="stack">{yyyy}. {md1}<small>{dow1}</small> – {md2}<small>{dow2}</small></p>
       </div>
     </div>
     <div class="foot">
-      <span class="marks">{logos}</span>
-      <div class="cta"><b>{cta_short}</b><div class="qr-plate">{qr}</div></div>
+      <span class="marks">{logos_colour_x}</span>
     </div>
-    <p class="grant">{grant}</p>
   </div>
 </div>
 </body></html>
@@ -1647,8 +1870,8 @@ BADGE = """<!doctype html>
      The name has its own panel now (see .who), so the two jobs are separated:
      the plate keeps the type legible and the picture is free to be a picture
      everywhere else. */
-  .art, .ghost {{ position:absolute; inset:0; background-position:center;
-                  background-size:cover; background-repeat:no-repeat; }}
+  .art, .ghost {{ position:absolute; inset:0; background-position:{badge_bg_pos};
+                  background-size:{badge_bg_size}; background-repeat:no-repeat; }}
   .art {{ background-image:url("{art_url}"); opacity:{badge_art_op}; }}
   .ghost {{ background-image:url("{ghost_url}"); opacity:{badge_ghost_op}; }}
   /* A wash rather than a lid. It still settles the card top to bottom so the
@@ -1673,6 +1896,9 @@ BADGE = """<!doctype html>
     line-height:1; color:{hot}; letter-spacing:-.02em; margin:0;
   }}
   .mark span {{ font-weight:300; }}
+  /* When and where, at the foot on the left, a line each. Ranged left rather
+     than right: it is now the start of the foot's line rather than the end of
+     the top's, and it is read, not glanced at. */
   /* When and where, at the foot on the left, a line each. Ranged left rather
      than right: it is now the start of the foot's line rather than the end of
      the top's, and it is read, not glanced at. */
@@ -1711,7 +1937,7 @@ BADGE = """<!doctype html>
     color:{ink}; opacity:.62; margin:1.6mm 0 0;
   }}
   .affil {{
-    font-family:"Satoshi",sans-serif; font-weight:500; font-size:5mm;
+    font-family:"Satoshi",sans-serif; font-weight:500; font-size:5.8mm;
     color:{cool}; margin:3.4mm 0 0;
   }}
   /* Ruled space instead of a printed name, for anyone registering on the day.
@@ -1724,6 +1950,9 @@ BADGE = """<!doctype html>
     font-family:"JetBrains Mono",monospace; font-size:2.7mm; letter-spacing:.1em;
     text-transform:uppercase; color:{ink}; opacity:.55;
   }}
+  /* Under the mark, at the mark's own left edge. Not uppercase-tracked into a
+     second wordmark: it is the expansion of the one above it, so it is set
+     quietly and lets the mark stay the loud thing. */
   /* Under the mark, at the mark's own left edge. Not uppercase-tracked into a
      second wordmark: it is the expansion of the one above it, so it is set
      quietly and lets the mark stay the loud thing. */
@@ -2094,14 +2323,21 @@ BADGE_STYLES = {
     "plate": {
         "badge_art_op": ".52", "badge_ghost_op": ".30",
         "badge_veil": "linear-gradient(180deg,{scrim2} 0%,{scrim2} 52%,{scrim6} 100%)",
+        # One height for every card. The panel grew and shrank with what was on
+        # it — 53.2mm for someone with a Korean and a romanised name, 44.2 with
+        # only the Korean, 46.3 for a blank — so a stack of badges had a panel
+        # that jumped as you went through it, and the cards for the people the
+        # site does not name were visibly the short ones. It is the tallest
+        # case for all of them now; the content still sits at the top of it.
         "badge_who": ("margin-top:9mm; background:{plate}; border-radius:3.2mm; "
-                      "padding:5mm 5mm 5.6mm; margin-left:-1mm; margin-right:-1mm;"),
-        # The mark gets the same panel. It is the accent now, and the accent on
-        # the sheet's own background measured 2.84:1 — under the 3:1 that type
-        # this size is held to, because the badge shows that background at full
-        # strength where the poster veils it. On the panel it clears.
-        "badge_top": ("background:{plate}; border-radius:3.2mm; "
-                      "padding:4mm 5mm 4.4mm; margin:-1mm -1mm 0;"),
+                      "padding:5mm 5mm 5.6mm; margin-left:-1mm; margin-right:-1mm; "
+                      "min-height:53.2mm; box-sizing:border-box;"),
+        # No panel on the mark. One was tried, because the accent measures
+        # 2.84:1 on the sheet's background against the 3:1 large type is held
+        # to — but two stacked panels made the card a form rather than a badge,
+        # and the mark is nine millimetres of Jost 700, which is a good deal
+        # more than the "large" that threshold was written for.
+        "badge_top": "",
     },
     "open": {
         "badge_art_op": ".44", "badge_ghost_op": ".22",
@@ -2121,6 +2357,7 @@ ART_FIT = {
     # across the campus: at a third of the cloth's width the campus stops being
     # legible as a campus, and the tower is what survives being made small.
     "banner": "xMidYMid slice",
+    "banner2": "xMidYMid slice",
 }
 
 GHOST_SIZE = {
@@ -2128,6 +2365,7 @@ GHOST_SIZE = {
     "listing": (1700, 1520),
     "bauhaus": (1000, 1360),
     "banner": (3400, 510),      # the whole cloth, 6000 x 900mm
+    "banner2": (3400, 510),
     "xbanner": (900, 2700),     # 600 x 1800mm
     "social": (1400, 1400),     # 1080 x 1080 square
     "badge": (900, 1300),       # 90 x 130mm
@@ -2222,7 +2460,8 @@ def on_paper():
 
 def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=None,
          ghost=None, silhouette=None, roster_path=None, roster_sort="role",
-         roster_blanks=6, badge_style="plate"):
+         roster_blanks=6, badge_style="plate",
+         badge_bg_pos="center", badge_bg_size="cover", lang="en"):
     site = yaml.safe_load((DATA / "site.yml").read_text(encoding="utf-8"))
     program = yaml.safe_load((DATA / "program.yml").read_text(encoding="utf-8"))
     venue = yaml.safe_load((DATA / "venue.yml").read_text(encoding="utf-8"))
@@ -2315,7 +2554,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     )
     tpl = {"listing": LISTING, "festival": FESTIVAL, "academic": ACADEMIC,
            "civic": CIVIC, "bauhaus": BAUHAUS,
-           "banner": BANNER, "xbanner": XBANNER,
+           "banner": BANNER, "banner2": BANNER_COLUMNS, "xbanner": XBANNER,
            "social": SOCIAL, "badge": BADGE}.get(layout, TEMPLATE)
     organizers = yaml.safe_load((DATA / "organizers.yml").read_text(encoding="utf-8"))
     bill, sessions_list, organisers, days = festival_bits(program, organizers, site)
@@ -2438,14 +2677,52 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     hour1 = esc(hh(_first(program["days"][0])))
     hour2 = esc(hh(_last(program["days"][-1])))
 
+    # "2026. 10.7 (Wed) – 10.8 (Thu)". The weekday comes from the date rather
+    # than from the day's label, which is prose and has been reworded twice.
+    def _md(d):
+        return ".".join(str(d).split("-")[1:]).lstrip("0").replace(".0", ".")
+
+    _DOW = {"en": ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+            "ko": ("월", "화", "수", "목", "금", "토", "일")}
+
+    def _dow(d):
+        import datetime
+        if isinstance(d, str):
+            d = datetime.date.fromisoformat(d)
+        return _DOW["ko" if lang == "ko" else "en"][d.weekday()]
+
+    _rooms = venue.get("rooms") or []
+    _room = (_rooms[0].get("name", "") if _rooms else "").split("·")
+    _room_en, _room_ko = (_room + [""])[0].strip(), (_room + ["", ""])[1].strip()
+    if lang == "ko":
+        venue_line = esc(" ".join(x for x in
+                         (venue.get("name_ko") or venue["name"], _room_ko) if x)
+                         + f', {site.get("city_ko") or site["city"]}')
+    else:
+        venue_line = esc(", ".join(x for x in (venue["name"], _room_en) if x))
+
+    _d0, _d1 = program["days"][0]["date"], program["days"][-1]["date"]
+    dates_numeric = esc(f'{str(_d0).split("-")[0]}. '
+                        f'{_md(_d0)} ({_dow(_d0)}) – {_md(_d1)} ({_dow(_d1)})')
+
     short_dates = re.sub(r"^(\w{3})\w*", lambda m: m.group(1), site["dates"])
     as_url = lambda svg: "data:image/svg+xml;base64," + base64.b64encode(
         svg.encode("utf-8")).decode("ascii")
     art_url = as_url(art)
     ghost_url = as_url(ghost_layer[len('<div class="ghost">'):-len("</div>")]) if ghost_layer else ""
 
+    # What the name has to fit inside: the card is 90mm, .pad takes 8 a side and
+    # the plate's own padding another 5, less the 1mm it is pulled out by.
+    NAME_MEASURE = 90 - 2 * 8 + 2 * 1 - 2 * 5
+
     def badge_card(role, hot, name="", sub="", affil=""):
-        who = (f'<p class="name">{esc(name)}</p>'
+        # Each name set to the measure rather than every name set to one size.
+        # 11mm was chosen for a Korean name of three syllables, which left it
+        # filling half the plate, while "Kwang-Sung Jun" wanted 88mm of the 66
+        # there is and wrapped. Sizing per card gives the short ones the width
+        # and keeps the long ones on one line.
+        size = f"font-size:{name_size(name, NAME_MEASURE):.2f}mm" if name else ""
+        who = (f'<p class="name" style="{size}">{esc(name)}</p>'
                + (f'<p class="name-sub">{esc(sub)}</p>' if sub else "")
                + (f'<p class="affil">{esc(affil)}</p>' if affil else "")) if name else (
                '<div class="write"><i></i><i></i></div>')
@@ -2562,6 +2839,31 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         days_range=esc('–'.join(str(d['date']).split('-')[-1] for d in program['days'])),
         bill_academic=bill.replace("<sup>", "<span>(").replace("</sup>", ")</span>")
                           .replace("<li>", "<li><b>").replace("<span>(", "</b><span>("),
+        # "2026. 10.7 – 10.8" rather than "October 7–8, 2026". A banner is read
+        # at a glance and a month spelled out is a word to read; the figures
+        # are the same fact in a third of the width, and they are how the date
+        # is written on everything Korean this will hang beside.
+        # The weekday, which is the thing people actually plan around: a date
+        # tells you when it is and a weekday tells you whether you can come.
+        # Korean where the printing is Korean, because 수 and 목 are what a
+        # Korean reader is looking for.
+        dow1=("월화수목금토일"[program["days"][0]["date"].weekday()] if lang == "ko"
+              else program["days"][0]["date"].strftime("%a")),
+        dow2=("월화수목금토일"[program["days"][-1]["date"].weekday()] if lang == "ko"
+              else program["days"][-1]["date"].strftime("%a")),
+        dates_num=dates_numeric,
+        # The few words a Korean printing changes. The workshop's name is not
+        # among them: it is a name, and it is the same name in both. Nothing
+        # here is translated on the fly — a string with no Korean in the data
+        # stays as it is rather than being guessed at.
+        lbl_date=("일시" if lang == "ko" else "Date"),
+        lbl_venue=("장소" if lang == "ko" else "Venue"),
+        lbl_dates=("일시" if lang == "ko" else "Dates"),
+        # The building and the room in it. "POSCO International Center" alone
+        # gets someone to the right door of the wrong floor. The room's name is
+        # written "Grand Conference Room · 대회의실" in venue.yml, one string
+        # carrying both, so each printing takes its own half.
+        venue_line=venue_line,
         dates_long=esc(site["dates"]),
         city=esc(site["city"]),
         country=esc(site["country"]),
@@ -2577,6 +2879,20 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         logos_colour=logo_row(site["sponsors"]["logos"],
                               PALETTE["cool"], cap=44.0, flat=False)
                      if site.get("sponsors") else "",
+        # The same marks for the stand, which is 600mm wide rather than 6000.
+        # 16.8 is what makes the three of them, plus two 26mm gaps, come to the
+        # 500mm the column has — so the row fills the foot rather than sitting
+        # in the middle of it. Worked out from each mark's own proportions, not
+        # guessed: see the ratios in data/site.yml.
+        # And for the columns banner, whose marks sit in a 1100mm column rather
+        # than along the foot of the whole cloth. 38.4 is what makes the three
+        # of them plus two 40mm gaps come to it.
+        logos_colour_col=logo_row(site["sponsors"]["logos"],
+                                  PALETTE["cool"], cap=38.4, flat=False)
+                         if site.get("sponsors") else "",
+        logos_colour_x=logo_row(site["sponsors"]["logos"],
+                                PALETTE["cool"], cap=16.8, flat=False)
+                       if site.get("sponsors") else "",
         acronym_name=acronym_html(site["full_name"], mark),
         long_name=esc(site["full_name"].title()),
         # The sheet says which one this is; the banners and the badges do not,
@@ -2608,6 +2924,8 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
             for w in site["full_name"].split())),
         reg_note=esc((site["hero_actions"][0].get("note") or "Opens soon")),
         badges=badges,
+        badge_bg_pos=badge_bg_pos,
+        badge_bg_size=badge_bg_size,
         **{k: v.format(**PALETTE) for k, v in BADGE_STYLES[badge_style].items()},
         art_url=art_url,
         ghost_url=ghost_url,
@@ -2664,10 +2982,18 @@ if __name__ == "__main__":
                     help="how the badge keeps a name legible over the drawing: "
                          "`plate` puts it on a translucent panel, `open` leans on "
                          "the veil as the card always did")
+    ap.add_argument("--badge-bg-pos", default="center",
+                    help="where the badge's background sits, as CSS "
+                         "background-position (default center)")
+    ap.add_argument("--badge-bg-size", default="cover",
+                    help="CSS background-size for it (default cover)")
+    ap.add_argument("--lang", choices=("en", "ko"), default="en",
+                    help="which language the few translatable lines are set in; "
+                         "the workshop's name is the same in both")
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--layout",
                     choices=("stack", "listing", "festival", "academic", "civic",
-                             "bauhaus", "banner", "xbanner", "social", "badge"),
+                             "bauhaus", "banner", "banner2", "xbanner", "social", "badge"),
                     default="stack",
                     help="a poster layout, or banner (5000x900mm) / xbanner (600x1800mm)")
     args = ap.parse_args()
@@ -2688,4 +3014,5 @@ if __name__ == "__main__":
             args.art = str(patched)
     main(args.art, args.out, args.layout, args.photo, args.cutout, args.duotone,
          args.ghost, args.silhouette, args.roster, args.roster_sort,
-         args.roster_blanks, args.badge_style)
+         args.roster_blanks, args.badge_style,
+         args.badge_bg_pos, args.badge_bg_size, args.lang)
