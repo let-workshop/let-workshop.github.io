@@ -2013,10 +2013,12 @@ BADGE = """<!doctype html>
     font-family:"Satoshi",sans-serif; font-weight:500; font-size:5.8mm;
     color:{cool}; margin:3.4mm 0 0;
   }}
-  /* Ruled space instead of a printed name, for anyone registering on the day.
-     The rule is what tells a person there is something to write. */
+  /* Empty space instead of a printed name, for anyone registering on the day.
+     It was two ruled lines, on the thinking that a rule is what tells a person
+     there is something to write. The plate is already a panel on a drawing and
+     the only empty one in the stack, which says it by itself; the rules only
+     said where to put the pen. */
   .write {{ margin-top:6mm; }}
-  .write i {{ display:block; height:.35mm; background:{rule_mid}; margin-bottom:9mm; }}
   .foot {{
     margin-top:auto; padding-top:4mm; border-top:.3mm solid {rule_soft};
     display:flex; align-items:flex-end; justify-content:space-between; gap:4mm;
@@ -3051,7 +3053,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         who = (f'<p class="name" style="{size}">{esc(name)}</p>'
                + (f'<p class="name-sub">{esc(sub)}</p>' if sub else "")
                + (f'<p class="affil" style="{asize}">{esc(affil)}</p>' if affil else "")) if name else (
-               '<div class="write"><i></i><i></i></div>')
+               '<div class="write"></div>')
         return (
             f'<div class="card {esc(role.lower())}">'
             '<div class="ghost"></div><div class="art"></div>'
