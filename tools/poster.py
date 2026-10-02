@@ -2421,9 +2421,8 @@ BADGE_STYLES = {
 # rather than white's 7.2, and the photograph down from .3 to .1.
 BADGE_ROLE_GROUNDS = {
     "Organiser": {"ground": PALETTE["ground"], "dark": True},
-    "Staff": {"ground": "#026532", "dark": True, "veil": .50,
-              "palette": {"art_ink": "#b0e3bc", "ghost_alpha": ".10",
-                          "hot": "#ffb4a5"}},
+    "Staff": {"ground": "#8beca6", "veil": .45,
+              "palette": {"art_ink": "#126d38", "ghost_alpha": ".20"}},
 }
 
 
@@ -2543,7 +2542,7 @@ def badge_role_palette(role):
     return pal
 
 
-def badge_role_css(style, art_dark_url="", ghost_dark_url=""):
+def badge_role_css(style, art_url="", art_dark_url="", ghost_url="", ghost_dark_url=""):
     """A ground for each role that gets one, and for a dark role, a dark card.
 
     Two mechanisms, because the badge is printed two ways. The export renders
@@ -2590,24 +2589,20 @@ def badge_role_css(style, art_dark_url="", ghost_dark_url=""):
                       f"  .card.{cls} .longname, .card.{cls} .when "
                       f"{{ color:{pal['ink']}; }}",
                       ]
-            # The dark sheet's drawing and photograph, if they were handed over;
-            # without them the light ones are inverted, which is the drawing
-            # right and the photograph a negative.
-            if art_dark_url:
-                rules.append(f'  .card.{cls} .art {{ background-image:url("{art_dark_url}"); }}')
-            else:
-                turn = (_hsl_hue(ground) - (light_hue + 180) % 360 + 540) % 360 - 180
-                rules.append(f"  .card.{cls} .art {{ filter:invert(1) hue-rotate({turn:.0f}deg); }}")
-            if not ghost_dark_url:
-                rules.append(f"  .card.{cls} .ghost {{ opacity:{pal['ghost_alpha']}; }}")
-            if ghost_dark_url:
-                rules.append(f'  .card.{cls} .ghost {{ {show}'
-                             f'background-image:url("{ghost_dark_url}"); '
-                             f"opacity:{pal['ghost_alpha']}; }}")
+        # Its own picture, always, and no filter anywhere. The colour comes from
+        # the palette this role's background is rendered through, which is the
+        # only way it survives: hue-rotating the blue sheet's picture to green
+        # gave a card that measured C* 12 where its own ground is 50, because
+        # rotating a pale blue picture gives a pale green one.
+        art_for_role = art_dark_url if dark else art_url
+        ghost_for_role = ghost_dark_url if dark else ghost_url
+        if art_for_role:
+            rules.append(f'  .card.{cls} .art {{ background-image:url("{art_for_role}"); }}')
+        if ghost_for_role:
+            rules.append(f'  .card.{cls} .ghost {{ background-image:url("{ghost_for_role}"); '
+                         f"opacity:{pal['ghost_alpha']}; }}")
         else:
-            turn = (_hsl_hue(ground) - light_hue + 540) % 360 - 180
-            rules.append(f"  .card.{cls} .art, .card.{cls} .ghost "
-                         f"{{ filter:hue-rotate({turn:.0f}deg); }}")
+            rules.append(f"  .card.{cls} .ghost {{ opacity:{pal['ghost_alpha']}; }}")
         out.append("\n".join(rules))
     return "\n".join(out)
 
@@ -3205,7 +3200,8 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         badges=badges,
         badge_bg_pos=badge_bg_pos,
         badge_bg_size=badge_bg_size,
-        badge_role_css=badge_role_css(badge_style, art_dark_url, ghost_dark_url),
+        badge_role_css=badge_role_css(badge_style, art_url, art_dark_url,
+                                      ghost_url, ghost_dark_url),
         **{k: v.format(**PALETTE) for k, v in BADGE_STYLES[badge_style].items()},
         art_url=art_url,
         ghost_url=ghost_url,

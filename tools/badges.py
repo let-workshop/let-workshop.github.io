@@ -262,10 +262,10 @@ def main():
             sys.path.insert(0, str(ROOT / "tools"))
             import poster as poster_mod
             for role, spec in poster_mod.BADGE_ROLE_GROUNDS.items():
-                if not spec.get("dark"):
-                    continue
+                is_dark = spec.get("dark", False)
                 role_pngs.append((role.lower(), poster_png(
-                    work, args.port, args.art_dark, args.ghost, "",
+                    work, args.port, args.art_dark if is_dark else args.poster_art,
+                    args.ghost, "" if is_dark else args.scheme,
                     work / f"poster-bg-{role.lower()}-{args.dpi}.png", args.dpi,
                     palette=json.dumps(poster_mod.badge_role_palette(role)),
                     stem=f"poster-{role.lower()}")))
