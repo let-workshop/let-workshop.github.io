@@ -87,7 +87,8 @@ def background_geometry(png, shift_mm):
     return f"calc(50% + {shift_mm:.2f}mm) center", f"auto {height_mm:.2f}mm"
 
 
-def poster_png(work, port, poster_art, ghost, scheme, out_png, dpi=600):
+def poster_png(work, port, poster_art, ghost, scheme, out_png, dpi=600,
+               palette=None, stem="poster"):
     """The poster's background, as a picture, at badge resolution.
 
     Not a crop of the sheet and not a second solve at badge size — the sheet's
@@ -107,11 +108,13 @@ def poster_png(work, port, poster_art, ghost, scheme, out_png, dpi=600):
     """
     if out_png.exists():
         return out_png
-    page = work / "poster.html"
+    page = work / f"{stem}.html"
     run(sys.executable, ROOT / "tools/poster.py", "--art", poster_art,
-        "--ghost", ghost, "--layout", "festival", "--scheme", scheme,
+        "--ghost", ghost, "--layout", "festival",
+        *(("--scheme", scheme) if scheme else ()),
+        *(("--palette", palette) if palette else ()),
         "-o", page, cwd=ROOT)
-    bare = work / "poster-bg.html"
+    bare = work / f"{stem}-bg.html"
     # Only the type goes. The three background layers are the point of this.
     bare.write_text(page.read_text().replace("</style>", ".wrap{visibility:hidden}</style>"),
                     encoding="utf-8")
@@ -154,19 +157,34 @@ def rasterise_art(work, port, page):
     return png
 
 
-def with_raster_art(page, png):
+ROLE_ART_RE = r'\.card\.(\w+) \.art \{ background-image:url\("([^"]+)"\)'
+
+
+def with_raster_art(page, png, role_pngs=()):
     """The badge's three background layers replaced by the poster's picture.
 
     `.ghost` and `.veil` go with them: the picture already has the photograph
     and the veil in it, because it is a photograph of the sheet that has them.
     Drawing either again would be the same layer twice.
     """
-    url = "data:image/png;base64," + base64.b64encode(png.read_bytes()).decode("ascii")
+    as_url = lambda f: ("data:image/png;base64,"
+                        + base64.b64encode(f.read_bytes()).decode("ascii"))
     out = page.with_name(page.stem + "-r.html")
-    text, n = re.subn(ART_RE, '.art { background-image:url("%s")' % url,
+    text, n = re.subn(ART_RE, '.art { background-image:url("%s")' % as_url(png),
                       page.read_text(), count=1)
     if not n:
         sys.exit("  the badge page has no .art background to replace")
+    # A role whose badge is a dark card has a drawing of its own in the page, as
+    # a vector. It cannot stay: one page of it came to a 76MB stream and pypdf
+    # would not read the chunk back to join it. So that rule gets its own
+    # picture, rendered from the same ground, and the card is rasterised like
+    # every other one.
+    for role, role_png in role_pngs:
+        text, k = re.subn(r'\.card\.%s \.art \{ background-image:url\("[^"]+"\)' % role,
+                          '.card.%s .art { background-image:url("%s")' % (role, as_url(role_png)),
+                          text, count=1)
+        if not k:
+            sys.exit(f"  the badge page has no .card.{role} .art background to replace")
     text = text.replace("</style>",
                         ".art{opacity:1}.ghost{display:none}.veil{display:none}</style>")
     out.write_text(text, encoding="utf-8")
@@ -186,6 +204,12 @@ def main():
     ap.add_argument("--roster", default=str(ROOT / "data/roster.tsv"))
     ap.add_argument("--sort", choices=("role", "name"), default="role")
     ap.add_argument("--blanks", type=int, default=6)
+    ap.add_argument("--art-dark",
+                    help="the drawing solved for a dark ground. The organisers' "
+                         "badge is the poster's dark style, so its drawing is "
+                         "its own rather than the light one inverted; that card "
+                         "keeps the vector drawing, which is three pages of the "
+                         "hundred and nine and not the whole document.")
     ap.add_argument("--style", choices=("plate", "open"), default="plate",
                     help="how the name stays legible over the drawing — see "
                          "BADGE_STYLES in poster.py. The file is named after it.")
@@ -229,6 +253,22 @@ def main():
         png = poster_png(work, args.port, args.poster_art, args.ghost,
                          args.scheme, work / f"poster-bg-{args.dpi}.png", args.dpi)
         bg_pos, bg_size = background_geometry(png, args.shift)
+        # And the same background in the dark sheet's style for the roles whose
+        # badge is a dark card, from poster.py's own role palette so the printed
+        # card is the card the export renders rather than an approximation of it.
+        role_pngs = []
+        if args.art_dark:
+            import json
+            sys.path.insert(0, str(ROOT / "tools"))
+            import poster as poster_mod
+            for role, (_, is_dark) in poster_mod.BADGE_ROLE_GROUNDS.items():
+                if not is_dark:
+                    continue
+                role_pngs.append((role.lower(), poster_png(
+                    work, args.port, args.art_dark, args.ghost, "",
+                    work / f"poster-bg-{role.lower()}-{args.dpi}.png", args.dpi,
+                    palette=json.dumps(poster_mod.badge_role_palette(role)),
+                    stem=f"poster-{role.lower()}")))
         for n, batch in enumerate(batches):
             blanks = args.blanks if not batch else 0
             tsv = work / f"chunk-{n}.tsv"
@@ -238,9 +278,10 @@ def main():
                 "--ghost", args.ghost, "--layout", "badge", "--scheme", args.scheme,
                 "--roster", tsv, "--roster-sort", "file",   # the order was chosen above
                 "--badge-style", args.style,
+                *(("--art-dark", args.art_dark) if args.art_dark else ()),
                 "--badge-bg-pos", bg_pos, "--badge-bg-size", bg_size,
                 "--roster-blanks", str(blanks), "-o", page, cwd=ROOT)
-            page = with_raster_art(page, png)
+            page = with_raster_art(page, png, role_pngs)
             pdf = work / f"badges-{n}.pdf"
             pdf.unlink(missing_ok=True)
             chrome("--no-pdf-header-footer", f"--print-to-pdf={pdf}",

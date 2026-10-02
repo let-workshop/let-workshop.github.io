@@ -119,6 +119,12 @@ PALETTE = {
     "chip": "rgba(255,255,255,.34)",
 }
 
+# The dark sheet's own colours, kept before --scheme can overwrite PALETTE. The
+# organisers' badge is the poster's dark style rather than a tinted light card,
+# and it needs the values the dark sheet was designed with: a near-black ground
+# with its own veil, a white drawing, near-white type and the lighter orange.
+DARK_PALETTE = dict(PALETTE)
+
 
 def esc(s):
     return html.escape(str(s), quote=False)
@@ -1546,17 +1552,19 @@ XBANNER = """<!doctype html>
     font-family:"Satoshi",sans-serif; font-weight:700; font-size:37mm;
     letter-spacing:-.014em; color:{ink}; margin:0;
   }}
-  /* 40mm, against the venue's 37. It was 44 while the weekday was a small mono
-     word tucked after the figure; written out as the cloth writes it, "2026.
-     10.7 (Wed) – 10.8 (Thu)" needs 512mm at 44 and that is the column exactly,
-     so it wrapped. At 40 it sets 498 and stays on one line. It was 66 and the two facts under the
+  /* The venue's face, weight and size exactly. These two are a pair under one
+     rule, and they were not set alike: the dates were Inter Tight 700 at 40mm
+     against the venue's Satoshi 700 at 37, which is the figures face at a
+     larger size and read as the heavier of the two facts. It is the right face
+     for a line that is only figures — it was "2026. 10.7" with the weekday as a
+     small mono word after it — and the wrong one for a line with words in it. It was 66 and the two facts under the
      same rule were a headline and a caption rather than a pair — the dates
      are not more important than where to go, they are just shorter. A
      little larger and not much: they are figures, and figures read smaller
      than letters at the same size. */
   .stack {{
-    font-family:"Inter Tight",sans-serif; font-weight:700; font-size:40mm;
-    line-height:1.02; letter-spacing:-.03em; color:{ink}; margin:0;
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:37mm;
+    letter-spacing:-.014em; color:{ink}; margin:0;
   }}
   /* Full width, and said so. The foot came out 420mm inside a 508mm column
      and the rule above the marks was then shorter than the marks under it.
@@ -2400,9 +2408,8 @@ BADGE_STYLES = {
 # ─────────────────────────────────────────────────────────────
 
 # role -> (the ground, whether the card turns dark with it)
-BADGE_ROLE_GROUNDS = {"Organiser": ("#553a74", True), "Staff": ("#f7dfa4", False)}
-# What a dark card puts on that ground: the poster's own black-sheet colours.
-BADGE_DARK_TYPE = {"mark": "#ff8a75", "ink": "#f5f5f7"}
+BADGE_ROLE_GROUNDS = {"Organiser": ("#36234d", True), "Staff": ("#f7dfa4", False)}
+
 
 _D65 = (0.95047, 1.0, 1.08883)
 _TO_XYZ = ((0.4124, 0.3576, 0.1805), (0.2126, 0.7152, 0.0722), (0.0193, 0.1192, 0.9505))
@@ -2475,8 +2482,30 @@ def _hsl_hue(colour):
     return colorsys.rgb_to_hls(r, g, b)[0] * 360
 
 
-def badge_role_css(style):
-    """A ground, a matching veil, and the picture turned to follow them.
+def badge_role_palette(role):
+    """The palette a role's ground implies.
+
+    The source scheme — the dark sheet for a dark role, the light one otherwise
+    — with its ground, its second ground and its scrims turned to that hue, at
+    that lightness. badges.py renders its dark background through this too, so
+    the printed card and the exported one are the same card.
+    """
+    ground, dark = BADGE_ROLE_GROUNDS[role]
+    src = DARK_PALETTE if dark else PALETTE
+    base = src["ground"]
+    hue = _lab_hue(ground)
+    lightness = (_lab(tuple(int(ground.lstrip("#")[k:k + 2], 16) for k in (0, 2, 4)))[0]
+                 / max(_lab(tuple(int(base.lstrip("#")[k:k + 2], 16)
+                                  for k in (0, 2, 4)))[0], 1e-6))
+    chroma = _chroma_of(ground) / _chroma_of(base)
+    pal = {k: rotate_hue(v, hue, chroma, lightness) for k, v in src.items()
+           if k.startswith("scrim") or k in ("ground", "ground2")}
+    pal["ground"] = ground
+    return pal
+
+
+def badge_role_css(style, art_dark_url="", ghost_dark_url=""):
+    """A ground for each role that gets one, and for a dark role, a dark card.
 
     Two mechanisms, because the badge is printed two ways. The export renders
     the card as it is written — the drawing and the photograph as layers over
@@ -2489,37 +2518,54 @@ def badge_role_css(style):
     every badge the same blue. The filter is what carries the colour there,
     and it is on the picture layers only — never on the card — so the accent
     and the ink keep the hues they are specified in.
+
+    A yellow ground is a hue turn. The purple one is the poster's dark style:
+    the dark sheet's own ground, veil, drawing, photograph and type, turned to
+    purple. It was an inverted light card for one round, which is not the same
+    thing — inverting the veil took the gradient that darkens towards the foot
+    and made it lighten instead, and inverting the photograph gave a negative,
+    a pale building against a dark sky.
     """
     out = []
-    base_hue = _hsl_hue(PALETTE["ground"])
-    base_L = _lab(tuple(int(PALETTE["ground"].lstrip("#")[k:k + 2], 16)
-                        for k in (0, 2, 4)))[0]
+    light_hue = _hsl_hue(PALETTE["ground"])
     for role, (ground, dark) in BADGE_ROLE_GROUNDS.items():
-        hue = _lab_hue(ground)
-        lift = _lab(tuple(int(ground.lstrip("#")[k:k + 2], 16) for k in (0, 2, 4)))[0] / base_L
-        # The veil's stops keep their own place in the card's tonal range, so a
-        # deep ground gets a deep veil rather than a pale one laid over it.
-        pal = {k: (rotate_hue(v, hue, chroma=_chroma_of(ground) / _chroma_of(PALETTE["ground"]),
-                              lightness=lift)
-                   if k.startswith("scrim") or k in ("ground", "ground2") else v)
-               for k, v in PALETTE.items()}
-        pal["ground"] = ground
-        veil = BADGE_STYLES[style]["badge_veil"].format(**pal)
+        src = DARK_PALETTE if dark else PALETTE
         cls = role.lower()
-        # Inverting first turns the pale ground dark and the dark marks light,
-        # and takes the hue to the opposite side of the wheel with it; the turn
-        # is measured from there.
-        src = (base_hue + 180) % 360 if dark else base_hue
-        turn = (_hsl_hue(ground) - src + 540) % 360 - 180
-        rule = (f"  .card.{cls} {{ background:{ground}; }}\n"
-                f"  .card.{cls} .veil {{ background:{veil}; }}\n"
-                f"  .card.{cls} .art, .card.{cls} .ghost, .card.{cls} .veil "
-                f"{{ filter:{'invert(1) ' if dark else ''}hue-rotate({turn:.0f}deg); }}")
+        # The veil's stops keep their place in the card's tonal range, so the
+        # dark card goes on getting darker towards the foot — which is what
+        # makes it this badge in the dark rather than a differently coloured one.
+        pal = {**src, **badge_role_palette(role)}
+        # The veil is recoloured here, so it must not be filtered too. Both at
+        # once is what lightened the foot of the purple card and swung the foot
+        # of the yellow one round towards blue.
+        show = ""
+        rules = [f"  .card.{cls} {{ background:{ground}; }}",
+                 f"  .card.{cls} .veil {{ {show}background:"
+                 f"{BADGE_STYLES[style]['badge_veil'].format(**pal)}; }}"]
         if dark:
-            rule += (f"\n  .card.{cls} .mark {{ color:{BADGE_DARK_TYPE['mark']}; }}\n"
-                     f"  .card.{cls} .longname, .card.{cls} .when "
-                     f"{{ color:{BADGE_DARK_TYPE['ink']}; }}")
-        out.append(rule)
+            rules += [f"  .card.{cls} .mark {{ color:{src['hot']}; }}",
+                      f"  .card.{cls} .longname, .card.{cls} .when "
+                      f"{{ color:{src['ink']}; }}",
+                      ]
+            # The dark sheet's drawing and photograph, if they were handed over;
+            # without them the light ones are inverted, which is the drawing
+            # right and the photograph a negative.
+            if art_dark_url:
+                rules.append(f'  .card.{cls} .art {{ background-image:url("{art_dark_url}"); }}')
+            else:
+                turn = (_hsl_hue(ground) - (light_hue + 180) % 360 + 540) % 360 - 180
+                rules.append(f"  .card.{cls} .art {{ filter:invert(1) hue-rotate({turn:.0f}deg); }}")
+            if not ghost_dark_url:
+                rules.append(f"  .card.{cls} .ghost {{ opacity:{src['ghost_alpha']}; }}")
+            if ghost_dark_url:
+                rules.append(f'  .card.{cls} .ghost {{ {show}'
+                             f'background-image:url("{ghost_dark_url}"); '
+                             f"opacity:{src['ghost_alpha']}; }}")
+        else:
+            turn = (_hsl_hue(ground) - light_hue + 540) % 360 - 180
+            rules.append(f"  .card.{cls} .art, .card.{cls} .ghost "
+                         f"{{ filter:hue-rotate({turn:.0f}deg); }}")
+        out.append("\n".join(rules))
     return "\n".join(out)
 
 
@@ -2637,12 +2683,14 @@ def on_paper():
 def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=None,
          ghost=None, silhouette=None, roster_path=None, roster_sort="role",
          roster_blanks=6, badge_style="plate",
-         badge_bg_pos="center", badge_bg_size="cover", lang="en"):
+         badge_bg_pos="center", badge_bg_size="cover", lang="en",
+         art_dark=None):
     site = yaml.safe_load((DATA / "site.yml").read_text(encoding="utf-8"))
     program = yaml.safe_load((DATA / "program.yml").read_text(encoding="utf-8"))
     venue = yaml.safe_load((DATA / "venue.yml").read_text(encoding="utf-8"))
 
     ghost_layer = ""
+    ghost_dark_svg = ""
     if silhouette:
         # A flat plate in the shape of the subject, under the formulas. The
         # drawing alone is thin strokes, and at any distance a field of thin
@@ -2685,6 +2733,14 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
             + photo_svg(ghost, PALETTE["ghost_shadow"], PALETTE["ghost_light"],
                         gw, gh, contrast=float(PALETTE["ghost_contrast"]))
             + "</div>")
+        # And the same photograph in the dark sheet's two tones, for the badge
+        # whose ground is dark. Built here rather than filtered later: a filter
+        # that turns a light duotone dark turns the building pale and the sky
+        # deep, which is a negative of the place rather than the place at night.
+        if layout == "badge":
+            ghost_dark_svg = photo_svg(
+                ghost, DARK_PALETTE["ghost_shadow"], DARK_PALETTE["ghost_light"],
+                gw, gh, contrast=float(DARK_PALETTE["ghost_contrast"]))
 
     if cutout:
         light_ground = on_paper()
@@ -2890,6 +2946,8 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     as_url = lambda svg: "data:image/svg+xml;base64," + base64.b64encode(
         svg.encode("utf-8")).decode("ascii")
     art_url = as_url(art)
+    art_dark_url = as_url(Path(art_dark).read_text(encoding="utf-8")) if art_dark else ""
+    ghost_dark_url = as_url(ghost_dark_svg) if ghost_dark_svg else ""
     ghost_url = as_url(ghost_layer[len('<div class="ghost">'):-len("</div>")]) if ghost_layer else ""
 
     # What the name has to fit inside: the card is 90mm, .pad takes 8 a side and
@@ -3104,7 +3162,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         badges=badges,
         badge_bg_pos=badge_bg_pos,
         badge_bg_size=badge_bg_size,
-        badge_role_css=badge_role_css(badge_style),
+        badge_role_css=badge_role_css(badge_style, art_dark_url, ghost_dark_url),
         **{k: v.format(**PALETTE) for k, v in BADGE_STYLES[badge_style].items()},
         art_url=art_url,
         ghost_url=ghost_url,
@@ -3157,6 +3215,9 @@ if __name__ == "__main__":
                          "or the order the file is already in")
     ap.add_argument("--roster-blanks", type=int, default=6,
                     help="spare unnamed badges at the end (default 6)")
+    ap.add_argument("--art-dark", help="the drawing solved for a dark ground, for "
+                                      "the badges whose ground is dark. Without it "
+                                      "the light drawing is inverted instead.")
     ap.add_argument("--badge-style", choices=sorted(BADGE_STYLES), default="plate",
                     help="how the badge keeps a name legible over the drawing: "
                          "`plate` puts it on a translucent panel, `open` leans on "
@@ -3194,4 +3255,4 @@ if __name__ == "__main__":
     main(args.art, args.out, args.layout, args.photo, args.cutout, args.duotone,
          args.ghost, args.silhouette, args.roster, args.roster_sort,
          args.roster_blanks, args.badge_style,
-         args.badge_bg_pos, args.badge_bg_size, args.lang)
+         args.badge_bg_pos, args.badge_bg_size, args.lang, args.art_dark)
