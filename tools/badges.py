@@ -6,7 +6,7 @@
 
 Writes, into --out (default ~/Downloads/let-badges):
 
-    let-2026-badges.pdf     one card per page, 90 x 130mm
+    let-2026-badges.pdf     one card per page, 95 x 122mm
     roster.txt              who is on which card, for the desk
 
 The card is the one in poster.py's BADGE layout and nothing else — same formula
@@ -47,8 +47,8 @@ import roster as roster_mod                                    # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-# 90 x 130mm at 300 DPI, which is what the drawing is rasterised at.
-CARD_PX = (1063, 1535)
+# 95 x 122mm at 300 DPI, which is what the drawing is rasterised at.
+CARD_PX = (1122, 1441)
 ART_RE = r'\.art \{ background-image:url\("([^"]+)"\)'
 
 
@@ -82,8 +82,8 @@ def background_geometry(png, shift_mm):
     Image.MAX_IMAGE_PIXELS = None
     w, h = Image.open(png).size
     r = w / h
-    need_w = 90 + 2 * abs(shift_mm)
-    height_mm = max(130.0, need_w / r)
+    need_w = 95 + 2 * abs(shift_mm)
+    height_mm = max(122.0, need_w / r)
     return f"calc(50% + {shift_mm:.2f}mm) center", f"auto {height_mm:.2f}mm"
 
 
@@ -118,7 +118,7 @@ def poster_png(work, port, poster_art, ghost, scheme, out_png, dpi=600,
     # Only the type goes. The three background layers are the point of this.
     bare.write_text(page.read_text().replace("</style>", ".wrap{visibility:hidden}</style>"),
                     encoding="utf-8")
-    px = round(90 / 25.4 * dpi)
+    px = round(95 / 25.4 * dpi)
     chrome("--hide-scrollbars", f"--force-device-scale-factor={px / 1610:.5f}",
            "--window-size=1610,2268", "--virtual-time-budget=180000",
            f"--screenshot={out_png}", f"http://localhost:{port}/{bare.name}")
@@ -216,7 +216,7 @@ def main():
     ap.add_argument("--shift", type=float, default=0.0, metavar="MM",
                     help="move the picture right by this many millimetres "
                          "(negative moves it left). `cover` leaves only 2.3mm "
-                         "of slack on a 90mm card, so anything more enlarges "
+                         "of slack on a 95mm card, so anything more enlarges "
                          "the background by exactly as much as it shifts it "
                          "and no more")
     ap.add_argument("--dpi", type=int, default=600,
@@ -261,8 +261,8 @@ def main():
             import json
             sys.path.insert(0, str(ROOT / "tools"))
             import poster as poster_mod
-            for role, (_, is_dark) in poster_mod.BADGE_ROLE_GROUNDS.items():
-                if not is_dark:
+            for role, spec in poster_mod.BADGE_ROLE_GROUNDS.items():
+                if not spec.get("dark"):
                     continue
                 role_pngs.append((role.lower(), poster_png(
                     work, args.port, args.art_dark, args.ghost, "",

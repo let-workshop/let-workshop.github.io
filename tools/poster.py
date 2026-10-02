@@ -1855,7 +1855,7 @@ SOCIAL = """<!doctype html>
 </body></html>
 """
 # ─────────────────────────────────────────────────────────────
-# Name badges, 90x130mm — the usual insert for a lanyard holder.
+# Name badges, 95x122mm — the usual insert for a lanyard holder.
 # One card per page, so a print shop can take the file as it is.
 #
 # A badge is read across a handshake, which is about a metre, and
@@ -1867,9 +1867,9 @@ SOCIAL = """<!doctype html>
 
 BADGE = """<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>LeT Workshop — name badges, 90x130mm</title>
+<title>LeT Workshop — name badges, 95x122mm</title>
 <style>
-  @page {{ size: 90mm 130mm; margin: 0; }}
+  @page {{ size: 95mm 122mm; margin: 0; }}
   @font-face {{ font-family:"Jost"; font-weight:100 900; src:url("fonts/jost-latin.woff2") format("woff2"); }}
   @font-face {{ font-family:"Inter Tight"; font-weight:100 900; src:url("fonts/inter-tight-latin.woff2") format("woff2"); }}
   @font-face {{ font-family:"JetBrains Mono"; font-weight:400 600; src:url("fonts/jetbrains-mono-latin.woff2") format("woff2"); }}
@@ -1880,7 +1880,7 @@ BADGE = """<!doctype html>
   @font-face {{ font-family:"Satoshi"; font-weight:900; src:url("fonts/satoshi-900.woff2") format("woff2"); }}
   html, body {{ margin:0; padding:0; background:#000; }}
   .card {{
-    position:relative; width:90mm; height:130mm; overflow:hidden;
+    position:relative; width:95mm; height:122mm; overflow:hidden;
     background:{ground}; color:{ink}; font-family:"Satoshi",sans-serif;
     page-break-after:always; break-after:page;
   }}
@@ -2406,12 +2406,25 @@ BADGE_STYLES = {
 # rather than a green.
 
 # role -> (the ground, whether the card turns dark with it)
-# role -> (the ground, whether the card is the dark sheet)
-# The organisers' ground is the dark sheet's own, unaltered: that badge is the
+# role -> what that badge is made of. `ground` and `dark` are the whole of it
+# for the organisers, whose card is the dark sheet unaltered: that badge is the
 # poster in the dark and not a colour of its own. It was turned to purple for a
 # round, which made it a third thing that was neither the poster nor this badge.
-BADGE_ROLE_GROUNDS = {"Organiser": (PALETTE["ground"], True),
-                      "Staff": ("#026532", True)}
+#
+# `veil` flattens the gradient to one alpha and `palette` overrides anything
+# else. Both are for the green card. The dark sheet's veil runs .42 at the head
+# to .86 at the foot, which on a coloured ground reads as the colour draining
+# towards the hem rather than as depth; white formulas on it put the sheet's
+# whole range into a card that wants to be one green; and the photograph, a
+# bright sky over a dark building, is most of what is left varying once the veil
+# is flat. So: one alpha, formulas in a pale green at 5:1 against the ground
+# rather than white's 7.2, and the photograph down from .3 to .1.
+BADGE_ROLE_GROUNDS = {
+    "Organiser": {"ground": PALETTE["ground"], "dark": True},
+    "Staff": {"ground": "#026532", "dark": True, "veil": .50,
+              "palette": {"art_ink": "#b0e3bc", "ghost_alpha": ".10",
+                          "hot": "#ffb4a5"}},
+}
 
 
 _D65 = (0.95047, 1.0, 1.08883)
@@ -2493,7 +2506,8 @@ def badge_role_palette(role):
     that lightness. badges.py renders its dark background through this too, so
     the printed card and the exported one are the same card.
     """
-    ground, dark = BADGE_ROLE_GROUNDS[role]
+    spec = BADGE_ROLE_GROUNDS[role]
+    ground, dark = spec["ground"], spec.get("dark", False)
     src = DARK_PALETTE if dark else PALETTE
     base = src["ground"]
     hue = _lab_hue(ground)
@@ -2504,10 +2518,28 @@ def badge_role_palette(role):
     if ground.lower() == base.lower():
         # Nothing to turn. Returned untouched rather than rotated by zero, so
         # the dark card is the dark sheet to the byte.
-        return {k: src[k] for k in keys}
-    chroma = _chroma_of(ground) / _chroma_of(base)
-    pal = {k: rotate_hue(src[k], hue, chroma, lightness) for k in keys}
-    pal["ground"] = ground
+        pal = {k: src[k] for k in keys}
+    else:
+        chroma = _chroma_of(ground) / _chroma_of(base)
+        pal = {k: rotate_hue(src[k], hue, chroma, lightness) for k in keys}
+        pal["ground"] = ground
+    if "veil" in spec:
+        # One alpha for every stop, so the gradient stops being a gradient. Two
+        # families, because the two layouts hold their veil differently: the
+        # badge's own is the `scrim` rgbas, and the sheet's — which is what the
+        # printed card actually shows, rasterised — is the `veil1`..`veil5`
+        # stop-opacities. Flattening only the first left the green card still
+        # draining 52% towards its hem, because the gradient was in the picture.
+        a = spec["veil"]
+        pal = {k: (re.sub(r",[\d.]+\)$", f",{a})", v) if k.startswith("scrim") else v)
+               for k, v in pal.items()}
+        pal.update({f"veil{n}": f"{a}" for n in range(1, 6)})
+        pal["veilx"] = f"{a}"
+    # Anything else the card wants: the colour the formulas are drawn in, how
+    # much of the photograph is left. The photograph is most of what varies down
+    # the sheet — a bright sky at the head, the building below it — so holding it
+    # back is what flattens a coloured card without burying the writing.
+    pal.update(spec.get("palette", {}))
     return pal
 
 
@@ -2535,7 +2567,8 @@ def badge_role_css(style, art_dark_url="", ghost_dark_url=""):
     """
     out = []
     light_hue = _hsl_hue(PALETTE["ground"])
-    for role, (ground, dark) in BADGE_ROLE_GROUNDS.items():
+    for role, spec in BADGE_ROLE_GROUNDS.items():
+        ground, dark = spec["ground"], spec.get("dark", False)
         src = DARK_PALETTE if dark else PALETTE
         cls = role.lower()
         # The veil's stops keep their place in the card's tonal range, so the
@@ -2550,9 +2583,12 @@ def badge_role_css(style, art_dark_url="", ghost_dark_url=""):
                  f"  .card.{cls} .veil {{ {show}background:"
                  f"{BADGE_STYLES[style]['badge_veil'].format(**pal)}; }}"]
         if dark:
-            rules += [f"  .card.{cls} .mark {{ color:{src['hot']}; }}",
+            # From the role's palette, not the sheet's, so a card can lighten
+            # its own accent: the dark sheet's orange is 2.2:1 on a mid-tone
+            # green, where on near-black it is 6.
+            rules += [f"  .card.{cls} .mark {{ color:{pal['hot']}; }}",
                       f"  .card.{cls} .longname, .card.{cls} .when "
-                      f"{{ color:{src['ink']}; }}",
+                      f"{{ color:{pal['ink']}; }}",
                       ]
             # The dark sheet's drawing and photograph, if they were handed over;
             # without them the light ones are inverted, which is the drawing
@@ -2563,11 +2599,11 @@ def badge_role_css(style, art_dark_url="", ghost_dark_url=""):
                 turn = (_hsl_hue(ground) - (light_hue + 180) % 360 + 540) % 360 - 180
                 rules.append(f"  .card.{cls} .art {{ filter:invert(1) hue-rotate({turn:.0f}deg); }}")
             if not ghost_dark_url:
-                rules.append(f"  .card.{cls} .ghost {{ opacity:{src['ghost_alpha']}; }}")
+                rules.append(f"  .card.{cls} .ghost {{ opacity:{pal['ghost_alpha']}; }}")
             if ghost_dark_url:
                 rules.append(f'  .card.{cls} .ghost {{ {show}'
                              f'background-image:url("{ghost_dark_url}"); '
-                             f"opacity:{src['ghost_alpha']}; }}")
+                             f"opacity:{pal['ghost_alpha']}; }}")
         else:
             turn = (_hsl_hue(ground) - light_hue + 540) % 360 - 180
             rules.append(f"  .card.{cls} .art, .card.{cls} .ghost "
@@ -2597,7 +2633,7 @@ GHOST_SIZE = {
     "banner2": (3400, 510),
     "xbanner": (900, 2700),     # 600 x 1800mm
     "social": (1400, 1400),     # 1080 x 1080 square
-    "badge": (900, 1300),       # 90 x 130mm
+    "badge": (950, 1220),       # 95 x 122mm
 }
 
 
@@ -2957,9 +2993,9 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     ghost_dark_url = as_url(ghost_dark_svg) if ghost_dark_svg else ""
     ghost_url = as_url(ghost_layer[len('<div class="ghost">'):-len("</div>")]) if ghost_layer else ""
 
-    # What the name has to fit inside: the card is 90mm, .pad takes 8 a side and
+    # What the name has to fit inside: the card is 95mm, .pad takes 8 a side and
     # the plate's own padding another 5, less the 1mm it is pulled out by.
-    NAME_MEASURE = 90 - 2 * 8 + 2 * 1 - 2 * 5
+    NAME_MEASURE = 95 - 2 * 8 + 2 * 1 - 2 * 5
 
     def badge_card(role, hot, name="", sub="", affil=""):
         # Each name set to the measure rather than every name set to one size.
