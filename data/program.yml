@@ -497,30 +497,33 @@ days:
               test-time sample complexity that improves upon linear Transformers —
               analyzed to behave like kernel methods — and is comparable to nonlinear
               Transformers, which have been shown to surpass the Correlational
-              Statistical Query (CSQ) lower bound and achieve near information-
-              theoretically optimal rate in previous works. Our analysis reveals the
-              crucial role of the nonlinear gating mechanism in Mamba for feature
-              extraction, highlighting it as the fundamental driver behind Mamba's
-              ability to achieve both computational efficiency and high performance.
+              Statistical Query (CSQ) lower bound and achieve near
+              information-theoretically optimal rate in previous works. Our analysis
+              reveals the crucial role of the nonlinear gating mechanism in Mamba for
+              feature extraction, highlighting it as the fundamental driver behind
+              Mamba's ability to achieve both computational efficiency and high
+              performance.
           - name: Taewon Koo
             name_ko: 구태원
             affil: KAIST
             title: >-
               Minimax Optimality of Posterior Sampling for Reinforcement Learning
             abstract: >-
-              Posterior sampling for reinforcement learning (PSRL) has received
-              sustained attention for its algorithmic simplicity and strong empirical
-              performance. Despite this practical success, whether vanilla PSRL attains
-              minimax regret under the general correlated priors accepted by the
-              algorithm has remained unresolved. We close this gap through a Bellman
-              analysis that combines posterior confidence transfer with a residual-
-              corrected variance argument. In time-inhomogeneous tabular MDPs with
-              unknown stochastic rewards, exact vanilla PSRL achieves Bayesian regret of
-              order √(SAH³K) up to logarithmic factors, under an arbitrary joint
-              reward–transition prior. In linear-mixture MDPs, it achieves order
-              dH^{3/2}√K under an arbitrary joint prior over all stage parameters. Both
-              bounds match the corresponding minimax rates without conjugacy, prior
-              factorization, or posterior-consistency assumptions.
+              Posterior sampling for reinforcement learning (PSRL) is one of the
+              simplest and most effective exploration methods, but a basic question has
+              remained open: does unmodified PSRL achieve minimax regret without
+              structural assumptions on the prior? We answer yes. Exact vanilla PSRL is
+              minimax optimal in leading-order Bayesian regret under arbitrary
+              correlated priors. The difficulty is that a posterior-sampled transition
+              model is coupled with its own continuation value. We overcome this with a
+              common empirical transition reference that isolates the resulting value
+              mismatch and a Bellman-based variance argument that controls it without an
+              extra leading-order state-space factor. For finite-horizon,
+              time-inhomogeneous tabular MDPs with unknown stochastic rewards, this
+              yields the minimax Oe( √ SAH3K) regret rate under arbitrary joint priors
+              over rewards and transitions. The same proof principle gives the minimax
+              Oe(d √ H3K) rate for linear-mixture MDPs under arbitrary joint parameter
+              priors.
           - name: Donggeun Kim
             name_ko: 김동근
             affil: POSTECH IME
@@ -531,44 +534,44 @@ days:
               computationally challenging because exact posterior updates are generally
               intractable. Existing GLB algorithms with strong regret guarantees
               typically rely on batch estimators built from accumulated data, while
-              computationally efficient one-pass methods often require hard-to-specify
-              problem-dependent constants. We propose OnlineTS, an online TS algorithm
-              for GLBs based on Bayesian one-pass online learning. Our method uses a
-              Gaussian approximation induced by a local quadratic expansion of the log-
-              likelihood, leading to a recursive posterior update that depends only on
-              the current estimator and the current observation. We show that this
+              computationally efficient one-pass methods often require problem-dependent
+              quantities, such as an upper bound on the context norm and a radius of a
+              ball containing the true parameter, as explicit inputs to their
+              implementation. We propose OnlineTS, an online TS algorithm for GLBs based
+              on Bayesian one-pass online learning. Our method uses a Gaussian
+              approximation induced by a local quadratic expansion of the
+              log-likelihood, leading to a recursive posterior update that depends only
+              on the current estimator and the current observation. We show that this
               Bayesian online one-pass estimator admits a high probability concentration
               bound in the bandit setting, which yields a frequentist regret bound of
-              order d√T for OnlineTS over horizon T, where d is the dimension of
-              contexts. Thus, OnlineTS combines strong statistical performance with
-              computational efficiency without requiring hard-to-specify theoretical
-              constants for implementation. Through numerical experiments, we
-              demonstrate that OnlineTS consistently outperforms existing GLB methods by
-              a significant margin.
-          - name: Minju Hong
-            name_ko: 홍민주
-            title: >-
-              Provably Efficient Regularized Online RLHF with Generalized Bilinear
-              Preferences
-            abstract: >-
-              We study regularized best-response max-regret minimization in online RLHF
-              under general preferences and bandit feedback. While regularization
-              robustifies alignment, known polylogarithmic regret guarantees remain
-              heavily KL-specific. To investigate whether these fast rates generalize,
-              we adopt the Generalized Bilinear Preference Model (GBPM), capturing
-              intransitive preferences over multi-dimensional item-wise features via a
-              low-rank skew-symmetric matrix. Using only strong convexity and skew-
-              symmetry, we prove that the dual gap of any greedy policy is bounded by
-              the squared estimation error. Under a feature coverage assumption, we
-              establish a generic polylogarithmic regret bound with Greedy Sampling, and
-              a dimensionally improved bound for well-conditioned arm-sets with Explore-
-              Then-Commit. This demonstrates that fast regrets are not KL-specific, but
-              fundamentally stem from generic strong convex geometry.
+              $\widetilde O(\sqrt{T})$ for OnlineTS over horizon $T$. Thus, OnlineTS
+              combines strong statistical performance with computational efficiency
+              without requiring such problem-dependent quantities as inputs to its
+              implementation. Through numerical experiments, we demonstrate that
+              OnlineTS achieves regret competitive with the existing GLB methods at
+              substantially lower computational cost.
           - name: Taehyuk Ha
             name_ko: 하태혁
             affil: POSTECH CES
             title: >-
-              The Training Dynamics of Planning Circuits in Masked Diffusion Models
+              How Learning Dynamics Shape Decoding in Masked Diffusion Models
+            abstract: >-
+              Diffusion Language Models have recently emerged as a promising alternative
+              for reasoning, benefiting from bidirectional prediction and flexible token
+              ordering at inference. However, how training shapes the usefulness of this
+              flexibility remains unclear. In this paper, we study stage-wise learning
+              dynamics in a masked diffusion model using a two-layer Transformer with a
+              fixed output head on a graph-planning task. A local endpoint-first
+              asymmetry under ordinary joint training motivates a framework separating
+              \emph{endpoint preparation} from \emph{predecessor learning}. Within this
+              framework, we establish a finite predecessor-risk decrease and derive
+              risk-dependent reverse-circuit certificates. We derive conditions for
+              endpoint reveal to bootstrap predecessor prediction and for
+              top-probability and top-margin decoding to favor the reverse order,
+              distinguishing sequence-level correctness from confidence-based selection.
+              We also characterize order independence and confidence agreement when all
+              mask-conditioned risks vanish. Together, our analysis relates stage-wise
+              learning and internal computation to decoding preference and advantage.
           - name: Yejun Kim
             name_ko: 김예준
             affil: KAIST MAS
@@ -577,18 +580,18 @@ days:
             abstract: >-
               The Edge of Stability (EoS) phenomenon is widely observed in minimization,
               where gradient methods continue to decrease the loss even while remaining
-              near their stability thresholds, a behavior associated with a self-
-              stabilization mechanism. Yet an analogous phenomenon has not been clearly
-              identified in minimax optimization. In this paper, we formulate EoS for
-              minimax optimization, demonstrate that it indeed occurs, and characterize
-              the self-stabilization mechanism underlying it. We first define EoS for
-              minimax optimization in terms of possibly complex dominant Jacobian
-              eigenvalues reaching the boundary of the stability region. Using two-
-              player zero-sum games, we observe minimax EoS for both Extragradient (EG)
-              and Optimistic Gradient Descent Ascent (OGDA). However, when the dominant
-              eigenvalues lie near the real axis, OGDA still exhibits EoS whereas EG
-              does not. Finally, we generalize the self-stabilization mechanism to
-              minimax methods and show how it explains these behaviors.
+              near their stability thresholds, a behavior associated with a
+              self-stabilization mechanism. Yet an analogous phenomenon has not been
+              clearly identified in minimax optimization. In this paper, we formulate
+              EoS for minimax optimization, demonstrate that it indeed occurs, and
+              characterize the self-stabilization mechanism underlying it. We first
+              define EoS for minimax optimization in terms of possibly complex dominant
+              Jacobian eigenvalues reaching the boundary of the stability region. Using
+              two-player zero-sum games, we observe minimax EoS for both Extragradient
+              (EG) and Optimistic Gradient Descent Ascent (OGDA). However, when the
+              dominant eigenvalues lie near the real axis, OGDA still exhibits EoS
+              whereas EG does not. Finally, we generalize the self-stabilization
+              mechanism to minimax methods and show how it explains these behaviors.
           - name: Heesang Ahn
             name_ko: 안희상
             affil: SNU DS
@@ -668,11 +671,15 @@ days:
               Local Exponential Stability of Mean-Field Langevin Descent–Ascent and
               Associated Particle System
             abstract: >-
-              In this presentation we prove the local exponential stability of Mean-
-              Field Langevin Descent–Ascent. We answer the positive part of the open
-              problem by Wang and Chizat (COLT 2024). Moreover we present a particle
-              theorem that shows the finite-particle dynamics inherits this stability
-              modulo a finite-particle error floor.
+              Mckean-Vlasov equations model various measure-evolving situations arising
+              from various fields. In the field of machine learning, SGD dynamics of
+              two-layer neural networks and forward passes of certain mean-field
+              transformers are Mckean-Vlasov equations with specific interaction and
+              potential kernels. In this presentation we classify the asymptoptic
+              convergence rates of Mckean-Vlasov equations using Adams-Simon conditions.
+              In the case of mean-field transformers with constant-times-identity
+              parameters, the convergence rates are described explicitly by the
+              parameters. This answers the recent question by Mun--Rosenzweig(2026).
           - name: Taehyun Hwang
             name_ko: 황태현
             affil: SNU DS
@@ -698,6 +705,87 @@ days:
               The algorithm also admits an anytime implementation without resetting past
               data, and experiments show that it remains competitive with baselines
               while using substantially smaller ensembles.
+          - name: Shin So
+            name_ko: 소신
+            affil: YONSEI AI
+            title: >-
+              When More Data Slow Algorithmic Learning
+            abstract: >-
+              More training data can improve generalization, but does it always help a
+              model learn faster? We investigate this question through controlled
+              Transformer experiments on elementary cellular automata: binary sequences
+              updated by a local rule mapping each cell and its two neighbors to its
+              next value. We identify an intermediate-difficulty regime in which larger
+              datasets delay both training-set fitting and generalization, measured in
+              optimizer updates at a fixed batch size rather than epochs. Comparisons
+              with easy and hard rules highlight a key distinction: the availability of
+              lower-order predictive signals, which enable better-than-chance prediction
+              from partial local inputs. Under the uniform population distribution, the
+              intermediate rule provides neither output bias nor single-input predictive
+              information. Sampling fluctuations nevertheless introduce these signals
+              into smaller datasets, but the signals weaken as datasets grow. Biasing
+              training inputs to introduce such signals accelerates generalization on
+              unchanged, uniformly sampled validation inputs. We separately probe
+              example-specific fitting by appending a fixed random bit string to each
+              training target. Fitting these strings takes more updates as datasets
+              grow, and the model can generalize on the cellular-automaton task before
+              accurately reproducing them. Together, these observations suggest that
+              weaker empirical signals and more example-specific associations may both
+              contribute to the slowdown. We also observe similar slowdowns in dynamic
+              programming and scratchpad multiplication. Our findings distinguish data
+              sufficiency from learning speed: adding examples can delay algorithmic
+              learning even when smaller datasets already support generalization.
+          - name: Sanghoon Yoo
+            name_ko: 유상훈
+            affil: SNU DS
+            title: >-
+              Practical and Optimal Algorithm for Linear Contextual Bandits with Rare
+              Parameter Updates
+            abstract: >-
+              We study linear contextual bandits under \emph{rare parameter updates}:
+              the learner may incorporate reward feedback into its parameter estimate
+              only at a small number of update times, while still observing contexts
+              online and selecting actions sequentially. This viewpoint clarifies a
+              practical distinction that is often blurred in the literature: many
+              ``strictly batched'' methods additionally restrict \emph{within-interval
+              context adaptivity}, meaning that the action rule inside an interval
+              cannot depend on the \emph{sequence} of realized contexts/actions in that
+              interval (beyond the current round's context). For linear contextual
+              bandits, we propose two practical algorithms with only $\Ocal(\log\log T)$
+              parameter updates. Our first algorithm \texttt{BLCE-G} attains
+              minimax-optimal regret (up to polylogarithmic factors in $T$)
+              \emph{simultaneously} in both the small-$K$ and large-$K$ regimes under a
+              static schedule. Our second algorithm \texttt{BLCE} removes the near
+              G-optimal design step---a dominant computational bottleneck in prior
+              strictly batched static-grid methods---yet preserves minimax-optimal
+              regret and achieves the lowest known runtime complexity among optimal
+              algorithms. We further extend these rare-update and computational
+              principles to generalized linear contextual bandits. Overall, our results
+              yield minimax-optimal algorithms for linear contextual bandits and a
+              near-optimal generalized-linear extension under $\Ocal(\log\log T)$
+              parameter updates, while remaining computationally efficient in practice.
+          - name: Youngwoo Song
+            name_ko: 송영우
+            affil: KAIST Physics
+            title: >-
+              A Statistical Physics Approach to Mitigating Latent Gradient Bias in SGD
+              under Label Noise
+            abstract: >-
+              Statistical physics has offered valuable perspectives on machine learning
+              (ML) through frameworks such as spin-glass theory and stochastic dynamics.
+              An important challenge is to translate these perspectives into practical
+              methods that not only explain the learning dynamics of deep neural
+              networks (DNNs) but also improve their performance on imperfect datasets.
+              In this work, we take a statistical physics approach to learning from
+              datasets corrupted by label noise. We analyze the dynamics of stochastic
+              gradient descent (SGD) and identify a latent gradient bias induced by
+              corrupted labels that impairs the generalization of DNNs. To address this
+              problem, we incorporate stochastic resetting into SGD. Through theoretical
+              analysis and empirical evaluation, we demonstrate that stochastic
+              resetting mitigates the adverse effects of this bias, leading to improved
+              generalization performance. Our findings provide insights into the
+              learning dynamics of DNNs, highlighting the potential to both analyze and
+              enhance ML methods through the lens of statistical physics.
       - type: internal
         title: NRF Project Internal Meeting
         emoji: "🧩"
