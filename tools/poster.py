@@ -2387,13 +2387,12 @@ BADGE_STYLES = {
 # get the poster in the dark, the staff a green ground; everyone
 # else keeps the blue.
 #
-# The green is a hue turn and nothing else. It is held at the
-# blue's own L*, so the type keeps exactly the contrast it was
-# approved at — as rendered, 3.26:1 on the mark against 3.25 and
-# 3.46 on the foot against 3.46. Chroma goes to 28 from the
-# blue's 11, which is as far as sRGB reaches at this lightness
-# and 32 dE away: at the blue's own chroma the two pales were 17
-# dE apart, which you can see side by side and not at a glance.
+# The green is a hue turn and a little depth: L* 88 against the
+# blue's 89.6, at C* 32 against its 11. That is 36 dE away — at
+# the blue's own chroma the two pales were 17 dE apart, which
+# you can see side by side and not at a glance — and it costs
+# 4% of the mark's contrast, 3.12:1 against 3.25, with the foot
+# at 3.41 against 3.46.
 #
 # The organisers' card is not a colour at all. It is this badge
 # on the dark sheet — the dark ground with its own veil, the
@@ -2409,7 +2408,7 @@ BADGE_STYLES = {
 # poster in the dark and not a colour of its own. It was turned to purple for a
 # round, which made it a third thing that was neither the poster nor this badge.
 BADGE_ROLE_GROUNDS = {"Organiser": (PALETTE["ground"], True),
-                      "Staff": ("#baeec6", False)}
+                      "Staff": ("#afebbd", False)}
 
 
 _D65 = (0.95047, 1.0, 1.08883)
