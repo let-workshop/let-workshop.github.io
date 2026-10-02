@@ -1899,6 +1899,7 @@ BADGE = """<!doctype html>
      mark and the date have somewhere to sit, but it no longer hides the half
      of the drawing that used to be under the veil's heavy end. */
   .veil {{ position:absolute; inset:0; background:{badge_veil}; }}
+{badge_role_css}
   .pad {{ position:absolute; inset:0; padding:9mm 8mm 8mm; display:flex; flex-direction:column; }}
   /* The name of the thing, and under it what the name stands for. The long
      name used to sit at the foot and the dates beside the mark — which put the
@@ -2372,6 +2373,111 @@ BADGE_STYLES = {
 }
 
 
+# ─────────────────────────────────────────────────────────────
+# Two roles get a ground of their own, so a badge says which it
+# is from across a room rather than on being read. Green for the
+# organisers, purple for the staff; everyone else keeps the blue.
+#
+# The hue turns and nothing else does. Every colour on the card
+# is held at its own L*, so the type keeps exactly the contrast
+# it was approved at — ink 12.4:1 and the accent 3.24:1 on all
+# three grounds, measured, identical to three decimal places of
+# the blue card. Chroma goes up by 1.8 because at the blue's own
+# C* of 11 the three pales were 11 to 17 dE apart, which you can
+# see side by side and not at a glance; at C* 20 they are 17 to
+# 39 apart, and 20 is as far as sRGB goes at this lightness.
+# ─────────────────────────────────────────────────────────────
+
+BADGE_ROLE_HUES = {"Organiser": 150.0, "Staff": 315.0}
+BADGE_ROLE_CHROMA = 1.8
+_D65 = (0.95047, 1.0, 1.08883)
+_TO_XYZ = ((0.4124, 0.3576, 0.1805), (0.2126, 0.7152, 0.0722), (0.0193, 0.1192, 0.9505))
+_TO_RGB = ((3.2406, -1.5372, -0.4986), (-0.9689, 1.8758, 0.0415), (0.0557, -0.2040, 1.0570))
+
+
+def _lab(rgb):
+    def lin(c):
+        c /= 255
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    lr = [lin(c) for c in rgb]
+    xyz = [sum(row[i] * lr[i] for i in range(3)) / w for row, w in zip(_TO_XYZ, _D65)]
+    def f(u):
+        return u ** (1 / 3) if u > (6 / 29) ** 3 else u / (3 * (6 / 29) ** 2) + 4 / 29
+    fx, fy, fz = (f(u) for u in xyz)
+    return 116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)
+
+
+def _unlab(L, a, b):
+    fy = (L + 16) / 116
+    def fi(u):
+        return u ** 3 if u > 6 / 29 else 3 * (6 / 29) ** 2 * (u - 4 / 29)
+    xyz = [fi(u) * w for u, w in zip((fy + a / 500, fy, fy - b / 200), _D65)]
+    def out(c):
+        c = min(1.0, max(0.0, c))
+        v = c * 12.92 if c <= 0.0031308 else 1.055 * c ** (1 / 2.4) - 0.055
+        return round(v * 255)
+    return tuple(out(sum(row[i] * xyz[i] for i in range(3))) for row in _TO_RGB)
+
+
+def rotate_hue(colour, hue, chroma=1.0):
+    """The same colour at the same lightness, turned to `hue` degrees.
+
+    Takes "#rrggbb" or "rgba(r,g,b,a)" and gives back the same form, so a
+    palette entry and a scrim can go through it alike. Alpha is untouched.
+    """
+    import math
+    if colour.startswith("rgba("):
+        nums = colour[5:colour.index(")")].split(",")
+        rgb = tuple(int(float(n)) for n in nums[:3])
+        alpha = nums[3].strip()
+    elif colour.startswith("#") and len(colour) == 7:
+        rgb, alpha = tuple(int(colour[i:i + 2], 16) for i in (1, 3, 5)), None
+    else:
+        return colour
+    L, a, b = _lab(rgb)
+    c = math.hypot(a, b) * chroma
+    r, g, bl = _unlab(L, c * math.cos(math.radians(hue)), c * math.sin(math.radians(hue)))
+    return f"rgba({r},{g},{bl},{alpha})" if alpha else f"#{r:02x}{g:02x}{bl:02x}"
+
+
+def _hsl_hue(colour):
+    """The CSS hue angle of a hex colour, which is what hue-rotate works in."""
+    import colorsys
+    r, g, b = (int(colour.lstrip("#")[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    return colorsys.rgb_to_hls(r, g, b)[0] * 360
+
+
+def badge_role_css(style):
+    """A ground, a matching veil, and the picture turned to follow them.
+
+    Two mechanisms, because the badge is printed two ways. The export renders
+    the card as it is written — the drawing and the photograph as layers over
+    the flat ground — and there the ground and the veil do the work. badges.py
+    prints a hundred and nine cards through Chrome, which cannot be asked to
+    re-embed a vector drawing on every page, so it covers the card with one
+    rasterised picture of the sheet at opacity 1 and hides the other layers:
+    the flat ground is then behind an opaque image and changing it does
+    nothing, which is why the first version of this came out of the PDF with
+    every badge the same blue. The filter is what carries the colour there,
+    and it is on the picture layers only — never on the card — so the accent
+    and the ink keep the hues they are specified in.
+    """
+    out = []
+    base = _hsl_hue(PALETTE["ground"])
+    for role, hue in BADGE_ROLE_HUES.items():
+        pal = {k: (rotate_hue(v, hue, BADGE_ROLE_CHROMA)
+                   if k.startswith("scrim") or k in ("ground", "ground2") else v)
+               for k, v in PALETTE.items()}
+        veil = BADGE_STYLES[style]["badge_veil"].format(**pal)
+        turn = (_hsl_hue(pal["ground"]) - base + 540) % 360 - 180
+        cls = role.lower()
+        out.append(f"  .card.{cls} {{ background:{pal['ground']}; }}\n"
+                   f"  .card.{cls} .veil {{ background:{veil}; }}\n"
+                   f"  .card.{cls} .art, .card.{cls} .ghost, .card.{cls} .veil "
+                   f"{{ filter:hue-rotate({turn:.0f}deg); }}")
+    return "\n".join(out)
+
+
 # The pixel size the photographic layers are generated at, per layout. Not the
 # print size — this is the raster the duotone is computed on, and it only has to
 # match the shape of the piece so nothing is cropped into or stretched across.
@@ -2757,7 +2863,8 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
                + (f'<p class="affil">{esc(affil)}</p>' if affil else "")) if name else (
                '<div class="write"><i></i><i></i></div>')
         return (
-            '<div class="card"><div class="ghost"></div><div class="art"></div>'
+            f'<div class="card {esc(role.lower())}">'
+            '<div class="ghost"></div><div class="art"></div>'
             '<div class="veil"></div><div class="pad">'
             f'<div class="top"><h1 class="mark">{esc(mark)} <span>{esc(year)}</span></h1>'
             f'<p class="longname">{esc(site["full_name"].upper())}</p></div>'
@@ -2952,6 +3059,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         badges=badges,
         badge_bg_pos=badge_bg_pos,
         badge_bg_size=badge_bg_size,
+        badge_role_css=badge_role_css(badge_style),
         **{k: v.format(**PALETTE) for k, v in BADGE_STYLES[badge_style].items()},
         art_url=art_url,
         ghost_url=ghost_url,
