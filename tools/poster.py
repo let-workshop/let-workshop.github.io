@@ -2382,9 +2382,10 @@ BADGE_STYLES = {
 
 
 # ─────────────────────────────────────────────────────────────
-# Two roles get a ground of their own, so a badge says which it
-# is from across a room rather than on being read. Both are dark
-# cards; everyone else keeps the pale blue.
+# Three roles get a ground of their own, so a badge says which
+# it is from across a room rather than on being read: green for
+# the speakers, yellow for the staff, the dark sheet for the
+# organisers. Everyone else keeps the pale blue.
 #
 # The organisers' is not a colour at all. It is this badge on
 # the dark sheet — the dark ground with its own veil, the
@@ -2427,8 +2428,10 @@ BADGE_STYLES = {
 # degrees towards blue of a leaf green for the same reason.
 BADGE_ROLE_GROUNDS = {
     "Organiser": {"ground": PALETTE["ground"], "dark": True},
-    "Staff": {"ground": "#a7deba", "veil": .45,
-              "palette": {"art_ink": "#145631", "ghost_alpha": ".20"}},
+    "Speaker": {"ground": "#a7deba", "veil": .45,
+                "palette": {"art_ink": "#145631", "ghost_alpha": ".20"}},
+    "Staff": {"ground": "#eecd92", "veil": .45,
+              "palette": {"art_ink": "#5e4813", "ghost_alpha": ".20"}},
 }
 
 
