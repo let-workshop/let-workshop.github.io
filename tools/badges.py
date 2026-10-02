@@ -203,7 +203,9 @@ def main():
     ap.add_argument("--scheme", default="light")
     ap.add_argument("--roster", default=str(ROOT / "data/roster.tsv"))
     ap.add_argument("--sort", choices=("role", "name"), default="role")
-    ap.add_argument("--blanks", type=int, default=6)
+    ap.add_argument("--blanks", type=int, default=5,
+                    help="ruled cards with no name on them, for anyone who turns "
+                         "up unregistered. Five, which the desk fills in by hand.")
     ap.add_argument("--art-dark",
                     help="the drawing solved for a dark ground. The organisers' "
                          "badge is the poster's dark style, so its drawing is "
