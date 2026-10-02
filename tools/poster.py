@@ -2383,24 +2383,24 @@ BADGE_STYLES = {
 
 # ─────────────────────────────────────────────────────────────
 # Two roles get a ground of their own, so a badge says which it
-# is from across a room rather than on being read. The organisers
-# get the poster in the dark, the staff a green ground; everyone
-# else keeps the blue.
+# is from across a room rather than on being read. Both are dark
+# cards; everyone else keeps the pale blue.
 #
-# The green is a hue turn and a little depth: L* 88 against the
-# blue's 89.6, at C* 32 against its 11. That is 36 dE away — at
-# the blue's own chroma the two pales were 17 dE apart, which
-# you can see side by side and not at a glance — and it costs
-# 4% of the mark's contrast, 3.12:1 against 3.25, with the foot
-# at 3.41 against 3.46.
-#
-# The organisers' card is not a colour at all. It is this badge
-# on the dark sheet — the dark ground with its own veil, the
+# The organisers' is not a colour at all. It is this badge on
+# the dark sheet — the dark ground with its own veil, the
 # drawing solved for a dark ground, the photograph in the dark
 # sheet's two tones, the near-white type and the lighter orange
 # — and it measures the same as a card from the dark badge set
 # to dE 0.0. It was a tinted purple for two rounds, which was
 # neither the poster nor this badge.
+#
+# The staff's is the same card in a deep green. L* 35 at C* 34,
+# which is 49 dE off the organisers' near-black and holds the
+# dark sheet's type well clear of 3:1 — 3.41 on the mark, 3.85
+# on the longname, 3.37 on the foot, and the name is dark ink on
+# a white plate at 11:1 as it is on every card. It was a pale
+# green for a round, at the blue card's own lightness, which is
+# a tint of the light card rather than a green.
 
 # role -> (the ground, whether the card turns dark with it)
 # role -> (the ground, whether the card is the dark sheet)
@@ -2408,7 +2408,7 @@ BADGE_STYLES = {
 # poster in the dark and not a colour of its own. It was turned to purple for a
 # round, which made it a third thing that was neither the poster nor this badge.
 BADGE_ROLE_GROUNDS = {"Organiser": (PALETTE["ground"], True),
-                      "Staff": ("#afebbd", False)}
+                      "Staff": ("#215d36", True)}
 
 
 _D65 = (0.95047, 1.0, 1.08883)
