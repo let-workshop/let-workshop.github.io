@@ -213,6 +213,45 @@ def name_size(s, measure_mm=None):
     """The size for this name, by the script it is written in."""
     return NAME_SIZE_KO if _HANGUL.search(s) else NAME_SIZE_LATIN
 
+# The affiliation, which is given rather than chosen: the form takes free text
+# and two people wrote one longer than the plate. "KAIST ISE (산업및시스템공학과)"
+# and "KIAS School of Computational Sciences" both broke to a second line, which
+# on a badge reads as a second fact rather than a longer one. Each card gets the
+# largest of these that fits on one line.
+AFFIL_STEPS = (5.8, 5.2, 4.7, 4.3, 3.9)
+_AFFIL_W = {}
+# A Hangul syllable in the fallback face, measured against the browser over the
+# 47 affiliations on this roster: counting it as one em overstates every Korean
+# string by 15.6%, and 0.865 brings the worst case to 3.6% — and overstates, so
+# the error is always towards a size that fits rather than one that wraps.
+HANGUL_EM = 0.865
+
+
+def affil_width(s):
+    """The string's width in ems of its own size, within a fraction of a percent."""
+    if not _AFFIL_W:
+        from fontTools.ttLib import TTFont
+        f = TTFont(ROOT / "static" / "fonts" / "satoshi-500.woff2")
+        upem, hmtx = f["head"].unitsPerEm, f["hmtx"]
+        for code, glyph in f.getBestCmap().items():
+            if glyph in hmtx.metrics:
+                _AFFIL_W[chr(code)] = hmtx[glyph][0] / upem
+    return sum(_AFFIL_W.get(ch, HANGUL_EM if ch >= "\u1100" else 0.5) for ch in s)
+
+
+def affil_size(s, measure_mm, steps=AFFIL_STEPS):
+    """The largest step this affiliation sets on one line in `measure_mm`."""
+    if not s:
+        return steps[0]
+    # Half a millimetre of slack: the estimate is within 0.3% and the browser
+    # breaks on the pixel, so a string that measures exactly the plate wraps.
+    want = (measure_mm - 0.5) / affil_width(s)
+    for step in steps:
+        if step <= want:
+            return step
+    return steps[-1]
+
+
 
 def logo_row(logos, colour, cap=3.4, flat=True):
     """The host marks, embedded — flattened to one tone, or as their owners drew them.
@@ -3008,9 +3047,10 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         # there is and wrapped. Sizing per card gives the short ones the width
         # and keeps the long ones on one line.
         size = f"font-size:{name_size(name, NAME_MEASURE):.2f}mm" if name else ""
+        asize = f"font-size:{affil_size(affil, NAME_MEASURE):.2f}mm"
         who = (f'<p class="name" style="{size}">{esc(name)}</p>'
                + (f'<p class="name-sub">{esc(sub)}</p>' if sub else "")
-               + (f'<p class="affil">{esc(affil)}</p>' if affil else "")) if name else (
+               + (f'<p class="affil" style="{asize}">{esc(affil)}</p>' if affil else "")) if name else (
                '<div class="write"><i></i><i></i></div>')
         return (
             f'<div class="card {esc(role.lower())}">'

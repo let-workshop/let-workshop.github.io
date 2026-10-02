@@ -164,12 +164,18 @@ def read(path=None):
             continue
         ko = _bare_name(row.get(col["name_ko"]))
         flag = row.get(col["role_flag"]) or ""
-        if "초청 연사" in flag:
+        # Organiser first. Three of the six on organizers.yml are also giving
+        # talks and the form has them down as invited speakers, so reading the
+        # form first made them speakers and left the committee looking like
+        # three people. Which of the two a badge should say is not a question
+        # about the programme: an organiser is who someone with a question goes
+        # to, and that is what the badge is for.
+        if ko in organisers:
+            role = "Organiser"
+        elif "초청 연사" in flag:
             role = "Speaker"
         elif "현장 요원" in flag:
             role = "Staff"
-        elif ko in organisers:
-            role = "Organiser"
         else:
             role = "Attendee"
 
