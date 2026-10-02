@@ -2417,12 +2417,18 @@ BADGE_STYLES = {
 # towards the hem rather than as depth; white formulas on it put the sheet's
 # whole range into a card that wants to be one green; and the photograph, a
 # bright sky over a dark building, is most of what is left varying once the veil
-# is flat. So: one alpha, formulas in a pale green at 5:1 against the ground
-# rather than white's 7.2, and the photograph down from .3 to .1.
+# is flat. So: one alpha, formulas in a deep forest green rather than the
+# sheet's dark blue, and the photograph held back.
+#
+# The green's lightness is the blue card's, because that is what the accent
+# needs: the darker orange measures 2.8:1 there and 2.2 four steps down. Its
+# chroma is 28, not the 50 it was — at the blue card's lightness 50 is a
+# fluorescent green, and what is wanted is a forest one — and its hue is a few
+# degrees towards blue of a leaf green for the same reason.
 BADGE_ROLE_GROUNDS = {
     "Organiser": {"ground": PALETTE["ground"], "dark": True},
-    "Staff": {"ground": "#8beca6", "veil": .45,
-              "palette": {"art_ink": "#126d38", "ghost_alpha": ".20"}},
+    "Staff": {"ground": "#a7deba", "veil": .45,
+              "palette": {"art_ink": "#145631", "ghost_alpha": ".20"}},
 }
 
 
