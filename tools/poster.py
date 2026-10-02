@@ -2383,32 +2383,33 @@ BADGE_STYLES = {
 
 # ─────────────────────────────────────────────────────────────
 # Two roles get a ground of their own, so a badge says which it
-# is from across a room rather than on being read. Deep purple
-# for the organisers, pale yellow for the staff; everyone else
-# keeps the blue.
+# is from across a room rather than on being read. The organisers
+# get the poster in the dark, the staff a green ground; everyone
+# else keeps the blue.
 #
-# The yellow is a hue turn and nothing else. Every colour is
-# held at its own L*, so the type keeps the contrast it was
-# approved at. Chroma is per ground because the hues do not
-# reach equally far: at the blue's own C* of 11 the pales were
-# 11 to 17 dE apart, which you can see side by side and not at
-# a glance, and yellow at 20 reads as cream — it has room to 32
-# and takes it.
+# The green is a hue turn and nothing else. It is held at the
+# blue's own L*, so the type keeps exactly the contrast it was
+# approved at — as rendered, 3.26:1 on the mark against 3.25 and
+# 3.46 on the foot against 3.46. Chroma goes to 28 from the
+# blue's 11, which is as far as sRGB reaches at this lightness
+# and 32 dE away: at the blue's own chroma the two pales were 17
+# dE apart, which you can see side by side and not at a glance.
 #
-# The purple is a different thing: a deep ground, and a deep
-# ground turns the whole card over. Dark navy type at 62% went
-# to 1.8:1 on it, so the type flips to what the poster uses on
-# black — the light orange for the mark, near-white for the two
-# small lines — and the drawing inverts, or it is dark marks on
-# a dark field and simply gone. At L* 30 that card measures
-# better than the blue one it came from: 4.08:1 on the mark
-# against 3.25, 3.83 on the foot against 3.46. The name is
-# unaffected either way; it is dark ink on a white plate on all
-# three cards.
-# ─────────────────────────────────────────────────────────────
+# The organisers' card is not a colour at all. It is this badge
+# on the dark sheet — the dark ground with its own veil, the
+# drawing solved for a dark ground, the photograph in the dark
+# sheet's two tones, the near-white type and the lighter orange
+# — and it measures the same as a card from the dark badge set
+# to dE 0.0. It was a tinted purple for two rounds, which was
+# neither the poster nor this badge.
 
 # role -> (the ground, whether the card turns dark with it)
-BADGE_ROLE_GROUNDS = {"Organiser": ("#36234d", True), "Staff": ("#f7dfa4", False)}
+# role -> (the ground, whether the card is the dark sheet)
+# The organisers' ground is the dark sheet's own, unaltered: that badge is the
+# poster in the dark and not a colour of its own. It was turned to purple for a
+# round, which made it a third thing that was neither the poster nor this badge.
+BADGE_ROLE_GROUNDS = {"Organiser": (PALETTE["ground"], True),
+                      "Staff": ("#baeec6", False)}
 
 
 _D65 = (0.95047, 1.0, 1.08883)
@@ -2497,9 +2498,13 @@ def badge_role_palette(role):
     lightness = (_lab(tuple(int(ground.lstrip("#")[k:k + 2], 16) for k in (0, 2, 4)))[0]
                  / max(_lab(tuple(int(base.lstrip("#")[k:k + 2], 16)
                                   for k in (0, 2, 4)))[0], 1e-6))
+    keys = [k for k in src if k.startswith("scrim") or k in ("ground", "ground2")]
+    if ground.lower() == base.lower():
+        # Nothing to turn. Returned untouched rather than rotated by zero, so
+        # the dark card is the dark sheet to the byte.
+        return {k: src[k] for k in keys}
     chroma = _chroma_of(ground) / _chroma_of(base)
-    pal = {k: rotate_hue(v, hue, chroma, lightness) for k, v in src.items()
-           if k.startswith("scrim") or k in ("ground", "ground2")}
+    pal = {k: rotate_hue(src[k], hue, chroma, lightness) for k in keys}
     pal["ground"] = ground
     return pal
 
