@@ -2394,13 +2394,16 @@ BADGE_STYLES = {
 # to dE 0.0. It was a tinted purple for two rounds, which was
 # neither the poster nor this badge.
 #
-# The staff's is the same card in a deep green. L* 35 at C* 34,
-# which is 49 dE off the organisers' near-black and holds the
-# dark sheet's type well clear of 3:1 — 3.41 on the mark, 3.85
-# on the longname, 3.37 on the foot, and the name is dark ink on
-# a white plate at 11:1 as it is on every card. It was a pale
-# green for a round, at the blue card's own lightness, which is
-# a tint of the light card rather than a green.
+# The staff's is the same card in a deep green: L* 37 at C* 44,
+# as bright and as saturated as it goes. L* 38 is the ceiling —
+# at 39 the lighter orange the dark sheet puts the mark in falls
+# under 3:1 against the ground, and that orange is the one thing
+# on the card that cannot be changed to suit a colour. Here it
+# measures 3.14 on the mark, 3.55 on the longname and 3.12 on
+# the foot, and the name is dark ink on a white plate at 11:1 as
+# it is on every card. It was a pale green for a round, at the
+# blue card's own lightness, which is a tint of the light card
+# rather than a green.
 
 # role -> (the ground, whether the card turns dark with it)
 # role -> (the ground, whether the card is the dark sheet)
@@ -2408,7 +2411,7 @@ BADGE_STYLES = {
 # poster in the dark and not a colour of its own. It was turned to purple for a
 # round, which made it a third thing that was neither the poster nor this badge.
 BADGE_ROLE_GROUNDS = {"Organiser": (PALETTE["ground"], True),
-                      "Staff": ("#215d36", True)}
+                      "Staff": ("#026532", True)}
 
 
 _D65 = (0.95047, 1.0, 1.08883)
