@@ -2375,21 +2375,35 @@ BADGE_STYLES = {
 
 # ─────────────────────────────────────────────────────────────
 # Two roles get a ground of their own, so a badge says which it
-# is from across a room rather than on being read. Green for the
-# organisers, purple for the staff; everyone else keeps the blue.
+# is from across a room rather than on being read. Deep purple
+# for the organisers, pale yellow for the staff; everyone else
+# keeps the blue.
 #
-# The hue turns and nothing else does. Every colour on the card
-# is held at its own L*, so the type keeps exactly the contrast
-# it was approved at — ink 12.4:1 and the accent 3.24:1 on all
-# three grounds, measured, identical to three decimal places of
-# the blue card. Chroma goes up by 1.8 because at the blue's own
-# C* of 11 the three pales were 11 to 17 dE apart, which you can
-# see side by side and not at a glance; at C* 20 they are 17 to
-# 39 apart, and 20 is as far as sRGB goes at this lightness.
+# The yellow is a hue turn and nothing else. Every colour is
+# held at its own L*, so the type keeps the contrast it was
+# approved at. Chroma is per ground because the hues do not
+# reach equally far: at the blue's own C* of 11 the pales were
+# 11 to 17 dE apart, which you can see side by side and not at
+# a glance, and yellow at 20 reads as cream — it has room to 32
+# and takes it.
+#
+# The purple is a different thing: a deep ground, and a deep
+# ground turns the whole card over. Dark navy type at 62% went
+# to 1.8:1 on it, so the type flips to what the poster uses on
+# black — the light orange for the mark, near-white for the two
+# small lines — and the drawing inverts, or it is dark marks on
+# a dark field and simply gone. At L* 30 that card measures
+# better than the blue one it came from: 4.08:1 on the mark
+# against 3.25, 3.83 on the foot against 3.46. The name is
+# unaffected either way; it is dark ink on a white plate on all
+# three cards.
 # ─────────────────────────────────────────────────────────────
 
-BADGE_ROLE_HUES = {"Organiser": 150.0, "Staff": 315.0}
-BADGE_ROLE_CHROMA = 1.8
+# role -> (the ground, whether the card turns dark with it)
+BADGE_ROLE_GROUNDS = {"Organiser": ("#553a74", True), "Staff": ("#f7dfa4", False)}
+# What a dark card puts on that ground: the poster's own black-sheet colours.
+BADGE_DARK_TYPE = {"mark": "#ff8a75", "ink": "#f5f5f7"}
+
 _D65 = (0.95047, 1.0, 1.08883)
 _TO_XYZ = ((0.4124, 0.3576, 0.1805), (0.2126, 0.7152, 0.0722), (0.0193, 0.1192, 0.9505))
 _TO_RGB = ((3.2406, -1.5372, -0.4986), (-0.9689, 1.8758, 0.0415), (0.0557, -0.2040, 1.0570))
@@ -2419,7 +2433,20 @@ def _unlab(L, a, b):
     return tuple(out(sum(row[i] * xyz[i] for i in range(3))) for row in _TO_RGB)
 
 
-def rotate_hue(colour, hue, chroma=1.0):
+def _lab_hue(colour):
+    """The Lab hue angle of a hex colour."""
+    import math
+    L, a, b = _lab(tuple(int(colour.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)))
+    return math.degrees(math.atan2(b, a)) % 360
+
+
+def _chroma_of(colour):
+    import math
+    L, a, b = _lab(tuple(int(colour.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4)))
+    return math.hypot(a, b) or 1e-6
+
+
+def rotate_hue(colour, hue, chroma=1.0, lightness=1.0):
     """The same colour at the same lightness, turned to `hue` degrees.
 
     Takes "#rrggbb" or "rgba(r,g,b,a)" and gives back the same form, so a
@@ -2436,6 +2463,7 @@ def rotate_hue(colour, hue, chroma=1.0):
         return colour
     L, a, b = _lab(rgb)
     c = math.hypot(a, b) * chroma
+    L *= lightness
     r, g, bl = _unlab(L, c * math.cos(math.radians(hue)), c * math.sin(math.radians(hue)))
     return f"rgba({r},{g},{bl},{alpha})" if alpha else f"#{r:02x}{g:02x}{bl:02x}"
 
@@ -2463,18 +2491,35 @@ def badge_role_css(style):
     and the ink keep the hues they are specified in.
     """
     out = []
-    base = _hsl_hue(PALETTE["ground"])
-    for role, hue in BADGE_ROLE_HUES.items():
-        pal = {k: (rotate_hue(v, hue, BADGE_ROLE_CHROMA)
+    base_hue = _hsl_hue(PALETTE["ground"])
+    base_L = _lab(tuple(int(PALETTE["ground"].lstrip("#")[k:k + 2], 16)
+                        for k in (0, 2, 4)))[0]
+    for role, (ground, dark) in BADGE_ROLE_GROUNDS.items():
+        hue = _lab_hue(ground)
+        lift = _lab(tuple(int(ground.lstrip("#")[k:k + 2], 16) for k in (0, 2, 4)))[0] / base_L
+        # The veil's stops keep their own place in the card's tonal range, so a
+        # deep ground gets a deep veil rather than a pale one laid over it.
+        pal = {k: (rotate_hue(v, hue, chroma=_chroma_of(ground) / _chroma_of(PALETTE["ground"]),
+                              lightness=lift)
                    if k.startswith("scrim") or k in ("ground", "ground2") else v)
                for k, v in PALETTE.items()}
+        pal["ground"] = ground
         veil = BADGE_STYLES[style]["badge_veil"].format(**pal)
-        turn = (_hsl_hue(pal["ground"]) - base + 540) % 360 - 180
         cls = role.lower()
-        out.append(f"  .card.{cls} {{ background:{pal['ground']}; }}\n"
-                   f"  .card.{cls} .veil {{ background:{veil}; }}\n"
-                   f"  .card.{cls} .art, .card.{cls} .ghost, .card.{cls} .veil "
-                   f"{{ filter:hue-rotate({turn:.0f}deg); }}")
+        # Inverting first turns the pale ground dark and the dark marks light,
+        # and takes the hue to the opposite side of the wheel with it; the turn
+        # is measured from there.
+        src = (base_hue + 180) % 360 if dark else base_hue
+        turn = (_hsl_hue(ground) - src + 540) % 360 - 180
+        rule = (f"  .card.{cls} {{ background:{ground}; }}\n"
+                f"  .card.{cls} .veil {{ background:{veil}; }}\n"
+                f"  .card.{cls} .art, .card.{cls} .ghost, .card.{cls} .veil "
+                f"{{ filter:{'invert(1) ' if dark else ''}hue-rotate({turn:.0f}deg); }}")
+        if dark:
+            rule += (f"\n  .card.{cls} .mark {{ color:{BADGE_DARK_TYPE['mark']}; }}\n"
+                     f"  .card.{cls} .longname, .card.{cls} .when "
+                     f"{{ color:{BADGE_DARK_TYPE['ink']}; }}")
+        out.append(rule)
     return "\n".join(out)
 
 
