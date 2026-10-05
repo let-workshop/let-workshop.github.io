@@ -458,14 +458,17 @@
                  gets a placeholder: a card with no title yet is a card with a
                  name on it, which is finished-looking, and a row of "to be
                  announced" is not. -->
-            {% if s.talk %}<div class="spk-talk" lang="en">{{ s.talk_card }}</div>{% endif %}
             <!-- The session's subject, not the talk's — "Bandits" rather than
-                 "heavy-tailed". Held back while the schedule is: it is read off
-                 the session a speaker is in, and the grid is not saying which
-                 session anybody is in yet, so the card would be answering a
-                 question the programme beside it refuses. It comes back with
-                 the rest when `simple` goes off. -->
+                 "heavy-tailed". Above the title rather than under it: it is a
+                 heading for the title, and it sat at the foot of the card
+                 behind a rule, where it read as a footnote to a face. Held
+                 back while the schedule is — it is read off the session a
+                 speaker is in, and the grid is not saying which session
+                 anybody is in yet, so the card would be answering a question
+                 the programme beside it refuses. It comes back with the rest
+                 when `simple` goes off. -->
             {% if not program.simple %}<div class="spk-topic">{{ s.track }}</div>{% endif %}
+            {% if s.talk %}<div class="spk-talk" lang="en">{{ s.talk_card }}</div>{% endif %}
           </button>
           {% endfor %}
         </div>

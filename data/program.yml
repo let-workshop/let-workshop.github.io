@@ -550,28 +550,6 @@ days:
               implementation. Through numerical experiments, we demonstrate that
               OnlineTS achieves regret competitive with the existing GLB methods at
               substantially lower computational cost.
-          - name: Taehyuk Ha
-            name_ko: 하태혁
-            affil: POSTECH CES
-            title: >-
-              How Learning Dynamics Shape Decoding in Masked Diffusion Models
-            abstract: >-
-              Diffusion Language Models have recently emerged as a promising alternative
-              for reasoning, benefiting from bidirectional prediction and flexible token
-              ordering at inference. However, how training shapes the usefulness of this
-              flexibility remains unclear. In this paper, we study stage-wise learning
-              dynamics in a masked diffusion model using a two-layer Transformer with a
-              fixed output head on a graph-planning task. A local endpoint-first
-              asymmetry under ordinary joint training motivates a framework separating
-              \emph{endpoint preparation} from \emph{predecessor learning}. Within this
-              framework, we establish a finite predecessor-risk decrease and derive
-              risk-dependent reverse-circuit certificates. We derive conditions for
-              endpoint reveal to bootstrap predecessor prediction and for
-              top-probability and top-margin decoding to favor the reverse order,
-              distinguishing sequence-level correctness from confidence-based selection.
-              We also characterize order independence and confidence agreement when all
-              mask-conditioned risks vanish. Together, our analysis relates stage-wise
-              learning and internal computation to decoding preference and advantage.
           - name: Yejun Kim
             name_ko: 김예준
             affil: KAIST MAS

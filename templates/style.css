@@ -3181,7 +3181,7 @@ h2 .note {
    because it is the second thing read and not the third — and it is prose, so
    it takes the prose face rather than the mono the field tag uses. */
 .spk-talk {
-  margin-top: 7px;
+  margin-top: 3px;
   font-size: 0.72rem;
   line-height: 1.45;
   color: var(--prose);
@@ -3209,13 +3209,14 @@ h2 .note {
   line-clamp: 4;
   overflow: hidden;
 }
+/* The subject, over the title it belongs to. It used to sit at the foot of
+   the card under a rule, pushed there by margin-top:auto — which made the
+   card's last word a footnote about the session rather than the title anyone
+   came to read, and on a short card left the rule almost touching the title
+   above it. Over the title it is a heading, needs no rule to separate it from
+   anything, and the card ends on what the person is giving. */
 .spk-topic {
-  margin-top: auto;
-  /* The rule belongs to the tag under it, and 9px put the tag almost on the
-     line. It reads as a caption on the card's foot, so it needs the space a
-     caption gets. */
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
+  margin-top: 9px;
   font-family: var(--mono);
   font-size: 0.66rem;
   letter-spacing: 0.06em;
