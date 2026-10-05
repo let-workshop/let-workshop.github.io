@@ -137,6 +137,26 @@ def clock(total: int) -> str:
     return f"{total // 60:02d}:{total % 60:02d}"
 
 
+
+def talk_span(event, index, count):
+    """When this one talk runs, inside the session that holds it.
+
+    Every session divides equally between its speakers — 80 minutes for two,
+    40 for one — so the span is arithmetic rather than another field to keep in
+    step with `start` and `end`. If a session ever stops dividing evenly this
+    returns nothing rather than a rounded time that is wrong by a minute.
+    """
+    if not count:
+        return None
+    a, b = minutes(event["start"]), minutes(event["end"])
+    if (b - a) % count:
+        return None
+    each = (b - a) // count
+    at = a + each * index
+    clock = lambda m: f"{m // 60:02d}:{m % 60:02d}"
+    return f"{clock(at)} {EN_DASH} {clock(at + each)}"
+
+
 def human_span(total: int) -> str:
     """90 -> '1 h 30 min', 40 -> '40 min'."""
     hours, mins = divmod(total, 60)
@@ -1035,8 +1055,13 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             "type": e["type"],
             "typeLabel": types[e["type"]]["short"],
             "chair": e["chair"],
+            # A session is divided equally between the people in it, so each
+            # talk's own span can be worked out rather than written down —
+            # which means it cannot drift from the session it sits in when the
+            # timetable moves.
             "speakers": [
                 {
+                    "span": talk_span(e, i, len(e["speakers"])),
                     "name": s["name"],
                     "nameHtml": str(bilingual(s["name"], s.get("name_ko"))),
                     "affilHtml": str(bilingual(s.get("affil") or "", s.get("affil_ko"))),
@@ -1053,7 +1078,7 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
                     "slides": s.get("slides"),
                     "home": s.get("home"),
                 }
-                for s in (e["speakers"] if not variant["anonymize"] else [])
+                for i, s in enumerate(e["speakers"] if not variant["anonymize"] else [])
             ],
             # Rendered here rather than in script: a note can be a pair of
             # strings, and the language switch is CSS on two spans.

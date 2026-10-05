@@ -68,19 +68,6 @@ utc_offset: "+09:00"
 # there will be more of these before the week is out.
 #
 # `blocks` is a list so the next one is an entry, not a redesign.
-# Every talk is the same shape, so it is said once rather than cut into the
-# timetable. Splitting each session row into a talk and a question slot would
-# double the rows to tell a reader something the same for all of them; it
-# belongs where somebody has already clicked into one particular talk.
-talk_format:
-  label: 30 min talk · 10 min Q&A
-  label_ko: 발표 30분 · 질의응답 10분
-  # Settled in the 10/5 thread: the split is guidance and the forty minutes is
-  # the rule, because what a chair actually has to protect is the next
-  # speaker's start. Winding up around 38 leaves the changeover somewhere.
-  note: 40 minutes in all, kept loosely — what is fixed is the next talk's start.
-  note_ko: 총 40분, 느슨하게 운영 — 지켜야 할 것은 다음 발표 시작 시각입니다.
-
 instructions:
   title: Instructions
   title_ko: 안내사항

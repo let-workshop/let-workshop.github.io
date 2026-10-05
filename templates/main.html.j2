@@ -2043,14 +2043,11 @@
         if (s.talk) bits += '<div class="sp-talk">' + esc(s.talk) + "</div>";
         else if (s.topic) bits += '<div class="sp-talk">' + esc(s.topic) + "</div>";
         else bits += '<div class="sp-talk is-todo">' + tbd("Talk title to be announced", "발표 제목 미정") + "</div>";
-        // How the forty minutes are meant to go, under the title of the talk
-        // they apply to. Not in the timetable: there it would be eight extra
-        // rows all saying the same thing.
-        if (TALK_FORMAT)
-          bits += '<div class="sp-format"><span class="t-en">' + esc(TALK_FORMAT.label) +
-                  '</span><span class="t-ko">' + esc(TALK_FORMAT.label_ko) + "</span>" +
-                  '<small><span class="t-en">' + esc(TALK_FORMAT.note) +
-                  '</span><span class="t-ko">' + esc(TALK_FORMAT.note_ko) + "</span></small></div>";
+        // When this talk runs, under its title. The timetable gives the
+        // session's hours and a session holds two talks; this is the half that
+        // belongs to the one being read. How the time is split inside it is
+        // between the speaker and the chair, and is not the page's business.
+        if (s.span) bits += '<div class="sp-span">' + esc(s.span) + "</div>";
         // No bio here. This sheet is a session — what is being given, in what
         // order — and who the speaker is has a window of its own. Two
         // paragraphs about a person between two talks is the session's own
@@ -2441,10 +2438,6 @@
       // by CSS for the Korean view, so an index into the list they were
       // written from survives the rearranging.
       var PEOPLE = {{ people | tojson }};
-      // The same for every talk, so it is carried once rather than repeated on
-      // each one in the data. See `talk_format` in data/program.yml for why it
-      // is not cut into the timetable.
-      var TALK_FORMAT = {{ program.talk_format | tojson }};
       var SPEAKER_MODAL = document.getElementById("speaker-modal");
       var spkAt = 0;
 
