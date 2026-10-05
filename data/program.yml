@@ -832,6 +832,30 @@ days:
             name_ko: 윤세영
             photo: se-young-yun.jpg
             affil: KAIST
+            talk: >-
+              LLMs and Theory: The Questions We Asked, and the Ones to Ask Next
+            abstract: >-
+              In the past years, theory has done much to explain why large language
+              models work. It has clarified scaling laws and hyperparameter transfer,
+              the low-rank structure behind LoRA, the statistics of preference learning,
+              the dynamics of critic-free RL methods such as GRPO, and the expressive
+              limits of Transformers and state-space models. All of these results share
+              one unit of analysis: a single model trained on a single objective.
+              Today’s LLM systems have outgrown that picture, combining many models,
+              noisy signals, and tight cost budgets. This talk explores the questions
+              theory should ask next, now that the object of study is a system of
+              models. I will close with an open discussion on the future of theoretical
+              research. Now that AI can produce research-level proofs, proving is no
+              longer the bottleneck. What is scarce instead is the ability to find
+              important problems grounded in real systems, and the intuition to steer AI
+              toward their answers.
+            bio: >-
+              Se-Young Yun is an Associate Professor at the Kim Jaechul Graduate School
+              of AI at KAIST, where he leads the Optimization and Statistical Inference
+              (OSI) Lab. His research connects theory and practice in modern machine
+              learning, with recent work on multi-agent LLM systems, LLM routing under
+              cost constraints, reinforcement learning and distillation for
+              post-training, efficient LLM inference, and AI for weather and climate.
             home: https://fbsqkd.github.io/
             links:
               scholar: https://scholar.google.com/citations?user=X_IAjb8AAAAJ
