@@ -764,6 +764,31 @@ days:
               generalization performance. Our findings provide insights into the
               learning dynamics of DNNs, highlighting the potential to both analyze and
               enhance ML methods through the lens of statistical physics.
+          - name: Wooseong Cho
+            name_ko: 조우성
+            affil: SNU DS
+            title: >-
+              Bilinear Matching Bandits
+            abstract: >-
+              We study \emph{bilinear matching bandits}, an online sequential
+              decision problem in which at each round a learner assigns $M$ users to
+              $N$ items via an injective matching $\pi:[M]\hookrightarrow[N]$ and
+              observes semi-bandit feedback with bilinear mean reward
+              $\mathbf{x}_i^\top \mathbf{\Theta}^\star \mathbf{y}_{\pi(i)}$, where
+              the parameter $\mathbf{\Theta}^\star \in \mathbb{R}^{d_1 \times d_2}$
+              is unknown. We propose \textsc{HybridRRD}, a hybrid algorithm that
+              combines high-width elimination with a row-wise regularized design
+              sampler over the fractional matching polytope. Without assuming
+              $\mathbf{\Theta}^\star$ is low-rank, \textsc{HybridRRD} achieves a
+              high-probability regret bound of $\widetilde{O} (d_2 \sqrt{d_1MT} +
+              Md_1 d_2)$, suppressing problem-scale constants. This improves the
+              leading dimension dependence from $d_1d_2$ to $d_2\sqrt{d_1}$ over the
+              standard Kronecker-linearized contextual combinatorial semi-bandit
+              baseline. We further prove a minimax lower bound of $\Omega(d_2
+              \sqrt{d_1 M T})$ in a large-item regime, matching the leading regret
+              term up to logarithmic factors. Numerical experiments show that
+              \textsc{HybridRRD} performs favorably against Kronecker-linearized
+              baselines.
       - type: internal
         title: NRF Project Internal Meeting
         emoji: "🧩"
