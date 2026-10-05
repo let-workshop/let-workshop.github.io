@@ -1049,10 +1049,52 @@ days:
             name_ko: 장경석
             photo: kyoungseok-jang.jpg
             affil: CAU
+            talk: >-
+              Revisiting Bellman Residual Minimization: From Duality to Modern Offline
+              Reinforcement Learning
+            abstract: >-
+              Bellman residual minimization (BRM) is a classical approach to
+              reinforcement learning that directly seeks a value function satisfying the
+              Bellman equation. Despite its conceptual simplicity and attractive
+              fixed-point interpretation, BRM has historically faced major computational
+              and statistical difficulties, including the double-sampling problem and
+              challenging nonconvex optimization. Recent dual formulations provide a new
+              perspective on these obstacles, transforming BRM into tractable minimax
+              problems amenable to stochastic gradient methods.
+
+
+              In this talk, I will briefly review the history, strengths, and
+              limitations of BRM and discuss how this dual perspective enables a modern
+              treatment of the framework. I will then present our recent results along
+              three directions: Off-GLADIUS, which establishes global convergence
+              guarantees for gradient-based BRM in offline reinforcement learning;
+              Stability and Generalization for Bellman Residuals, which provides fast
+              statistical guarantees through algorithmic stability; and Stoc-TBRM, which
+              extends the BRM perspective to stochastic trajectory-level learning.
+              Together, these results suggest that BRM, despite being a classical
+              framework, can provide a scalable and theoretically principled foundation
+              for modern offline reinforcement learning.
+            bio: >-
+              Kyoungseok Jang is an Assistant Professor in the Department of Artificial
+              Intelligence at Chung-Ang University, where he works on efficient
+              decision-making and learning algorithms under uncertainty, centred on
+              reinforcement learning, online learning and bandits. He received his BS
+              and PhD from the Department of Mathematical Sciences at KAIST, and was
+              subsequently a postdoctoral researcher at the University of Arizona, New
+              York University and the University of Milan. His research interests are
+              theoretical reinforcement learning, online learning, bandit algorithms and
+              statistical machine learning, with a focus on developing efficient
+              learning methods that carry theoretical guarantees.
             note: >-
-              Form (9/14): availability only — bio, title and abstract all sent as dashes,
-              so still to come. Free Day 2 11:10, 15:10 and 16:40, not 13:30; this 15:05
-              slot is among them.
+              Bio, title and abstract arrived 10/5, relayed by Junghyun Lee — the 9/14
+              form had sent all three as dashes. The bio was written in Korean and is
+              translated here, because the field is one language and the other thirteen
+              are English: "장경석은 중앙대학교 AI학과 조교수로, 강화학습, 온라인 학습 및 밴딧을 중심으로 불확실한 환경에서의
+              효율적인 의사결정과 학습 알고리즘을 연구하고 있다. KAIST 수리과학과에서 학사 및 박사학위를 취득하였으며, 이후
+              University of Arizona, New York University, University of Milan에서 박사후연구원으로
+              근무하였다. 주요 연구 관심사는 이론적 강화학습, 온라인 학습, 밴딧 알고리즘 및 통계적 머신러닝이며, 이론적 보장을 갖는 효율적인
+              학습 방법론의 개발에 초점을 두고 있다." Worth his confirming the English before it is read
+              as his own words.
             home: https://jajajang.github.io/
             links:
               scholar: https://scholar.google.com/citations?user=hDqIvzAAAAAJ
