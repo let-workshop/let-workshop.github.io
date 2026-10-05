@@ -1867,7 +1867,13 @@
         document.querySelectorAll("#day-pills button[data-date]").forEach(function (b) {
           if (b.dataset.date === today) match = b.dataset.day;
         });
-        if (match !== null) setDay(match);
+        // Always run it, with "all" when today is not one of the two days. The
+        // filter is what hides the poster rows among the abstracts — "all"
+        // means all days of talks, and the posters have a chip of their own —
+        // so until it had run once the abstracts opened showing both at once,
+        // which is the one arrangement no chip stands for. The chips said
+        // "All" and the list disagreed with them.
+        setDay(match !== null ? match : "all");
       })();
 
       // ---- "Now" is a view: one slab for what is on, a thin queue for the rest.
