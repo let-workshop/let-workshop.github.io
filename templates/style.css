@@ -2370,6 +2370,25 @@ button.sp-talk-link:focus-visible {
   font-weight: 600;
   color: var(--ink);
 }
+/* How the forty minutes go, under the title they apply to. Mono and small,
+   because it is the same line on every talk: a reader needs it once and should
+   be able to skip it after that, which an upright figure in a column of prose
+   lets them do. The note under it is quieter again — the split is advice and
+   the forty minutes is the rule, and only the second is worth arguing with. */
+.sp-format {
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.sp-format small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.68rem;
+  letter-spacing: 0;
+  opacity: 0.78;
+}
 /* On the session sheet the row is about the talk, and the name and the title
    were the same size, the same weight and the same colour — two headings, one
    above the other, neither of them winning. The name becomes a byline and the

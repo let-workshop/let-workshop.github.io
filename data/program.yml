@@ -68,6 +68,19 @@ utc_offset: "+09:00"
 # there will be more of these before the week is out.
 #
 # `blocks` is a list so the next one is an entry, not a redesign.
+# Every talk is the same shape, so it is said once rather than cut into the
+# timetable. Splitting each session row into a talk and a question slot would
+# double the rows to tell a reader something the same for all of them; it
+# belongs where somebody has already clicked into one particular talk.
+talk_format:
+  label: 30 min talk · 10 min Q&A
+  label_ko: 발표 30분 · 질의응답 10분
+  # Settled in the 10/5 thread: the split is guidance and the forty minutes is
+  # the rule, because what a chair actually has to protect is the next
+  # speaker's start. Winding up around 38 leaves the changeover somewhere.
+  note: 40 minutes in all, kept loosely — what is fixed is the next talk's start.
+  note_ko: 총 40분, 느슨하게 운영 — 지켜야 할 것은 다음 발표 시작 시각입니다.
+
 instructions:
   title: Instructions
   title_ko: 안내사항
@@ -154,7 +167,7 @@ days:
 
       - type: block
         title: DL Theory I
-        chair: ~
+        chair: Kwang-Sung Jun
         start: "11:10"
         end: "12:30"
         speakers:
@@ -238,7 +251,7 @@ days:
 
       - type: block
         title: DL Theory II
-        chair: ~
+        chair: Namhoon Lee
         start: "13:30"
         end: "14:50"
         speakers:
@@ -308,7 +321,7 @@ days:
 
       - type: block
         title: UQ in LLMs
-        chair: ~
+        chair: Namhoon Lee
         start: "15:05"
         end: "16:25"
         speakers:
@@ -383,7 +396,7 @@ days:
       # posters holds, and it is the slot Donghwan Kim ticked.
       - type: block
         title: DL Theory III
-        chair: ~
+        chair: Chulhee Yun
         start: "16:40"
         end: "17:20"
         speakers:
@@ -873,7 +886,7 @@ days:
 
       - type: block
         title: DL Theory IV
-        chair: ~
+        chair: Namhoon Lee
         start: "11:10"
         end: "12:30"
         speakers:
@@ -942,7 +955,7 @@ days:
 
       - type: block
         title: Bandits I
-        chair: ~
+        chair: Kwang-Sung Jun
         start: "13:30"
         end: "14:50"
         speakers:
@@ -1039,7 +1052,7 @@ days:
 
       - type: block
         title: Offline RL
-        chair: ~
+        chair: Kwang-Sung Jun
         start: "15:05"
         end: "16:25"
         speakers:
@@ -1122,14 +1135,14 @@ days:
       # The poster line sits on the break that runs into the poster session
       # rather than on the one two hours before it.
       - type: break
-        title: Coffee Break (15 min) · put your poster up
+        title: Coffee Break (15 min)
         start: "16:25"
         end: "16:40"
         bare: true
 
       - type: block
         title: Bandits II
-        chair: ~
+        chair: Chulhee Yun
         start: "16:40"
         end: "18:00"
         speakers:
