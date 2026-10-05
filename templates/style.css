@@ -2678,9 +2678,17 @@ button.sp-talk-link:focus-visible {
   letter-spacing: -0.005em;
   color: var(--event-title);
 }
-.event .chair {
+/* The chair's name, beside the session's. It had no size of its own in either
+   view, so it took the session title's — which made "(Chair: Namhoon Lee)" as
+   loud as "DL Theory II" and longer than it. It is an attribution on the
+   heading, not part of it: 0.78em and the meta colour put it where the time
+   and the duration already sit. */
+.event .chair,
+.agenda .what .chair {
+  font-size: 0.78em;
   font-weight: 500;
   color: var(--meta);
+  white-space: nowrap;
 }
 .event .time {
   font-variant-numeric: tabular-nums;
