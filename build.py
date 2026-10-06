@@ -722,20 +722,26 @@ def prepare_news(news: dict, utc_offset: str) -> None:
     news.setdefault("title_ko", None)
     tz = timezone(timedelta(minutes=offset_minutes(utc_offset)))
     for item in news.setdefault("notices", []):
-        for key in ("tag", "tag_ko", "heading_ko", "body_ko"):
+        for key in ("label_ko", "body_ko"):
             item.setdefault(key, None)
+        if item["state"] not in ("open", "closed"):
+            raise SystemExit(f"news {item['at']}: state is {item['state']!r}, "
+                             "which is neither open nor closed")
         action = item.setdefault("action", None)
         if action:
             for key in ("label_ko", "href", "wait", "wait_ko"):
                 action.setdefault(key, None)
             if not action["href"] and not action["wait"]:
-                raise SystemExit(f"news {item['heading']!r}: an action with no "
-                                 "href needs a `wait` line saying so")
-        posted = datetime.fromisoformat(str(item["date"])).replace(tzinfo=tz)
-        item["when"] = f"{MONTHS[posted.month - 1]} {posted.day}, {posted.year}"
-        item["when_ko"] = f"{posted.year}년 {posted.month}월 {posted.day}일"
+                raise SystemExit(f"news {item['at']}: an action with no href "
+                                 "needs a `wait` line saying so")
+        at = datetime.fromisoformat(str(item["at"])).replace(tzinfo=tz)
+        # Written the way the announcements were written, which is also the one
+        # form that needs no translating.
+        item["stamp"] = (f"{at.year}.{at.month:02d}.{at.day:02d}. "
+                         f"{at.hour:02d}:{at.minute:02d}")
+        item["iso"] = at.isoformat()
         item["fresh_until_ms"] = int(
-            (posted + timedelta(days=FRESH_DAYS)).timestamp() * 1000)
+            (at + timedelta(days=FRESH_DAYS)).timestamp() * 1000)
     # One number for the tab: the newest notice decides whether the dot is on.
     news["fresh_until_ms"] = max(
         (i["fresh_until_ms"] for i in news["notices"]), default=None)

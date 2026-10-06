@@ -19,7 +19,7 @@ address_ko: 경상북도 포항시 남구 청암로 77
 rooms_title: Rooms
 rooms_title_ko: 공간
 # The mark is what the room is for, and it matches the programme's: the talks
-# are 🎤 there and the banquet 🥂, so the same two say which room is which here.
+# are 🎤 there and the banquet 🍖, so the same two say which room is which here.
 # Without them these two rows were the only ones in the card with nothing on
 # the left, next to a transport list where every line opens with a vehicle.
 rooms:
@@ -27,7 +27,7 @@ rooms:
     icon: "🎤"
     detail: 1F · 98 seats
   - name: Banquet Hall · 연회장
-    icon: "🥂"
+    icon: "🍖"
     detail: 2F · 200 seats
 
 # Where each kind of session happens, said again in the sheet a cell opens so

@@ -234,11 +234,11 @@ days:
         # The mark beside the title is drawn in that ticket's own `ground`, so
         # the page cannot disagree with the paper.
         ticket: day1-lunch
-        emoji: "🍽"
+        emoji: "🍱"
         start: "12:30"
         end: "13:30"
         detail:
-          - en: Lunch boxes for everyone who said they were coming, counted from the registration form.
+          - en: Lunch boxes, counted from the number who asked for one on the registration form.
             ko: 등록 시 신청하신 인원수대로 도시락이 제공됩니다.
 
       - type: block
@@ -821,6 +821,7 @@ days:
       - type: social
         title: Grand Banquet [Provided]
         ticket: day1-banquet
+        emoji: "🍖"
         start: "18:30"
         detail:
           - en: A barbecue buffet, for everyone who is here.
@@ -971,7 +972,7 @@ days:
         title: Lunch Break [Provided]
         room: meals
         ticket: day2-lunch
-        emoji: "🍽"
+        emoji: "🍱"
         start: "12:30"
         end: "13:30"
 

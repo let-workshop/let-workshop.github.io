@@ -389,11 +389,16 @@ html {
    pale sand and would otherwise be a smudge on a white band — the ring gives
    the dot an edge at any lightness without touching the colour inside it. */
 .ticket {
-  margin-left: 0.4em;
-  font-size: 0.82em;
-  line-height: 1;
-  vertical-align: 0.08em;
-  -webkit-text-stroke: 0.6px var(--faint);
+  width: 1.3em;
+  height: 0.8em;
+  margin-left: 0.42em;
+  vertical-align: -0.03em;
+  fill: currentColor;
+  /* A true hairline whatever the type size: the outline is what gives the
+     palest ticket, #edcd96, an edge on a white band, and a stroke that scaled
+     with the glyph would be a border at a heading and invisible in a cell. */
+  stroke: var(--faint);
+  stroke-width: 1;
 }
 /* ---- The "new" dot, on whichever tab points at the notices
    A superscript bullet in the accent, hung off the end of the label rather
@@ -1336,72 +1341,70 @@ h2::before {
   border-radius: 3px;
 }
 /* ---- Notices (#news)
-   The band keeps About's own ground rather than taking the next stripe in the
-   alternation — see the section's comment in main.html.j2. What separates it
-   from the section above is the card, which is the same card every other
-   section on a plain band uses. A notice still inside its week takes the
-   accent rule; one that has aged out keeps the card and loses the rule, so the
-   page says "there is something new here" in exactly one place. */
-.news-list {
+   One box, one line to a notice, hairlines between — a board, not a stack of
+   cards. The row runs state, dot, date, text, and the dot is the state said in
+   the one place somebody is already looking, beside the date. A finished
+   notice stays: the board is also the record of what was announced and when,
+   and it goes grey rather than away. */
+.news-board {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 14px;
-}
-.news-item {
   background: var(--band-alt);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--line);
   border-radius: 12px;
-  padding: 18px 20px 20px;
+  overflow: hidden;
 }
-.news-item.is-fresh {
-  border-left-color: var(--hero-accent);
+.news-row {
+  padding: 13px 18px;
+  line-height: 1.6;
 }
-.news-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--muted);
+.news-row + .news-row {
+  border-top: 1px solid var(--line);
+}
+.news-state {
   font-size: 0.82em;
-  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--muted);
 }
-.news-tag {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 2px 9px;
-  letter-spacing: 0.02em;
+.news-mark {
+  margin: 0 0.3em 0 0.45em;
+  font-size: 0.72em;
+  vertical-align: 0.12em;
+  color: var(--faint);
 }
-.news-item.is-fresh .news-tag {
-  border-color: var(--hero-accent);
+.news-row.is-open .news-mark {
   color: var(--hero-accent);
 }
-.news-item h3 {
-  margin: 8px 0 6px;
-  font-size: 1.12em;
-  letter-spacing: -0.01em;
-}
-.news-item p {
-  margin: 0;
-  max-width: 68ch;
-}
-.news-btn {
-  margin-top: 16px;
-}
-/* What stands in for the button until there is something to link to. Set like
-   the card's own small print rather than like a control, so nothing on the
-   card looks clickable while nothing is. */
-.news-wait {
-  margin: 14px 0 0;
+.news-at {
+  font-size: 0.84em;
   color: var(--muted);
-  font-size: 0.88em;
+  font-variant-numeric: tabular-nums;
+  margin-right: 0.45em;
 }
-/* The live link is an <a class="btn">, the waiting one a <span class="btn-wait">
-   around a disabled button — one is inline, the other a block with a line under
-   it, so each needs its own way of sitting away from the paragraph. */
-a.news-btn {
-  display: inline-block;
+.news-body {
+  color: var(--ink);
+}
+/* Done with, and dimmed as a whole rather than struck through: it is still
+   true, it is just no longer something to act on. */
+.news-row.is-closed .news-body {
+  color: var(--muted);
+}
+.news-link {
+  margin-left: 0.4em;
+  white-space: nowrap;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.news-link:hover {
+  text-decoration: underline;
+}
+.news-wait {
+  margin-left: 0.4em;
+  color: var(--muted);
+  font-size: 0.9em;
 }
 .sub {
   color: var(--muted);
