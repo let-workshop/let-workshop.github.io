@@ -616,6 +616,7 @@ def fill_defaults(bundle: dict) -> None:
     bundle["site"].setdefault("hero_actions", [])
     for act in bundle["site"]["hero_actions"]:
         for key in ("label_ko", "href", "note", "note_ko",
+                    "subnote", "subnote_ko",
                     "shut_note", "shut_note_ko", "opens_at"):
             act.setdefault(key, None)
         act.setdefault("primary", False)

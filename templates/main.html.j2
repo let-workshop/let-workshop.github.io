@@ -6,6 +6,16 @@
   {%- set parts = name.rsplit(" ", 1) if " " in name else [name] -%}
   <b>{{ parts[0] }}</b>{% if parts|length > 1 %} <span class="year">{{ parts[1] }}</span>{% endif %}
 {%- endmacro -%}
+{#- A second line under a button's note. A <small> like the note, so it takes
+    its mono, size and tracking untouched: the two are one remark in two
+    sentences, not two remarks. Only the spacing separates them, and it does it
+    by closing rather than opening — see .btn-subnote.
+    It is also how a long note stays narrow. The note is centred under a button
+    about a hundred pixels wide, and one line saying the whole of what is open
+    came out half as wide again as the button it belongs to. -#}
+{%- macro subnote(a) -%}
+  {%- if a.subnote %}<small class="btn-subnote">{{ t(a.subnote, a.subnote_ko) }}</small>{% endif -%}
+{%- endmacro -%}
 {#- The meal ticket, drawn as a ticket in the colour of the slip the desk
     hands out — see the i-ticket symbol for why it is drawn and not typed. The
     colour comes from the meal's own `ground` in site.yml, so the mark and the
@@ -335,6 +345,7 @@
             <a class="btn{{ ' btn-primary' if a.primary }}" href="{{ a.href }}"
                {% if a.href.startswith('http') %}target="_blank" rel="noopener"{% endif %}>{{ t(a.label, a.label_ko) }}</a>
             {% if a.note %}<small>{{ t(a.note, a.note_ko) }}</small>{% endif %}
+            {{ subnote(a) }}
           </span>
           <span class="btn-wait{{ ' is-primary' if a.primary }}" data-shut-until="{{ a.opens_at_ms }}">
             <button class="btn{{ ' btn-primary' if a.primary }}" disabled>{{ t(a.label, a.label_ko) }}</button>
@@ -348,16 +359,13 @@
             <a class="btn{{ ' btn-primary' if a.primary }}" href="{{ a.href }}"
                {% if a.href.startswith('http') %}target="_blank" rel="noopener"{% endif %}>{{ t(a.label, a.label_ko) }}</a>
             {% if a.note %}<small>{{ t(a.note, a.note_ko) }}</small>{% endif %}
+            {{ subnote(a) }}
           </span>
           {% else %}
           <span class="btn-wait{{ ' is-primary' if a.primary }}">
             <button class="btn{{ ' btn-primary' if a.primary }}" disabled>{{ t(a.label, a.label_ko) }}</button>
             {% if a.note %}<small>{{ t(a.note, a.note_ko) }}</small>{% endif %}
-            <!-- A second <small>, so it is the note's own voice continuing
-                 rather than a different one answering: same mono, same size,
-                 same tracking. Only the spacing separates them, and it does it
-                 by closing rather than opening — see .btn-thanks. -->
-            {% if a.thanks %}<small class="btn-thanks">{{ t(a.thanks, a.thanks_ko) }}</small>{% endif %}
+            {{ subnote(a) }}
           </span>
           {% endif %}
           {% endfor %}
@@ -443,15 +451,15 @@
 
     {% if news.notices %}
     <!-- ===== NOTICES =====
-         Directly under About and given its own ground rather than the next
-         band in the alternation: a notice is not another chapter of the page,
-         and flipping every band below it to keep the stripes going would be a
-         redesign of the whole page for one card.
+         Directly under About, and in the alternation like every other section
+         — which is why every band below this one is the opposite of what it
+         used to be. A section that opted out of the stripes read as a panel
+         stuck onto About rather than as a part of the page.
 
          One box, one line to a notice. Three cards in a column made three
          small announcements look like three sections of the page; a board
          reads as a board, and the oldest of these is a month gone. -->
-    <section id="news" class="band band-news">
+    <section id="news" class="band band-alt">
       <div class="wrap">
         <h2>{{ t(news.title, news.title_ko) }}</h2>
         <ol class="news-board">
@@ -479,7 +487,7 @@
     {% endif %}
     {% if roster %}
     <!-- ===== SPEAKERS (derived from the programme) ===== -->
-    <section id="speakers" class="band band-alt">
+    <section id="speakers" class="band">
       <div class="wrap">
         <!-- The order is by surname, not by billing. Said beside the heading so
              it is read before the grid rather than after it.
@@ -543,7 +551,7 @@
     </section>
     {% endif %}
     <!-- ===== PROGRAM ===== -->
-    <section id="program" class="band">
+    <section id="program" class="band band-alt">
       <div class="wrap">
         <h2>{{ t(program.title, program.title_ko) }}{% if program.title_note %}
           <span class="h2-note">({{ t(program.title_note, program.title_note_ko) }})</span>{% endif %}</h2>
@@ -710,7 +718,7 @@
          programme, because that is what they are instructions about, and its
          own section because the answer to "what size?" should not live in a
          mail anybody has to find again. -->
-    <section id="instructions" class="band band-alt">
+    <section id="instructions" class="band">
       <div class="wrap">
         <h2>{{ t(program.instructions.title, program.instructions.title_ko) }}</h2>
         {% for block in program.instructions.blocks %}
@@ -730,7 +738,7 @@
     </section>
     {% endif %}
     <!-- ===== ORGANIZERS ===== -->
-    <section id="organizers" class="band">
+    <section id="organizers" class="band band-alt">
       <div class="wrap">
         <h2><span class="t-en">Organizers</span><span class="t-ko">조직위원회</span></h2>
         <div class="org-grid">
@@ -772,7 +780,7 @@
          tone — which is how you show a mark you are obliged to show. Given a
          band of their own and their own colours they read as the institutions
          behind the thing. -->
-    <section id="sponsors" class="band band-alt">
+    <section id="sponsors" class="band">
       <div class="wrap">
         <h2>{{ t(site.sponsors.title, site.sponsors.title_ko) }}</h2>
         <div class="sponsors-row">
@@ -793,7 +801,7 @@
     {% endif %}
 
     <!-- ===== VENUE ===== -->
-    <section id="venue" class="band">
+    <section id="venue" class="band band-alt">
       <div class="wrap">
         <h2>{{ t(venue.title, venue.title_ko) }}</h2>
         {% if venue.subtitle %}
@@ -917,7 +925,7 @@
          said everything the poster says, so it is here as a thing to take away
          rather than as a thing to read. It links to the full-size file instead
          of shipping the 48MB print PDF into the repository. -->
-    <section id="poster" class="band band-alt">
+    <section id="poster" class="band">
       <div class="wrap">
         <h2>{{ t(site.poster.title, site.poster.title_ko) }}{% if site.poster.title_note %}
           <span class="h2-note">({{ t(site.poster.title_note, site.poster.title_note_ko) }})</span>{% endif %}</h2>
@@ -969,7 +977,7 @@
     {% if variant.candidates %}
 
     <!-- ===== CANDIDATES (internal build only) =====
-    <section class="band">
+    <section class="band band-alt">
       <div class="wrap">
         <h2>{{ candidates.title }}</h2>
         <p class="sub">{{ candidates.subtitle }}</p>

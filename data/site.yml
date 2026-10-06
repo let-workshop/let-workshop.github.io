@@ -136,13 +136,19 @@ hero_actions:
     # shut_note: Opens August 24, 18:00
     # shut_note_ko: 8월 24일 18시 오픈
     #
-    # The line that stood under the shut button, for when it shuts again:
+    # The lines that stood under the shut button, for when it shuts again:
     # note: Closed — we are full
     # note_ko: 정원 마감 · 신청 종료
-    # thanks: Thank you for the interest
-    # thanks_ko: 많은 관심 감사드립니다
-    note: Audit places only — no meals or accommodation
-    note_ko: 청강석 한정 · 식사/숙소 미지원
+    # subnote: Thank you for the interest
+    # subnote_ko: 많은 관심 감사드립니다
+    #
+    # Two short lines rather than one long one. The note is centred under a
+    # button a hundred pixels wide, and saying all of this on one line came out
+    # half as wide again as the button it belongs to.
+    note: Audit places only
+    note_ko: 청강석 한정
+    subnote: no meals or accommodation
+    subnote_ko: 식사·숙소 미지원
     primary: true
   - label: See speakers
     label_ko: 연사 보기
@@ -154,7 +160,7 @@ hero_actions:
 # highlight on scroll, so a nav out of step reads as jumping backwards.
 nav:
   - { label: About, label_ko: 소개, href: "#about" }
-  - { label: News, label_ko: 공지, href: "#news" }
+  - { label: Notices, label_ko: 공지, href: "#news" }
   - { label: Speakers, label_ko: 연사, href: "#speakers" }
   - { label: Program, label_ko: 프로그램, href: "#program" }
   - { label: Instructions, label_ko: 안내사항, href: "#instructions" }

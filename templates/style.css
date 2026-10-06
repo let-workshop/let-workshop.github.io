@@ -1151,8 +1151,8 @@ body {
    opacity and margin and they applied; it set font-size and that did not, and
    the line went on being 10.24px while looking as though it had been changed.
    Named the same way as what it is overriding, so it outranks it. */
-.btn-wait small.btn-thanks,
-.btn-note small.btn-thanks {
+.btn-wait small.btn-subnote,
+.btn-note small.btn-subnote {
   margin-top: -4px;
   font-size: 0.56rem;
   /* Back up from 0.74. The step back was doing two jobs — smaller and fainter
@@ -1240,8 +1240,8 @@ body {
    opacity and margin and they applied; it set font-size and that did not, and
    the line went on being 10.24px while looking as though it had been changed.
    Named the same way as what it is overriding, so it outranks it. */
-.btn-wait small.btn-thanks,
-.btn-note small.btn-thanks {
+.btn-wait small.btn-subnote,
+.btn-note small.btn-subnote {
   margin-top: -4px;
   font-size: 0.56rem;
   /* Back up from 0.74. The step back was doing two jobs — smaller and fainter
@@ -1306,6 +1306,7 @@ section {
 .band .spk-card,
 .band .cand,
 .band .now-lead,
+.band .news-board,
 .band .guide {
   background: var(--band-alt);
 }
@@ -1319,6 +1320,7 @@ section {
 .band-alt .spk-card,
 .band-alt .cand,
 .band-alt .now-lead,
+.band-alt .news-board,
 .band-alt .guide {
   background: var(--band);
 }
@@ -1350,7 +1352,6 @@ h2::before {
   list-style: none;
   margin: 0;
   padding: 0;
-  background: var(--band-alt);
   border: 1px solid var(--line);
   border-radius: 12px;
   overflow: hidden;
