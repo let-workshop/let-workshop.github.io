@@ -85,9 +85,11 @@ meals:
 # badge is in Latin letters and for anyone scanning the room rather than reading
 # it. Add a line here and it is printed with the rest.
 signs:
-  - ko: 등록대
+  # 참가 등록, not 등록대: the sign is standing on the desk, so the word does not
+  # have to say "desk" as well, and what is being registered is worth saying.
+  - ko: 참가 등록
     en: Registration
-  - ko: 안내 데스크
+  - ko: 안내
     en: Information
   - ko: 잠시 자리 비움
     en: Back shortly
