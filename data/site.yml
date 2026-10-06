@@ -145,7 +145,7 @@ hero_actions:
     # that turned out to matter. Take `href` away and it goes back to the
     # disabled button — dead pill, muted ink and the 45-degree hatch across
     # it — with `note` underneath saying why.
-    href: https://docs.google.com/forms/d/e/1FAIpQLSe4zlakGy6_rJ6KcT_ovDc1dD08mYEoOOFTeuiBm9hxfXGy-w/viewform
+    # href: https://docs.google.com/forms/d/e/1FAIpQLSe4zlakGy6_rJ6KcT_ovDc1dD08mYEoOOFTeuiBm9hxfXGy-w/viewform
     #
     # And the two that shut it against a clock rather than a headcount. They
     # stay here rather than in the history: the offset is the part that is easy
@@ -156,19 +156,18 @@ hero_actions:
     # shut_note: Opens August 24, 18:00
     # shut_note_ko: 8월 24일 18시 오픈
     #
-    # The lines that stood under the shut button, for when it shuts again:
-    # note: Closed — we are full
-    # note_ko: 정원 마감 · 신청 종료
-    # subnote: Thank you for the interest
-    # subnote_ko: 많은 관심 감사드립니다
-    #
-    # Two short lines rather than one long one. The note is centred under a
-    # button a hundred pixels wide, and saying all of this on one line came out
-    # half as wide again as the button it belongs to.
-    note: Audit places only
-    note_ko: 청강석 한정
-    subnote: no meals or accommodation
-    subnote_ko: 식사·숙소 미지원
+    # The lines that stood under it while the audit places were open, for if
+    # it opens again. Two short lines rather than one long one: the note is
+    # centred under a button a hundred pixels wide, and saying all of it on one
+    # line came out half as wide again as the button it belongs to.
+    # note: Audit places only
+    # note_ko: 청강석 한정
+    # subnote: no meals or accommodation
+    # subnote_ko: 식사·숙소 미지원
+    note: Closed — we are full
+    note_ko: 정원 마감 · 신청 종료
+    subnote: Thank you for the interest
+    subnote_ko: 많은 관심 감사드립니다
     primary: true
   - label: See speakers
     label_ko: 연사 보기

@@ -27,23 +27,12 @@ title_ko: 공지
 notices:
   - at: "2026-10-06 23:59"
     body: >-
-      [Extended] Cancellations have freed five more non-registered audit places
-      — sessions only, with no meals and no accommodation. Apply through the
-      form below. Places are taken in the order they are applied for and may
-      close early once they are full.
+      [Closed] Cancellations freed five more non-registered audit places —
+      sessions only, with no meals and no accommodation. They have been taken
+      and sign-up is closed.
     body_ko: >-
-      [연장] 일부 등록 취소로 인해, 식사 및 숙소 지원 없이 세미나에만 참여하는
-      비등록 청강석이 총 5석 추가로 마련되었습니다. 참가를 희망하시는 분께서는
-      아래 구글 폼을 통해 신청해 주시기 바랍니다. 선착순으로 접수하며, 정원
-      충족 시 조기 마감될 수 있습니다.
-    action:
-      label: Audit sign-up
-      label_ko: 청강 신청
-      # The RSVP form, the same one the hero button points at — it is open
-      # again for exactly these places.
-      href: https://docs.google.com/forms/d/e/1FAIpQLSe4zlakGy6_rJ6KcT_ovDc1dD08mYEoOOFTeuiBm9hxfXGy-w/viewform
-      wait: form opening shortly
-      wait_ko: 신청 폼 준비 중
+      [종료] 일부 등록 취소로 인해, 식사 및 숙소 지원 없이 세미나에만 참여하는
+      비등록 청강석이 총 5석 추가로 마련되었습니다. 접수가 마감되었습니다.
 
   - at: "2026-09-01 23:59"
     body: >-
