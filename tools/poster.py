@@ -1961,14 +1961,18 @@ TICKET = """<!doctype html>
   .t {{
     box-sizing:border-box; overflow:hidden; position:relative;
     padding:2.4mm 3mm; background:var(--g); color:{ink};
-    display:flex; flex-direction:column; justify-content:center; gap:1.4mm;
+    display:flex; flex-direction:column; justify-content:center; gap:1.1mm;
   }}
-  /* Two rows, each a line across the ticket, rather than three things placed
-     over one another. The first version centred the meal in the cell and hung
-     the number and the workshop's name off the corners absolutely, which left
-     1mm between boxes on a 19mm ticket and read as type sitting on type. Laid
-     out as rows nothing can collide whatever any of the strings turn out to be. */
+  /* Rows, not things placed over one another: the first version centred the meal
+     and hung the number and the name off the corners absolutely, which left 1mm
+     between boxes on a 19mm ticket and read as type on type.
+     Three rows rather than two, because sharing a row with the name left the
+     meal 28.9mm and "Day 1 · Grand Banquet 만찬" quietly wrapped inside it. The
+     name gets the top line to itself, which is the corner it was asked for, and
+     the meal and the time get the ticket's whole width. */
   .t .row {{ display:flex; align-items:baseline; justify-content:space-between; gap:2mm; }}
+  .t .row.top {{ justify-content:flex-end; }}
+  .t .meal, .t .when {{ white-space:nowrap; }}
   .t p {{ margin:0; line-height:1; }}
   .t .meal {{
     font-family:"Satoshi",sans-serif; font-weight:700; font-size:3.6mm;
@@ -1978,16 +1982,21 @@ TICKET = """<!doctype html>
     font-family:"JetBrains Mono",monospace; font-size:2.4mm; font-weight:400;
     letter-spacing:.03em; opacity:.78;
   }}
-  /* The corners: the number to count by and the workshop's name, both quiet.
-     The name is only there to say which workshop the ticket belongs to — a
-     caterer reads the meal, and two pieces of display type on a ticket this
-     small argue with each other. */
-  .t .no, .t .mark {{
-    font-family:"JetBrains Mono",monospace; font-weight:400; letter-spacing:.07em;
-    white-space:nowrap; flex:none;
+  /* The corners: the workshop's name top right, the number to count by bottom
+     right. The name is set in the logotype's own face and the sheet's own two
+     weights — the same thing the site's title is, only 2.2mm of it. It was in
+     the mono for a round, which made it a label about the ticket rather than
+     the workshop's name on it. */
+  .t .no, .t .mark {{ white-space:nowrap; flex:none; }}
+  .t .mark {{
+    font-family:"Jost",sans-serif; font-weight:700; font-size:2.2mm;
+    letter-spacing:-.01em; opacity:.8;
   }}
-  .t .no {{ font-size:2.2mm; opacity:.5; }}
-  .t .mark {{ font-size:2.2mm; opacity:.7; text-transform:uppercase; }}
+  .t .mark span {{ font-weight:300; }}
+  .t .no {{
+    font-family:"JetBrains Mono",monospace; font-weight:400; font-size:2.2mm;
+    letter-spacing:.07em; opacity:.5;
+  }}
 </style></head><body>
 {tickets}
 </body></html>
@@ -3138,11 +3147,12 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
                         continue
                     cells.append(
                         '<div class="t">'
+                        f'<div class="row top"><p class="mark">{esc(mark)} '
+                        f'<span>{esc(year)} {esc(_yyyy)}</span></p></div>'
                         f'<div class="row"><p class="meal">Day {esc(str(meal["day"]))} '
-                        f'&middot; {esc(meal["name"])} {esc(meal["name_ko"])}</p>'
-                        f'<p class="no">{serial:03d}</p></div>'
+                        f'&middot; {esc(meal["name"])} {esc(meal["name_ko"])}</p></div>'
                         f'<div class="row"><p class="when">{esc(when)}</p>'
-                        f'<p class="mark">{esc(mark)} {esc(year)} {esc(_yyyy)}</p></div>'
+                        f'<p class="no">{serial:03d}</p></div>'
                         "</div>")
                 ticket_sheets += ('<div class="sheet">'
                                   f'<div class="grid" style="--g:{meal["ground"]}">'
