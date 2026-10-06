@@ -1912,6 +1912,82 @@ SOCIAL = """<!doctype html>
 # tells them apart at a distance rather than by reading.
 # ─────────────────────────────────────────────────────────────
 
+# ─────────────────────────────────────────────────────────────
+# Desk signs, A4 folded in three and stood on the table.
+#
+# 297 divides into three panels of 99mm. Folded, the middle one
+# faces the room, the top one hangs down the far side and the
+# bottom one lies flat as the base — so the top panel is printed
+# upside down, or it reads upside down to whoever is behind the
+# desk. That is the whole of the geometry and the only thing
+# easy to get wrong.
+#
+# Korean large, English under it small: the room is Korean, and
+# the second line is for the people whose badge is in Latin
+# letters and for anyone scanning the room rather than reading
+# it.
+# ─────────────────────────────────────────────────────────────
+
+SIGN = """<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>LeT Workshop — desk signs, A4 folded in three</title>
+<style>
+  @page {{ size: 210mm 297mm; margin: 0; }}
+  @font-face {{ font-family:"Jost"; font-weight:100 900; src:url("fonts/jost-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"JetBrains Mono"; font-weight:400 600; src:url("fonts/jetbrains-mono-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:500; src:url("fonts/satoshi-500.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:700; src:url("fonts/satoshi-700.woff2") format("woff2"); }}
+  html, body {{ margin:0; padding:0; background:#fff; }}
+  .sheet {{
+    position:relative; width:210mm; height:297mm; overflow:hidden; background:{ground};
+    page-break-after:always; break-after:page;
+  }}
+  .sheet:last-child {{ page-break-after:auto; break-after:auto; }}
+  .panel {{
+    position:absolute; left:0; width:210mm; height:99mm; box-sizing:border-box;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:10mm 16mm; text-align:center;
+  }}
+  .panel.back {{ top:0; transform:rotate(180deg); }}
+  .panel.front {{ top:99mm; }}
+  /* The base takes the table's weight and nothing else. The mark goes here
+     rather than on a face: a sign that says Registration does not also need to
+     say which workshop, and the base is the one panel nobody reads. */
+  .panel.base {{
+    top:198mm; justify-content:flex-end; padding-bottom:7mm;
+  }}
+  .ko {{
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:26mm;
+    letter-spacing:-.02em; line-height:1.06; color:{ink}; margin:0;
+  }}
+  .en {{
+    font-family:"JetBrains Mono",monospace; font-weight:400; font-size:7mm;
+    letter-spacing:.14em; text-transform:uppercase; color:{ink}; opacity:.62;
+    margin:6mm 0 0;
+  }}
+  .mark {{
+    font-family:"Jost",sans-serif; font-weight:700; font-size:5mm;
+    letter-spacing:-.01em; color:{ink}; opacity:.4; margin:0;
+  }}
+  .mark span {{ font-weight:300; }}
+  /* Where to fold. Dashes rather than a rule, so nobody takes them for a cut,
+     and they run the full width because a fold wants a straight edge to follow. */
+  .fold {{
+    position:absolute; left:0; width:210mm; height:0;
+    border-top:.25mm dashed {rule_strong}; opacity:.55;
+  }}
+  .fold.one {{ top:99mm; }}  .fold.two {{ top:198mm; }}
+  .foldnote {{
+    position:absolute; right:5mm; font-family:"JetBrains Mono",monospace;
+    font-size:2.6mm; letter-spacing:.1em; text-transform:uppercase;
+    color:{ink}; opacity:.4; margin:0;
+  }}
+</style></head><body>
+{signs}
+</body></html>
+"""
+
+
 TICKET_COLS, TICKET_ROWS = 5, 10
 TICKET_W, TICKET_H = 55.4, 19.0
 # A line at every ticket edge, the outermost two pulled in by their own width so
@@ -2991,7 +3067,8 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     tpl = {"listing": LISTING, "festival": FESTIVAL, "academic": ACADEMIC,
            "civic": CIVIC, "bauhaus": BAUHAUS,
            "banner": BANNER, "banner2": BANNER_COLUMNS, "xbanner": XBANNER,
-           "social": SOCIAL, "badge": BADGE, "ticket": TICKET}.get(layout, TEMPLATE)
+           "social": SOCIAL, "badge": BADGE, "ticket": TICKET,
+           "sign": SIGN}.get(layout, TEMPLATE)
     organizers = yaml.safe_load((DATA / "organizers.yml").read_text(encoding="utf-8"))
     bill, sessions_list, organisers, days = festival_bits(program, organizers, site)
     day_people = []
@@ -3126,6 +3203,24 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         if isinstance(d, str):
             d = datetime.date.fromisoformat(d)
         return _DOW["ko" if lang == "ko" else "en"][d.weekday()]
+
+    # One sheet per sign: the face the room sees in the middle, the same words
+    # upside down above it for whoever is behind the desk, and the base below.
+    sign_sheets = ""
+    if layout == "sign":
+        for s in site.get("signs", []):
+            face = (f'<p class="ko">{esc(s["ko"])}</p>'
+                    f'<p class="en">{esc(s["en"])}</p>')
+            sign_sheets += (
+                '<div class="sheet">'
+                f'<div class="panel back">{face}</div>'
+                f'<div class="panel front">{face}</div>'
+                '<div class="panel base">'
+                f'<p class="mark">{esc(mark)} <span>{esc(year)}</span></p></div>'
+                '<div class="fold one"></div><div class="fold two"></div>'
+                '<p class="foldnote" style="top:100.5mm">fold</p>'
+                '<p class="foldnote" style="top:199.5mm">fold</p>'
+                "</div>")
 
     # The tickets are their own document: one sheet of fifty per page, as many
     # pages as the count asks for, and one meal after another in the order the
@@ -3404,6 +3499,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         reg_note=esc((site["hero_actions"][0].get("note") or "Opens soon")),
         badges=badges,
         tickets=ticket_sheets,
+        signs=sign_sheets,
         # The cut line: dark enough to follow with a blade, light enough that the
         # twelfth of a millimetre left on each ticket after the cut is nothing.
         ticket_cut="rgba(13,33,55,.30)",
@@ -3482,7 +3578,7 @@ if __name__ == "__main__":
     ap.add_argument("--layout",
                     choices=("stack", "listing", "festival", "academic", "civic",
                              "bauhaus", "banner", "banner2", "xbanner", "social",
-                             "badge", "ticket"),
+                             "badge", "ticket", "sign"),
                     default="stack",
                     help="a poster layout, or banner (5000x900mm) / xbanner (600x1800mm)")
     args = ap.parse_args()

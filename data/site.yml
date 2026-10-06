@@ -80,6 +80,24 @@ meals:
     colour: Green
     colour_ko: 초록색
     count: 100
+# The desk signs, one A4 each, folded in three and stood on the table. Korean
+# first because the room is Korean; the English under it is for the people whose
+# badge is in Latin letters and for anyone scanning the room rather than reading
+# it. Add a line here and it is printed with the rest.
+signs:
+  - ko: 등록대
+    en: Registration
+  - ko: 안내 데스크
+    en: Information
+  - ko: 잠시 자리 비움
+    en: Back shortly
+  - ko: 식권 배부
+    en: Meal tickets
+  - ko: 포스터 세션
+    en: Poster session
+  - ko: 물품 보관
+    en: Cloakroom
+
 country: South Korea
 # Fallback for local builds only. In CI the deployed URL is derived from
 # GITHUB_REPOSITORY, so the same commit is correct on every target — the live
