@@ -1894,6 +1894,102 @@ SOCIAL = """<!doctype html>
 </body></html>
 """
 # ─────────────────────────────────────────────────────────────
+# Meal tickets, 55.4 x 19mm, fifty to an A4 sheet.
+#
+# The one thing that decides the geometry is that they are cut
+# from a stack. So the tickets butt against each other with no
+# gutter and the grid is uniform: every cut line runs the full
+# width or height of the sheet, which is what lets a guillotine
+# take a whole pile in one pass instead of a sheet at a time.
+# Crop marks around each ticket would make that impossible.
+#
+# 5 x 10 is fifty, so a hundred tickets is two sheets exactly,
+# and all three meals use the same grid — the same guillotine
+# setting cuts all three piles.
+#
+# The three grounds are one lightness apart in hue only, so the
+# ink measures the same on each (10.3 to 10.7:1) and a caterer
+# tells them apart at a distance rather than by reading.
+# ─────────────────────────────────────────────────────────────
+
+TICKET_COLS, TICKET_ROWS = 5, 10
+TICKET_W, TICKET_H = 55.4, 19.0
+# A line at every ticket edge, the outermost two pulled in by their own width so
+# they stay on the sheet rather than half off it.
+TICKET_CUTS = ('<div class="cuts">'
+               + "".join(f'<i style="left:{min(k * TICKET_W, TICKET_COLS * TICKET_W - 0.2):.4f}mm"></i>'
+                         for k in range(TICKET_COLS + 1))
+               + "".join(f'<b style="top:{min(k * TICKET_H, TICKET_ROWS * TICKET_H - 0.2):.4f}mm"></b>'
+                         for k in range(TICKET_ROWS + 1))
+               + "</div>")
+
+TICKET = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>LeT Workshop — meal tickets, 55.4x19mm</title>
+<style>
+  @page {{ size: 297mm 210mm; margin: 0; }}
+  @font-face {{ font-family:"Jost"; font-weight:100 900; src:url("fonts/jost-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"JetBrains Mono"; font-weight:400 600; src:url("fonts/jetbrains-mono-latin.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:500; src:url("fonts/satoshi-500.woff2") format("woff2"); }}
+  @font-face {{ font-family:"Satoshi"; font-weight:700; src:url("fonts/satoshi-700.woff2") format("woff2"); }}
+  html, body {{ margin:0; padding:0; background:#fff; }}
+  .sheet {{
+    position:relative; width:297mm; height:210mm; overflow:hidden;
+    page-break-after:always; break-after:page; background:#fff;
+  }}
+  .sheet:last-child {{ page-break-after:auto; break-after:auto; }}
+  /* 10mm comes off each edge before the grid starts, which is the first four
+     cuts: a stack is trimmed square before anything inside it is cut. */
+  .grid {{
+    position:absolute; left:10mm; top:10mm; width:277mm; height:190mm;
+    display:grid; grid-template-columns:repeat(5, 55.4mm); grid-auto-rows:19mm;
+  }}
+  /* The cut lines, drawn over the grid as elements rather than as borders or
+     gradients. Borders at .12mm were dropped by Chrome altogether — the
+     rasterised sheet had paper white where the first two trim lines should be —
+     and a border inside a border-box cell also shifts the pitch by its own
+     width. Repeating gradients failed differently: the pitch is 55.4mm and 19mm,
+     neither a whole number of device pixels, and at 300 DPI two of the five
+     vertical lines and nine of the eleven horizontal ones simply were not
+     rasterised. A positioned rectangle per line is the one thing that survives,
+     and it puts each line where arithmetic says rather than where a gradient's
+     accumulated rounding lands it. */
+  .cuts {{ position:absolute; left:10mm; top:10mm; width:277mm; height:190mm;
+           pointer-events:none; }}
+  .cuts i {{ position:absolute; top:0; bottom:0; width:.2mm; background:{ticket_cut}; }}
+  .cuts b {{ position:absolute; left:0; right:0; height:.2mm; background:{ticket_cut}; }}
+  .t {{
+    box-sizing:border-box; overflow:hidden; position:relative;
+    padding:2.6mm 3mm; display:flex; align-items:center; justify-content:space-between;
+    background:var(--g); color:{ink};
+  }}
+  .t .what {{ display:flex; flex-direction:column; gap:.8mm; }}
+  .t .meal {{
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:3.9mm;
+    letter-spacing:-.01em; line-height:1; margin:0;
+  }}
+  .t .meal b {{ font-weight:700; }}
+  .t .when {{
+    font-family:"JetBrains Mono",monospace; font-size:2.5mm; font-weight:400;
+    letter-spacing:.04em; line-height:1; margin:0; opacity:.78;
+  }}
+  .t .side {{ display:flex; flex-direction:column; align-items:flex-end; gap:1mm; }}
+  .t .mark {{
+    font-family:"Jost",sans-serif; font-weight:700; font-size:3.4mm;
+    letter-spacing:-.01em; line-height:1; margin:0;
+  }}
+  .t .mark span {{ font-weight:300; }}
+  .t .no {{
+    font-family:"JetBrains Mono",monospace; font-size:2.2mm; font-weight:400;
+    letter-spacing:.08em; line-height:1; margin:0; opacity:.55;
+  }}
+</style></head><body>
+{tickets}
+</body></html>
+"""
+
+
+# ─────────────────────────────────────────────────────────────
 # Name badges, 95x122mm — the usual insert for a lanyard holder.
 # One card per page, so a print shop can take the file as it is.
 #
@@ -2875,7 +2971,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     tpl = {"listing": LISTING, "festival": FESTIVAL, "academic": ACADEMIC,
            "civic": CIVIC, "bauhaus": BAUHAUS,
            "banner": BANNER, "banner2": BANNER_COLUMNS, "xbanner": XBANNER,
-           "social": SOCIAL, "badge": BADGE}.get(layout, TEMPLATE)
+           "social": SOCIAL, "badge": BADGE, "ticket": TICKET}.get(layout, TEMPLATE)
     organizers = yaml.safe_load((DATA / "organizers.yml").read_text(encoding="utf-8"))
     bill, sessions_list, organisers, days = festival_bits(program, organizers, site)
     day_people = []
@@ -3010,6 +3106,42 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         if isinstance(d, str):
             d = datetime.date.fromisoformat(d)
         return _DOW["ko" if lang == "ko" else "en"][d.weekday()]
+
+    # The tickets are their own document: one sheet of fifty per page, as many
+    # pages as the count asks for, and one meal after another in the order the
+    # day runs. Each meal's pages are contiguous, so a pile is printed, stacked
+    # and cut without sorting anything first.
+    ticket_sheets, ticket_meals = "", []
+    if layout == "ticket":
+        PER_SHEET = 50
+        _d = {str(i + 1): program["days"][i]["date"] for i in range(len(program["days"]))}
+        for meal in site.get("meals", []):
+            date = _d.get(str(meal["day"]))
+            when = (f'{_md(date)} ({_dow(date)}) {meal["time"]}' if date else meal["time"])
+            n = int(meal.get("count", 100))
+            sheets = -(-n // PER_SHEET)
+            ticket_meals.append((meal, n, sheets))
+            for s in range(sheets):
+                cells = []
+                for k in range(PER_SHEET):
+                    serial = s * PER_SHEET + k + 1
+                    if serial > n:
+                        # The grid stays whole so the cuts stay straight; a cell
+                        # past the count is simply blank paper.
+                        cells.append('<div class="t" style="background:#fff"></div>')
+                        continue
+                    cells.append(
+                        '<div class="t">'
+                        f'<div class="what"><p class="meal">Day {esc(str(meal["day"]))} '
+                        f'&middot; {esc(meal["name"])} <b>{esc(meal["name_ko"])}</b></p>'
+                        f'<p class="when">{esc(when)}</p></div>'
+                        f'<div class="side"><p class="mark">{esc(mark)} '
+                        f'<span>{esc(year)}</span></p>'
+                        f'<p class="no">{serial:03d}</p></div></div>')
+                ticket_sheets += ('<div class="sheet">'
+                                  f'<div class="grid" style="--g:{meal["ground"]}">'
+                                  + "".join(cells) + "</div>" + TICKET_CUTS
+                                  + "</div>")
 
     # The room's name stays on the Korean printings and comes off the English
     # ones. "포스코국제관 대회의실" is three short words and reads as one address;
@@ -3249,6 +3381,10 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
             for w in site["full_name"].split())),
         reg_note=esc((site["hero_actions"][0].get("note") or "Opens soon")),
         badges=badges,
+        tickets=ticket_sheets,
+        # The cut line: dark enough to follow with a blade, light enough that the
+        # twelfth of a millimetre left on each ticket after the cut is nothing.
+        ticket_cut="rgba(13,33,55,.30)",
         badge_bg_pos=badge_bg_pos,
         badge_bg_size=badge_bg_size,
         badge_role_css=badge_role_css(badge_style, art_url, art_dark_url,
@@ -3323,7 +3459,8 @@ if __name__ == "__main__":
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--layout",
                     choices=("stack", "listing", "festival", "academic", "civic",
-                             "bauhaus", "banner", "banner2", "xbanner", "social", "badge"),
+                             "bauhaus", "banner", "banner2", "xbanner", "social",
+                             "badge", "ticket"),
                     default="stack",
                     help="a poster layout, or banner (5000x900mm) / xbanner (600x1800mm)")
     args = ap.parse_args()
