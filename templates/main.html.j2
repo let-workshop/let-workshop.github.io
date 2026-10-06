@@ -6,6 +6,18 @@
   {%- set parts = name.rsplit(" ", 1) if " " in name else [name] -%}
   <b>{{ parts[0] }}</b>{% if parts|length > 1 %} <span class="year">{{ parts[1] }}</span>{% endif %}
 {%- endmacro -%}
+{#- The meal ticket, as a dot in the colour of the slip the desk hands out.
+    A plain circle coloured from site.yml rather than an emoji: the emoji discs
+    come in six fixed colours and the tickets are printed in three particular
+    ones, so the dot either matches the paper or it misdirects somebody holding
+    it. The hairline ring is what keeps the palest of the three, #edcd96, from
+    disappearing into a white band. -#}
+{%- macro ticket_mark(e) -%}
+  {%- if e.ticket -%}
+  <span class="ticket" style="color: {{ e.ticket.colour }}" aria-hidden="true">&#9679;</span
+  ><span class="sr-only">{{ t(e.ticket.name + " meal ticket", e.ticket.name_ko + " 식사 티켓") }}</span>
+  {%- endif -%}
+{%- endmacro -%}
 {#- The "there is something new" mark, on whichever tab points at the notices.
     Both nav renders call it, so the dot cannot appear on one and not the other.
     It ships hidden and the page's own clock turns it on while the newest notice
@@ -579,7 +591,7 @@
               <tr id="row-{{ e.id }}" class="agenda-row wash-{{ e.type }}" data-begins="{{ e.begins_iso }}" data-ends="{{ e.ends_iso }}" onclick="openEvent('{{ e.id }}')" tabindex="0" onkeydown="if(event.key==='Enter'){openEvent('{{ e.id }}')}">
                 <th scope="row" class="when">{{ e.start }} – {{ e.end }}</th>
                 <td class="what">
-                  {% if e.emoji %}<span class="emoji" aria-hidden="true">{{ e.emoji }}</span>{% endif %}<strong>{{ e.title }}</strong>{% if e.chair %} <span class="chair">(Chair: {{ e.chair }})</span>{% endif %}
+                  {% if e.emoji %}<span class="emoji" aria-hidden="true">{{ e.emoji }}</span>{% endif %}<strong>{{ e.title }}</strong>{{ ticket_mark(e) }}{% if e.chair %} <span class="chair">(Chair: {{ e.chair }})</span>{% endif %}
                   {% if e.talks %}
                   {% for t in e.talks %}
                   <div class="who">
@@ -667,9 +679,9 @@
             {% for e in day.events %}
             <div id="cell-{{ e.id }}" class="event bg-{{ e.type }}{{ ' ' ~ e.density if e.density }}" data-begins="{{ e.begins_iso }}" data-ends="{{ e.ends_iso }}" style="grid-column: {% if e.track %}{{ col + e.track - 1 }}{% else %}{{ col }} / span 2{% endif %}; grid-row: {{ e.row }} / span {{ e.span }}" onclick="openEvent('{{ e.id }}')">
               {% if e.bare %}
-              {% if e.emoji %}<span class="emoji" aria-hidden="true">{{ e.emoji }}</span>{% endif %}{{ e.title }}
+              {% if e.emoji %}<span class="emoji" aria-hidden="true">{{ e.emoji }}</span>{% endif %}{{ e.title }}{{ ticket_mark(e) }}
               {% else %}
-              <span class="title">{% if e.emoji %}<span class="emoji" aria-hidden="true">{{ e.emoji }}</span>{% endif %}{{ e.title }}{% if e.time_in_title %} · {{ e.start }}{% endif %}{% if e.chair %} <span class="chair">(Chair: {{ e.chair }})</span>{% endif %}</span>
+              <span class="title">{% if e.emoji %}<span class="emoji" aria-hidden="true">{{ e.emoji }}</span>{% endif %}{{ e.title }}{{ ticket_mark(e) }}{% if e.time_in_title %} · {{ e.start }}{% endif %}{% if e.chair %} <span class="chair">(Chair: {{ e.chair }})</span>{% endif %}</span>
               {% if not e.time_in_title %}
               <span class="time">{{ e.time_label }}</span>
               {% endif %}
@@ -1985,7 +1997,7 @@
           '<div class="now-fill" style="width:' + pct.toFixed(1) + '%"></div></div>' +
           '<div class="now-time">' + esc(span[1] || "") + "</div>" +
           "</div>" +
-          "<h4>" + mark(e) + esc(e.title) + "</h4>" +
+          "<h4>" + mark(e) + esc(e.title) + ticketMark(e) + "</h4>" +
           who +
           '<div class="now-facts">' +
           facts
@@ -2085,6 +2097,15 @@
         return e.emoji ? '<span class="emoji" aria-hidden="true">' + esc(e.emoji) + "</span>" : "";
       }
 
+      // The ticket dot, same as the macro in the markup above draws.
+      function ticketMark(e) {
+        if (!e.ticket) return "";
+        return '<span class="ticket" style="color:' + esc(e.ticket.colour) +
+               '" aria-hidden="true">\u25cf</span><span class="sr-only">' +
+               tbd(e.ticket.name + " meal ticket", e.ticket.name_ko + " 식사 티켓") +
+               "</span>";
+      }
+
       // Both languages, switched by CSS like everything else on the page.
       function tbd(en, ko) {
         return '<span class="t-en">' + esc(en) + '</span><span class="t-ko">' + esc(ko) + "</span>";
@@ -2165,7 +2186,8 @@
         document.getElementById("modal-when").textContent =
           e.day + " · " + e.time + " · " + e.duration;
         document.getElementById("modal-title").innerHTML =
-          mark(e) + esc(e.title) + (e.chair ? "  (Chair: " + esc(e.chair) + ")" : "");
+          mark(e) + esc(e.title) + ticketMark(e) +
+          (e.chair ? "  (Chair: " + esc(e.chair) + ")" : "");
 
         // One talk or the session, depending on how the sheet was opened.
         var shown = e.speakers, only = false;

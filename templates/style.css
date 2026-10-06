@@ -383,6 +383,18 @@ html {
   color: var(--ink);
   font-weight: 600;
 }
+/* ---- The meal ticket's colour, beside the meal
+   Coloured from site.yml's `ground`, so it is the paper's own colour and not
+   an approximation of it. The hairline ring is doing real work: #edcd96 is a
+   pale sand and would otherwise be a smudge on a white band — the ring gives
+   the dot an edge at any lightness without touching the colour inside it. */
+.ticket {
+  margin-left: 0.4em;
+  font-size: 0.82em;
+  line-height: 1;
+  vertical-align: 0.08em;
+  -webkit-text-stroke: 0.6px var(--faint);
+}
 /* ---- The "new" dot, on whichever tab points at the notices
    A superscript bullet in the accent, hung off the end of the label rather
    than placed in the line: absolute, so turning it on after the bar is painted

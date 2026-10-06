@@ -435,6 +435,29 @@ def note_line(note) -> Markup:
     return Markup("<em>%s</em>") % note_text(note)
 
 
+def attach_tickets(program: dict, meals: list[dict]) -> None:
+    """Hang each meal's printed slip on the event it admits you to.
+
+    The colour is the ticket's own `ground` from site.yml rather than a word
+    repeated here, so the mark on the page and the paper in the envelope cannot
+    drift apart — change the ground and the page follows on the next build.
+    """
+    by_key = {m["key"]: m for m in meals}
+    for day in program["days"]:
+        for e in day["events"]:
+            if not e["ticket"]:
+                continue
+            meal = by_key.get(e["ticket"])
+            if not meal:
+                raise SystemExit(f"{e['title']!r}: ticket {e['ticket']!r} is not "
+                                 "a key under `meals:` in site.yml")
+            e["ticket"] = {
+                "colour": meal["ground"],
+                "name": meal.get("colour") or meal["ground"],
+                "name_ko": meal.get("colour_ko") or meal.get("colour") or meal["ground"],
+            }
+
+
 # Every talk is in the one room, so the room is a property of the kind of
 # session, not of the session. The exceptions say so: `room: meals` on the two
 # lunches, which are breaks served upstairs.
@@ -666,7 +689,7 @@ def fill_defaults(bundle: dict) -> None:
             # it, for the hours when two things run at once. Nothing else has
             # to know: an event without it spans both halves as before.
             for key in ("chair", "density", "time_label", "anon_note", "track",
-                        "simple", "room"):
+                        "simple", "room", "ticket"):
                 e.setdefault(key, None)
             for key in ("bare", "time_in_title"):
                 e.setdefault(key, False)
@@ -680,6 +703,9 @@ def fill_defaults(bundle: dict) -> None:
             # The event's own mark wins; otherwise the type's.
             if not e.get("emoji"):
                 e["emoji"] = types.get(e["type"], {}).get("emoji")
+    # Last, because it rewrites `ticket` from the key written in program.yml
+    # into the slip itself, and wants the key defaulted first.
+    attach_tickets(bundle["program"], bundle["site"].get("meals") or [])
 
 
 # How long a notice counts as new. The dot beside the News tab is drawn by the
@@ -834,16 +860,6 @@ def ics_text(value: str) -> str:
     return value
 
 
-# The meal titles carry their ticket colour as a pair of glyphs, which is a
-# thing to look at on the page and noise in somebody else's calendar app —
-# the same reason `emoji:` never reaches SUMMARY.
-MARKS = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D]")
-
-
-def unmarked(value: str) -> str:
-    return " ".join(MARKS.sub("", value).split())
-
-
 def ics_fold(line: str) -> str:
     """RFC 5545 caps a content line at 75 octets; continuations start with a space."""
     out, chunk, width = [], [], 0
@@ -895,7 +911,7 @@ def calendar(site: dict, program: dict) -> str:
                 f"DTSTAMP:{now}",
                 f"DTSTART:{ics_stamp(e['begins'])}",
                 f"DTEND:{ics_stamp(e['ends'])}",
-                f"SUMMARY:{ics_text(unmarked(e['title']))}",
+                f"SUMMARY:{ics_text(e['title'])}",
                 f"LOCATION:{location}",
                 f"URL:{site['url']}",
             ]
@@ -1154,6 +1170,8 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             # it is the same answer for every talk, and a cell an hour tall
             # should not spend a line saying so.
             "where": event_where(e, bundle["venue"]),
+            # The meal ticket, for the two places script draws a title.
+            "ticket": e["ticket"],
             # The posters, which are not talks and must not reach the roster:
             # the Speakers section is built from `speakers`, and fifteen poster
             # authors in it would say the workshop has thirty-one speakers.

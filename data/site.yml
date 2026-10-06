@@ -49,6 +49,9 @@ city_ko: 포항
 # put them, which is what people answered against; the grounds are three hues at
 # one lightness, 28 to 50 dE apart, so a caterer tells them apart across a room
 # and the ink measures the same 10.3 to 10.7:1 on all three.
+# `colour` is what to call that ground out loud — the programme marks each meal
+# with a dot in its `ground`, and the name is what a screen reader says and what
+# the desk says when somebody asks which slip they want.
 meals:
   - key: day1-lunch
     day: 1
@@ -56,6 +59,8 @@ meals:
     name_ko: 점심
     time: "12:30 – 13:30"
     ground: "#edcd96"
+    colour: Yellow
+    colour_ko: 노란색
     count: 100
   - key: day1-banquet
     day: 1
@@ -63,6 +68,8 @@ meals:
     name_ko: 만찬
     time: "18:00 –"
     ground: "#ffbdb9"
+    colour: Red
+    colour_ko: 붉은색
     count: 100
   - key: day2-lunch
     day: 2
@@ -70,6 +77,8 @@ meals:
     name_ko: 점심
     time: "12:30 – 13:30"
     ground: "#a3dfb8"
+    colour: Green
+    colour_ko: 초록색
     count: 100
 country: South Korea
 # Fallback for local builds only. In CI the deployed URL is derived from
