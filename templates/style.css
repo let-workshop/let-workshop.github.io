@@ -1357,20 +1357,24 @@ h2::before {
   overflow: hidden;
 }
 .news-row {
+  /* Two columns: when it was, and what it said. One column let a notice that
+     ran to three lines wrap back under its own date, which read as a second
+     notice starting without one. `max-content` so the column is as wide as the
+     longest date and no wider — nothing to keep in step with the content. */
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0 16px;
   padding: 13px 18px;
   line-height: 1.6;
 }
 .news-row + .news-row {
   border-top: 1px solid var(--line);
 }
-.news-state {
-  font-size: 0.82em;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--muted);
+.news-when {
+  white-space: nowrap;
 }
 .news-mark {
-  margin: 0 0.3em 0 0.45em;
+  margin-right: 0.42em;
   font-size: 0.72em;
   vertical-align: 0.12em;
   color: var(--faint);
@@ -1382,7 +1386,13 @@ h2::before {
   font-size: 0.84em;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
-  margin-right: 0.45em;
+}
+.news-state {
+  margin-left: 0.4em;
+  font-size: 0.82em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--muted);
 }
 .news-body {
   color: var(--ink);
@@ -1401,6 +1411,14 @@ h2::before {
 }
 .news-link:hover {
   text-decoration: underline;
+}
+/* Narrow enough that two columns would leave the text a thumb wide: the date
+   takes its own line and the notice runs the full width under it. */
+@media (max-width: 620px) {
+  .news-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
 }
 .news-wait {
   margin-left: 0.4em;

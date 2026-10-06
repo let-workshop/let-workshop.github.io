@@ -465,20 +465,26 @@
         <ol class="news-board">
           {% for item in news.notices %}
           <li class="news-row is-{{ item.state }}"{% if item.state == 'open' %} data-fresh-until="{{ item.fresh_until_ms }}"{% endif %}>
-            <span class="news-state">[{{ t(item.label, item.label_ko) }}]</span>
-            <!-- The dot is the state, beside the date it belongs to: lit while
-                 the notice is still running, grey once it is done with. -->
-            <span class="news-mark" aria-hidden="true">&#9679;</span>
-            <time class="news-at" datetime="{{ item.iso }}">{{ item.stamp }}</time>
-            <span class="news-body">{{ t(item.body, item.body_ko) }}</span>
-            {% if item.action %}
-            {% if item.action.href %}
-            <a class="news-link" href="{{ item.action.href }}"
-               {% if item.action.href.startswith('http') %}target="_blank" rel="noopener"{% endif %}>{{ t(item.action.label, item.action.label_ko) }} &rarr;</a>
-            {% else %}
-            <span class="news-wait">({{ t(item.action.wait, item.action.wait_ko) }})</span>
-            {% endif %}
-            {% endif %}
+            <!-- Its own column, so a notice that runs to three lines wraps
+                 under itself and not back under the date. -->
+            <div class="news-when">
+              <!-- The dot is the state, beside the date it belongs to: lit
+                   while the notice is still running, grey once it is done. -->
+              <span class="news-mark" aria-hidden="true">&#9679;</span
+              ><time class="news-at" datetime="{{ item.iso }}">{{ item.stamp }}</time>
+              <span class="news-state">[{{ t(item.label, item.label_ko) }}]</span>
+            </div>
+            <div class="news-text">
+              <span class="news-body">{{ t(item.body, item.body_ko) }}</span>
+              {% if item.action %}
+              {% if item.action.href %}
+              <a class="news-link" href="{{ item.action.href }}"
+                 {% if item.action.href.startswith('http') %}target="_blank" rel="noopener"{% endif %}>{{ t(item.action.label, item.action.label_ko) }} &rarr;</a>
+              {% else %}
+              <span class="news-wait">({{ t(item.action.wait, item.action.wait_ko) }})</span>
+              {% endif %}
+              {% endif %}
+            </div>
           </li>
           {% endfor %}
         </ol>
