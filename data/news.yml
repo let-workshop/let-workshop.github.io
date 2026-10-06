@@ -2,26 +2,22 @@
 # page entirely when `notices` is empty, so taking the board down is emptying
 # this list rather than editing the template.
 #
+# A board, not a schedule. Each entry is a thing that was announced and the
+# moment it was announced — nothing here runs from one date to another, and
+# nothing here has a status of its own. Words like 연장 and 종료 belong to what
+# was said, so they are written into the text the way they were posted.
+#
 # Newest first — the order here is the order on the page. One box, one line to
 # a notice: a notice is a line in a log, not a chapter, and three cards in a
-# column made three small announcements look like three sections.
+# column made three small announcements look like three sections of the page.
 #
 # Each wants both languages. A notice is the one kind of text on this page that
 # somebody acts on, and acting on a half-read sentence is how people turn up to
 # a meal they have no ticket for.
 #
-#   state: open     still running. The dot beside its date is lit in the accent
-#                   and the row is set in full ink.
-#   state: closed   done with. Grey dot, grey row — kept because the board is
-#                   also the record of what was announced and when.
-#
-#   at:             the moment the notice is good until, as it was announced.
-#                   Shown as written and used for the "new" dot on the tab,
-#                   which lasts a week from here. See FRESH_DAYS in build.py.
-#   from:           optional, the moment it began. With it the row shows the
-#                   span, "2026.08.24. 18:00 – 2026.08.27. 15:30"; without it,
-#                   "~ 2026.09.01. 23:59", so a lone date reads as the deadline
-#                   it is and not as the day the notice went up.
+#   at:     when it was announced, as it was written. Also what the dot beside
+#           it reads: lit while the notice is inside its week, grey after. The
+#           same week lights the dot on the tab — see FRESH_DAYS in build.py.
 #
 # `href` on an action may be left empty while a form is still being set up: the
 # row then carries the `wait` line instead of a link.
@@ -29,20 +25,17 @@ title: Notices
 title_ko: 공지
 
 notices:
-  - state: open
-    label: Extended
-    label_ko: 연장
-    at: "2026-10-06 23:59"
+  - at: "2026-10-06 23:59"
     body: >-
-      Cancellations have freed five more non-registered audit places — sessions
-      only, with no meals and no accommodation. Apply through the form below.
-      Places are taken in the order they are applied for and may close early
-      once they are full.
+      [Extended] Cancellations have freed five more non-registered audit places
+      — sessions only, with no meals and no accommodation. Apply through the
+      form below. Places are taken in the order they are applied for and may
+      close early once they are full.
     body_ko: >-
-      일부 등록 취소로 인해, 식사 및 숙소 지원 없이 세미나에만 참여하는 비등록
-      청강석이 총 5석 추가로 마련되었습니다. 참가를 희망하시는 분께서는 아래
-      구글 폼을 통해 신청해 주시기 바랍니다. 선착순으로 접수하며, 정원 충족 시
-      조기 마감될 수 있습니다.
+      [연장] 일부 등록 취소로 인해, 식사 및 숙소 지원 없이 세미나에만 참여하는
+      비등록 청강석이 총 5석 추가로 마련되었습니다. 참가를 희망하시는 분께서는
+      아래 구글 폼을 통해 신청해 주시기 바랍니다. 선착순으로 접수하며, 정원
+      충족 시 조기 마감될 수 있습니다.
     action:
       label: Audit sign-up
       label_ko: 청강 신청
@@ -52,31 +45,21 @@ notices:
       wait: form opening shortly
       wait_ko: 신청 폼 준비 중
 
-  - state: closed
-    label: Closed
-    label_ko: 종료
-    at: "2026-09-01 23:59"
+  - at: "2026-09-01 23:59"
     body: >-
-      Every registered participant was emailed the survey password, so that
-      anyone can edit their own RSVP answers — poster details included. If the
-      password did not reach you, write to the contact below.
+      [Closed] Every registered participant was emailed the survey password, so
+      that anyone can edit their own RSVP answers — poster details included. If
+      the password did not reach you, write to the contact below.
     body_ko: >-
-      모든 기존 참가자 분께서 본인의 RSVP 답변(포스터 정보 등)을 수정하실 수
-      있도록 설문 비밀번호를 이메일로 공유해 드렸습니다. 비밀번호를 받지 못하신
-      분은 아래 문의처를 통해 연락 주시기 바랍니다.
+      [종료] 모든 기존 참가자 분께서 본인의 RSVP 답변(포스터 정보 등)을 수정하실
+      수 있도록 설문 비밀번호를 이메일로 공유해 드렸습니다. 비밀번호를 받지
+      못하신 분은 아래 문의처를 통해 연락 주시기 바랍니다.
 
-  - state: closed
-    label: Closed
-    label_ko: 종료
-    # General registration ran from the hour it opened to the minute it filled.
-    # The opening is site.yml's own record of it — the `opens_at` kept in the
-    # comments under hero_actions.
-    from: "2026-08-24 18:00"
-    at: "2026-08-27 15:30"
+  - at: "2026-08-27 15:30"
     body: >-
-      Registrations, the next-generation AI project's researchers and the
-      speakers together reached the capacity of the hall, so general
+      [Closed] Registrations, the next-generation AI project's researchers and
+      the speakers together reached the capacity of the hall, so general
       registration goes to limited availability for the time being.
     body_ko: >-
-      참가 신청 인원 + 차세대AI과제 참여연구원 + 연사의 총합이 정원에 도달하여,
-      당분간 일반참가자 신청을 일부 공개로 전환합니다.
+      [종료] 참가 신청 인원 + 차세대AI과제 참여연구원 + 연사의 총합이 정원에
+      도달하여, 당분간 일반참가자 신청을 일부 공개로 전환합니다.

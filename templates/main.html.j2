@@ -464,15 +464,14 @@
         <h2>{{ t(news.title, news.title_ko) }}</h2>
         <ol class="news-board">
           {% for item in news.notices %}
-          <li class="news-row is-{{ item.state }}"{% if item.state == 'open' %} data-fresh-until="{{ item.fresh_until_ms }}"{% endif %}>
+          <li class="news-row" data-fresh-until="{{ item.fresh_until_ms }}">
             <!-- Its own column, so a notice that runs to three lines wraps
                  under itself and not back under the date. -->
             <div class="news-when">
-              <!-- The dot is the state, beside the date it belongs to: lit
-                   while the notice is still running, grey once it is done. -->
+              <!-- Lit while the notice is still inside its week, grey after —
+                   the same week that lights the dot on the tab. -->
               <span class="news-mark" aria-hidden="true">&#9679;</span
-              >{% if item.iso_from %}<span class="news-at"><time datetime="{{ item.iso_from }}">{{ item.stamp.split(" – ")[0] }}</time> &#8211; <time datetime="{{ item.iso }}">{{ item.stamp.split(" – ")[1] }}</time></span>{% else %}<time class="news-at" datetime="{{ item.iso }}">{{ item.stamp }}</time>{% endif %}
-              <span class="news-state">[{{ t(item.label, item.label_ko) }}]</span>
+              ><time class="news-at" datetime="{{ item.iso }}">{{ item.stamp }}</time>
             </div>
             <div class="news-text">
               <span class="news-body">{{ t(item.body, item.body_ko) }}</span>

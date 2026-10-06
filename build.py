@@ -723,11 +723,7 @@ def prepare_news(news: dict, utc_offset: str) -> None:
     news.setdefault("title_ko", None)
     tz = timezone(timedelta(minutes=offset_minutes(utc_offset)))
     for item in news.setdefault("notices", []):
-        for key in ("label_ko", "body_ko"):
-            item.setdefault(key, None)
-        if item["state"] not in ("open", "closed"):
-            raise SystemExit(f"news {item['at']}: state is {item['state']!r}, "
-                             "which is neither open nor closed")
+        item.setdefault("body_ko", None)
         action = item.setdefault("action", None)
         if action:
             for key in ("label_ko", "href", "wait", "wait_ko"):
@@ -736,23 +732,10 @@ def prepare_news(news: dict, utc_offset: str) -> None:
                 raise SystemExit(f"news {item['at']}: an action with no href "
                                  "needs a `wait` line saying so")
         at = datetime.fromisoformat(str(item["at"])).replace(tzinfo=tz)
-        item.setdefault("from", None)
         # Written the way the announcements were written, which is also the one
-        # form that needs no translating. A notice that knows when it began
-        # shows the span it covers; one that knows only its deadline says so
-        # with a leading tilde, rather than printing a bare date that could be
-        # read as the day it went up.
-        clock = lambda m: (f"{m.year}.{m.month:02d}.{m.day:02d}. "
-                           f"{m.hour:02d}:{m.minute:02d}")
-        if item["from"]:
-            since = datetime.fromisoformat(str(item["from"])).replace(tzinfo=tz)
-            if since >= at:
-                raise SystemExit(f"news {item['at']}: `from` is not before `at`")
-            item["stamp"] = f"{clock(since)} {EN_DASH} {clock(at)}"
-            item["iso_from"] = since.isoformat()
-        else:
-            item["stamp"] = f"~ {clock(at)}"
-            item["iso_from"] = None
+        # form that needs no translating.
+        item["stamp"] = (f"{at.year}.{at.month:02d}.{at.day:02d}. "
+                         f"{at.hour:02d}:{at.minute:02d}")
         item["iso"] = at.isoformat()
         item["fresh_until_ms"] = int(
             (at + timedelta(days=FRESH_DAYS)).timestamp() * 1000)
