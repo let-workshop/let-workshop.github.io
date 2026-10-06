@@ -1971,8 +1971,14 @@ TICKET = """<!doctype html>
      name gets the top line to itself, which is the corner it was asked for, and
      the meal and the time get the ticket's whole width. */
   .t .row {{ display:flex; align-items:baseline; justify-content:space-between; gap:2mm; }}
-  .t .row.top {{ justify-content:flex-end; }}
+  /* The top row carries the workshop's name at the left and the ticket's number
+     at the right, so the two corners are the two things that are not the meal.
+     The meal's own line gets more air than the gap gives it: on a 19mm ticket
+     the three lines sat 1.1mm apart and the middle one is the line that matters,
+     so it is given 1.5mm of its own above and below. The ticket does not change
+     size for it — there was 4mm of the nineteen unused. */
   .t .meal, .t .when {{ white-space:nowrap; }}
+  .t .row.mid {{ margin:1.5mm 0; }}
   .t p {{ margin:0; line-height:1; }}
   .t .meal {{
     font-family:"Satoshi",sans-serif; font-weight:700; font-size:3.6mm;
@@ -3147,12 +3153,12 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
                         continue
                     cells.append(
                         '<div class="t">'
-                        f'<div class="row top"><p class="mark">{esc(mark)} '
-                        f'<span>{esc(year)} {esc(_yyyy)}</span></p></div>'
-                        f'<div class="row"><p class="meal">Day {esc(str(meal["day"]))} '
-                        f'&middot; {esc(meal["name"])} {esc(meal["name_ko"])}</p></div>'
-                        f'<div class="row"><p class="when">{esc(when)}</p>'
+                        f'<div class="row"><p class="mark">{esc(mark)} '
+                        f'<span>{esc(year)} {esc(_yyyy)}</span></p>'
                         f'<p class="no">{serial:03d}</p></div>'
+                        f'<div class="row mid"><p class="meal">Day {esc(str(meal["day"]))} '
+                        f'&middot; {esc(meal["name"])} {esc(meal["name_ko"])}</p></div>'
+                        f'<div class="row"><p class="when">{esc(when)}</p></div>'
                         "</div>")
                 ticket_sheets += ('<div class="sheet">'
                                   f'<div class="grid" style="--g:{meal["ground"]}">'
