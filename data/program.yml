@@ -228,7 +228,9 @@ days:
               x: https://x.com/jaeho_lee_
               lab: https://effl.postech.ac.kr/
       - type: break
-        title: Lunch Break [Provided] 🎫🔴
+        # The disc is the colour of the ticket the desk hands out, which is
+        # this meal's `ground` in site.yml — day1-lunch is #edcd96, sand.
+        title: Lunch Break [Provided] 🎫🟡
         room: meals
         emoji: "🍽"
         start: "12:30"
@@ -815,7 +817,8 @@ days:
       # after it push everything back, and the banquet is the thing with the
       # give in it.
       - type: social
-        title: Grand Banquet [Provided] 🎫🟡
+        # day1-banquet is #ffbdb9 in site.yml, the pale red of the three.
+        title: Grand Banquet [Provided] 🎫🔴
         start: "18:30"
         detail:
           - en: A barbecue buffet, for everyone who is here.
@@ -963,6 +966,7 @@ days:
               scholar: https://scholar.google.com/citations?user=Ukl64ggAAAAJ
 
       - type: break
+        # day2-lunch is #a3dfb8, the green one.
         title: Lunch Break [Provided] 🎫🟢
         room: meals
         emoji: "🍽"
