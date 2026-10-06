@@ -2127,10 +2127,15 @@
           });
           if (mine.length) { shown = mine; only = true; }
         }
+        // Where it is, before who is in it: the first thing you want from a
+        // sheet you opened on your way there.
+        var body = e.where
+          ? '<p class="sp-where"><span aria-hidden="true">📍</span> ' + e.where + "</p>"
+          : "";
         // Not `.map(speakerHtml)`: map hands the callback an index as its
         // second argument, which speakerHtml reads as `compact` — so every
         // speaker after the first had their abstract quietly dropped.
-        var body = shown.map(function (s) { return speakerHtml(s); }).join("");
+        body += shown.map(function (s) { return speakerHtml(s); }).join("");
         // And a way back to the rest of it, since the other talk is otherwise
         // not reachable from here at all.
         if (only && e.speakers.length > 1)

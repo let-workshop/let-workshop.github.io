@@ -2423,6 +2423,17 @@ button.sp-talk-link:focus-visible {
   font-style: italic;
   margin: 8px 0;
 }
+/* The room, at the head of the sheet. Smaller than a note and not italic: a
+   note is a remark about the session, and this is a label on it. */
+.sp-where {
+  color: var(--muted);
+  font-size: 0.85em;
+  margin: 0 0 10px;
+  letter-spacing: 0.01em;
+}
+.sp-where span {
+  margin-right: 2px;
+}
 .modal-nav {
   display: flex;
   align-items: center;

@@ -435,6 +435,26 @@ def note_line(note) -> Markup:
     return Markup("<em>%s</em>") % note_text(note)
 
 
+# Every talk is in the one room, so the room is a property of the kind of
+# session, not of the session. The exceptions say so: `room: meals` on the two
+# lunches, which are breaks served upstairs.
+ROOM_BY_TYPE = {
+    "block": "talks",
+    "keynote": "talks",
+    "tutorial": "talks",
+    "poster": "posters",
+    "social": "meals",
+}
+
+
+def event_where(event: dict, venue: dict) -> str | None:
+    key = event.get("room") or ROOM_BY_TYPE.get(event["type"])
+    rooms = venue.get("where") or {}
+    if key and key not in rooms:
+        raise SystemExit(f"{event['title']!r}: no venue.where entry named {key!r}")
+    return str(note_text(rooms[key])) if key else None
+
+
 def session_track(event: dict) -> str:
     """The subject a session belongs to, for grouping the speaker roster.
 
@@ -645,7 +665,7 @@ def fill_defaults(bundle: dict) -> None:
             # it, for the hours when two things run at once. Nothing else has
             # to know: an event without it spans both halves as before.
             for key in ("chair", "density", "time_label", "anon_note", "track",
-                        "simple"):
+                        "simple", "room"):
                 e.setdefault(key, None)
             for key in ("bare", "time_in_title"):
                 e.setdefault(key, False)
@@ -780,6 +800,16 @@ def ics_text(value: str) -> str:
     return value
 
 
+# The meal titles carry their ticket colour as a pair of glyphs, which is a
+# thing to look at on the page and noise in somebody else's calendar app —
+# the same reason `emoji:` never reaches SUMMARY.
+MARKS = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D]")
+
+
+def unmarked(value: str) -> str:
+    return " ".join(MARKS.sub("", value).split())
+
+
 def ics_fold(line: str) -> str:
     """RFC 5545 caps a content line at 75 octets; continuations start with a space."""
     out, chunk, width = [], [], 0
@@ -831,7 +861,7 @@ def calendar(site: dict, program: dict) -> str:
                 f"DTSTAMP:{now}",
                 f"DTSTART:{ics_stamp(e['begins'])}",
                 f"DTEND:{ics_stamp(e['ends'])}",
-                f"SUMMARY:{ics_text(e['title'])}",
+                f"SUMMARY:{ics_text(unmarked(e['title']))}",
                 f"LOCATION:{location}",
                 f"URL:{site['url']}",
             ]
@@ -1085,6 +1115,11 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
             "notes": [str(note_text(n)) for n in e["notes"] + e["detail"]]
             if not variant["anonymize"]
             else [],
+            # The room, from venue.yml, picked by the event's own `room:` or by
+            # its type. One line in the sheet rather than a column in the grid:
+            # it is the same answer for every talk, and a cell an hour tall
+            # should not spend a line saying so.
+            "where": event_where(e, bundle["venue"]),
             # The posters, which are not talks and must not reach the roster:
             # the Speakers section is built from `speakers`, and fifteen poster
             # authors in it would say the workshop has thirty-one speakers.

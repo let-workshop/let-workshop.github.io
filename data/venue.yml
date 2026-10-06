@@ -30,6 +30,29 @@ rooms:
     icon: "🥂"
     detail: 2F · 200 seats
 
+# Where each kind of session happens, said again in the sheet a cell opens so
+# nobody has to come back to this card to find the room. Written out rather
+# than taken from `rooms` above: that list is two names with a floor and a
+# seat count, and this is a line to read in passing — and the posters are in
+# neither room, which is the fact most worth saying.
+#
+#   talks    block, keynote, tutorial
+#   meals    the banquet, and the two lunches, which say `room: meals`
+#   posters  the poster hour
+#
+# A coffee break and the registration hour have no line: nobody has told me
+# where the urns go, and a guess here is a guess somebody follows.
+where:
+  talks:
+    en: Grand Conference Room, 1F
+    ko: 대회의실 (1층)
+  meals:
+    en: Banquet Hall, 2F
+    ko: 연회장 (2층)
+  posters:
+    en: Lobby in front of the Grand Conference Room, 1F
+    ko: 대회의실 앞 로비 (1층)
+
 # Building centre from OpenStreetMap (Overpass): 포스코국제관 / POSCO
 # International Center, 36.0139836, 129.3209046.
 lat: 36.01398
