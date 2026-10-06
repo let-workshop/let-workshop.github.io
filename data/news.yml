@@ -18,6 +18,10 @@
 #   at:             the moment the notice is good until, as it was announced.
 #                   Shown as written and used for the "new" dot on the tab,
 #                   which lasts a week from here. See FRESH_DAYS in build.py.
+#   from:           optional, the moment it began. With it the row shows the
+#                   span, "2026.08.24. 18:00 – 2026.08.27. 15:30"; without it,
+#                   "~ 2026.09.01. 23:59", so a lone date reads as the deadline
+#                   it is and not as the day the notice went up.
 #
 # `href` on an action may be left empty while a form is still being set up: the
 # row then carries the `wait` line instead of a link.
@@ -64,6 +68,10 @@ notices:
   - state: closed
     label: Closed
     label_ko: 종료
+    # General registration ran from the hour it opened to the minute it filled.
+    # The opening is site.yml's own record of it — the `opens_at` kept in the
+    # comments under hero_actions.
+    from: "2026-08-24 18:00"
     at: "2026-08-27 15:30"
     body: >-
       Registrations, the next-generation AI project's researchers and the
