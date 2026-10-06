@@ -138,6 +138,7 @@ hero_actions:
 # highlight on scroll, so a nav out of step reads as jumping backwards.
 nav:
   - { label: About, label_ko: 소개, href: "#about" }
+  - { label: News, label_ko: 공지, href: "#news" }
   - { label: Speakers, label_ko: 연사, href: "#speakers" }
   - { label: Program, label_ko: 프로그램, href: "#program" }
   - { label: Instructions, label_ko: 안내사항, href: "#instructions" }

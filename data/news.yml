@@ -1,0 +1,38 @@
+# Notices. The section is drawn straight after About and is left out of the
+# page entirely when `notices` is empty, so taking a notice down is deleting it
+# rather than editing the template.
+#
+# Newest first — the order here is the order on the page, and a notice still inside
+# its week is the one that gets the accent rule. Each item wants both languages: a notice
+# is the one kind of text on this page that somebody acts on, and acting on a
+# half-read sentence is how people turn up to a meal they have no ticket for.
+#
+# `href` may be left empty while a form is still being set up. The action then
+# draws as the same waiting button the hero uses, which says the link is coming
+# rather than pretending it is already here.
+title: Notices
+title_ko: 공지
+
+notices:
+  - date: 2026-10-06
+    tag: Registration
+    tag_ko: 참가 등록
+    heading: A few audit-only places have opened
+    heading_ko: 청강 자리가 일부 열렸습니다
+    body: >-
+      Registration closed when the hall was full. Cancellations have since
+      freed a limited number of places, and we are opening them for auditing
+      only — you are welcome at the sessions, but meals and accommodation are
+      not included and no meal ticket comes with the seat. First come, first
+      served.
+    body_ko: >-
+      정원이 차서 마감했던 참가 등록에 취소가 생겨, 남은 자리를 청강용으로 일부
+      열어 둡니다. 세션은 자유롭게 들으실 수 있지만 식사와 숙소는 지원되지
+      않으며, 식사 티켓도 함께 드리지 못합니다. 선착순으로 마감됩니다.
+    action:
+      label: Audit sign-up
+      label_ko: 청강 신청
+      # Paste the Google Form URL here and the button goes live.
+      href:
+      wait: The form opens shortly — the link will appear here.
+      wait_ko: 신청 폼은 곧 열립니다. 링크는 이 자리에 올라갑니다.

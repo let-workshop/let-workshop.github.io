@@ -6,6 +6,17 @@
   {%- set parts = name.rsplit(" ", 1) if " " in name else [name] -%}
   <b>{{ parts[0] }}</b>{% if parts|length > 1 %} <span class="year">{{ parts[1] }}</span>{% endif %}
 {%- endmacro -%}
+{#- The "there is something new" mark, on whichever tab points at the notices.
+    Both nav renders call it, so the dot cannot appear on one and not the other.
+    It ships hidden and the page's own clock turns it on while the newest notice
+    is still inside its week — see FRESH_DAYS in build.py. -#}
+{%- macro news_dot(item) -%}
+  {%- if news.notices and item.href == "#news" -%}
+  <span class="nav-dot" data-fresh-until="{{ news.fresh_until_ms }}" hidden
+    ><span class="sr-only">{{ t("New", "새 공지") }}</span></span
+  >
+  {%- endif -%}
+{%- endmacro -%}
 <html lang="en" data-lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -209,7 +220,7 @@
           <nav class="tabs" aria-label="Section navigation">
             <ul>
               {% for item in site.nav %}
-              <li><a href="{{ item.href }}">{{ t(item.label, item.label_ko) }}</a></li>
+              <li><a href="{{ item.href }}">{{ t(item.label, item.label_ko) }}{{ news_dot(item) }}</a></li>
               {% endfor %}
             </ul>
           </nav>
@@ -244,7 +255,7 @@
     <nav class="tabs-mobile" aria-label="Section navigation">
       <ul>
         {% for item in site.nav %}
-        <li><a href="{{ item.href }}">{{ t(item.label, item.label_ko) }}</a></li>
+        <li><a href="{{ item.href }}">{{ t(item.label, item.label_ko) }}{{ news_dot(item) }}</a></li>
         {% endfor %}
       </ul>
     </nav>
@@ -410,6 +421,43 @@
         {% endfor %}
       </div>
     </section>
+
+    {% if news.notices %}
+    <!-- ===== NOTICES =====
+         Directly under About and given its own ground rather than the next
+         band in the alternation: a notice is not another chapter of the page,
+         and flipping every band below it to keep the stripes going would be a
+         redesign of the whole page for one card. -->
+    <section id="news" class="band band-news">
+      <div class="wrap">
+        <h2>{{ t(news.title, news.title_ko) }}</h2>
+        <ol class="news-list">
+          {% for item in news.notices %}
+          <li class="news-item" data-fresh-until="{{ item.fresh_until_ms }}">
+            <div class="news-meta">
+              <time datetime="{{ item.date }}">{{ t(item.when, item.when_ko) }}</time>
+              {% if item.tag %}<span class="news-tag">{{ t(item.tag, item.tag_ko) }}</span>{% endif %}
+            </div>
+            <h3>{{ t(item.heading, item.heading_ko) }}</h3>
+            <p>{{ t(item.body, item.body_ko) }}</p>
+            {% if item.action %}
+            {% if item.action.href %}
+            <a class="btn btn-primary news-btn" href="{{ item.action.href }}"
+               {% if item.action.href.startswith('http') %}target="_blank" rel="noopener"{% endif %}>{{ t(item.action.label, item.action.label_ko) }}</a>
+            {% else %}
+            <!-- A line, not the hero's shut button. That button is hatched,
+                 and the hatching on this page means "full, closed" — which is
+                 the opposite of what a form that has not opened yet is
+                 saying. -->
+            <p class="news-wait">{{ t(item.action.wait, item.action.wait_ko) }}</p>
+            {% endif %}
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+      </div>
+    </section>
+    {% endif %}
     {% if roster %}
     <!-- ===== SPEAKERS (derived from the programme) ===== -->
     <section id="speakers" class="band band-alt">
@@ -2779,6 +2827,26 @@
       MODAL.addEventListener("click", function (ev) {
         if (ev.target === MODAL) MODAL.close();
       });
+
+      // ---- Which notices still count as new, by the reader's clock
+      //
+      // The page is built once and read for weeks, so the week a notice stays
+      // new cannot be decided here — every element that has a date carries the
+      // moment it stops being new, and this turns the mark on only while that
+      // moment is ahead. A notice that has aged out simply never lights up,
+      // with no rebuild and nothing to remember to take down.
+      (function () {
+        var now = Date.now();
+        Array.prototype.forEach.call(
+          document.querySelectorAll("[data-fresh-until]"),
+          function (el) {
+            if (+el.getAttribute("data-fresh-until") <= now) return;
+            el.classList.add("is-fresh");
+            // The dot ships hidden so it is never seen on a stale page.
+            if (el.hidden) el.hidden = false;
+          }
+        );
+      })();
     </script>
   </body>
 </html>

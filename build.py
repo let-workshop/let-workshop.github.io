@@ -620,6 +620,7 @@ def fill_defaults(bundle: dict) -> None:
         cell.setdefault("countdown", False)
         cell.setdefault("icon", None)
         cell.setdefault("mono", False)
+    prepare_news(bundle["news"], bundle["program"]["utc_offset"])
     bundle["site"].setdefault("sponsors", None)
     # A logo entry with no file on disk would render a broken image.
     if bundle["site"]["sponsors"]:
@@ -679,6 +680,39 @@ def fill_defaults(bundle: dict) -> None:
             # The event's own mark wins; otherwise the type's.
             if not e.get("emoji"):
                 e["emoji"] = types.get(e["type"], {}).get("emoji")
+
+
+# How long a notice counts as new. The dot beside the News tab is drawn by the
+# reader's own clock from `fresh_until_ms`, not by this build: a static page
+# built once would keep saying "new" for as long as nobody rebuilt it, and go
+# on saying it after the week was up.
+FRESH_DAYS = 7
+
+MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def prepare_news(news: dict, utc_offset: str) -> None:
+    news.setdefault("title_ko", None)
+    tz = timezone(timedelta(minutes=offset_minutes(utc_offset)))
+    for item in news.setdefault("notices", []):
+        for key in ("tag", "tag_ko", "heading_ko", "body_ko"):
+            item.setdefault(key, None)
+        action = item.setdefault("action", None)
+        if action:
+            for key in ("label_ko", "href", "wait", "wait_ko"):
+                action.setdefault(key, None)
+            if not action["href"] and not action["wait"]:
+                raise SystemExit(f"news {item['heading']!r}: an action with no "
+                                 "href needs a `wait` line saying so")
+        posted = datetime.fromisoformat(str(item["date"])).replace(tzinfo=tz)
+        item["when"] = f"{MONTHS[posted.month - 1]} {posted.day}, {posted.year}"
+        item["when_ko"] = f"{posted.year}년 {posted.month}월 {posted.day}일"
+        item["fresh_until_ms"] = int(
+            (posted + timedelta(days=FRESH_DAYS)).timestamp() * 1000)
+    # One number for the tab: the newest notice decides whether the dot is on.
+    news["fresh_until_ms"] = max(
+        (i["fresh_until_ms"] for i in news["notices"]), default=None)
 
 
 def offset_minutes(utc_offset: str) -> int:
@@ -1200,6 +1234,7 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
         organizers=bundle["organizers"],
         candidates=bundle["candidates"],
         venue=bundle["venue"],
+        news=bundle["news"],
         program=program,
         types=program["types"],
         grid=program["grid"],
@@ -1234,6 +1269,7 @@ def main() -> int:
         "candidates": load("candidates.yml"),
         "venue": resolve_venue(load("venue.yml")),
         "program": load("program.yml"),
+        "news": load("news.yml"),
     }
     fill_defaults(bundle)
     resolve_colors(bundle["program"])
