@@ -1960,29 +1960,34 @@ TICKET = """<!doctype html>
   .cuts b {{ position:absolute; left:0; right:0; height:.2mm; background:{ticket_cut}; }}
   .t {{
     box-sizing:border-box; overflow:hidden; position:relative;
-    padding:2.6mm 3mm; display:flex; align-items:center; justify-content:space-between;
-    background:var(--g); color:{ink};
+    padding:2.4mm 3mm; background:var(--g); color:{ink};
+    display:flex; flex-direction:column; justify-content:center; gap:1.4mm;
   }}
-  .t .what {{ display:flex; flex-direction:column; gap:.8mm; }}
+  /* Two rows, each a line across the ticket, rather than three things placed
+     over one another. The first version centred the meal in the cell and hung
+     the number and the workshop's name off the corners absolutely, which left
+     1mm between boxes on a 19mm ticket and read as type sitting on type. Laid
+     out as rows nothing can collide whatever any of the strings turn out to be. */
+  .t .row {{ display:flex; align-items:baseline; justify-content:space-between; gap:2mm; }}
+  .t p {{ margin:0; line-height:1; }}
   .t .meal {{
-    font-family:"Satoshi",sans-serif; font-weight:700; font-size:3.9mm;
-    letter-spacing:-.01em; line-height:1; margin:0;
+    font-family:"Satoshi",sans-serif; font-weight:700; font-size:3.6mm;
+    letter-spacing:-.01em;
   }}
-  .t .meal b {{ font-weight:700; }}
   .t .when {{
-    font-family:"JetBrains Mono",monospace; font-size:2.5mm; font-weight:400;
-    letter-spacing:.04em; line-height:1; margin:0; opacity:.78;
+    font-family:"JetBrains Mono",monospace; font-size:2.4mm; font-weight:400;
+    letter-spacing:.03em; opacity:.78;
   }}
-  .t .side {{ display:flex; flex-direction:column; align-items:flex-end; gap:1mm; }}
-  .t .mark {{
-    font-family:"Jost",sans-serif; font-weight:700; font-size:3.4mm;
-    letter-spacing:-.01em; line-height:1; margin:0;
+  /* The corners: the number to count by and the workshop's name, both quiet.
+     The name is only there to say which workshop the ticket belongs to — a
+     caterer reads the meal, and two pieces of display type on a ticket this
+     small argue with each other. */
+  .t .no, .t .mark {{
+    font-family:"JetBrains Mono",monospace; font-weight:400; letter-spacing:.07em;
+    white-space:nowrap; flex:none;
   }}
-  .t .mark span {{ font-weight:300; }}
-  .t .no {{
-    font-family:"JetBrains Mono",monospace; font-size:2.2mm; font-weight:400;
-    letter-spacing:.08em; line-height:1; margin:0; opacity:.55;
-  }}
+  .t .no {{ font-size:2.2mm; opacity:.5; }}
+  .t .mark {{ font-size:2.2mm; opacity:.7; text-transform:uppercase; }}
 </style></head><body>
 {tickets}
 </body></html>
@@ -3114,6 +3119,7 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
     ticket_sheets, ticket_meals = "", []
     if layout == "ticket":
         PER_SHEET = 50
+        _yyyy = str(program["days"][0]["date"]).split("-")[0]
         _d = {str(i + 1): program["days"][i]["date"] for i in range(len(program["days"]))}
         for meal in site.get("meals", []):
             date = _d.get(str(meal["day"]))
@@ -3132,12 +3138,12 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
                         continue
                     cells.append(
                         '<div class="t">'
-                        f'<div class="what"><p class="meal">Day {esc(str(meal["day"]))} '
-                        f'&middot; {esc(meal["name"])} <b>{esc(meal["name_ko"])}</b></p>'
-                        f'<p class="when">{esc(when)}</p></div>'
-                        f'<div class="side"><p class="mark">{esc(mark)} '
-                        f'<span>{esc(year)}</span></p>'
-                        f'<p class="no">{serial:03d}</p></div></div>')
+                        f'<div class="row"><p class="meal">Day {esc(str(meal["day"]))} '
+                        f'&middot; {esc(meal["name"])} {esc(meal["name_ko"])}</p>'
+                        f'<p class="no">{serial:03d}</p></div>'
+                        f'<div class="row"><p class="when">{esc(when)}</p>'
+                        f'<p class="mark">{esc(mark)} {esc(year)} {esc(_yyyy)}</p></div>'
+                        "</div>")
                 ticket_sheets += ('<div class="sheet">'
                                   f'<div class="grid" style="--g:{meal["ground"]}">'
                                   + "".join(cells) + "</div>" + TICKET_CUTS
