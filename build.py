@@ -818,6 +818,11 @@ def place_events(program: dict, anonymize: bool, notes: bool = False) -> None:
     offset = offset_minutes(program["utc_offset"])
 
     for d, day in enumerate(program["days"], start=1):
+        # The two instants the day's column runs between, so the line marking
+        # the hour can be put on the grid from the reader's own clock without
+        # the page having to know what timezone they are in.
+        day["grid_from_ms"] = int(local_dt(day, grid["day_start"], offset).timestamp() * 1000)
+        day["grid_to_ms"] = int(local_dt(day, grid["day_end"], offset).timestamp() * 1000)
         for n, e in enumerate(day["events"], start=1):
             start, end = minutes(e["start"]), minutes(e["end"])
             if start < origin or end > day_end:

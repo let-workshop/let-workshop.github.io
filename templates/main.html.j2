@@ -688,6 +688,15 @@
             {% for tick in axis %}
             <div class="time-axis" style="grid-column: 1; grid-row: {{ tick.row }} / span {{ tick.span }}">{{ tick.label }}</div>
             {% endfor %}
+
+            <!-- Where the clock has got to, drawn across the day it is in.
+                 Absolutely positioned rather than placed on the grid: the grid
+                 is five minutes to a row and the hour is not, so a row would
+                 round it to the nearest five. Hidden until script has had a
+                 look, so a page read on any other day never shows one. -->
+            <div class="now-line" hidden aria-hidden="true">
+              <span class="now-line-at"></span>
+            </div>
             {% for day in program.days %}
 
             <!-- ===== {{ day.label }} — {{ day.theme }} ===== -->
@@ -1705,6 +1714,9 @@
         posterPill.classList.toggle("hidden", view !== "abstracts");
         if (view !== "abstracts" && posterPill.classList.contains("active")) setDay("all");
         if (view === "now") renderNow();
+        // The grid measures as nothing while it is hidden, so whatever is
+        // drawn from its geometry is told when it comes back.
+        document.dispatchEvent(new CustomEvent("viewchange", { detail: view }));
         try {
           localStorage.setItem("kolt-view", view);
         } catch (e) {
@@ -2869,6 +2881,73 @@
       MODAL.addEventListener("click", function (ev) {
         if (ev.target === MODAL) MODAL.close();
       });
+
+      // ---- Where the clock has got to, on the grid
+      //
+      // Two numbers per day — the instants its column runs between, written by
+      // the build in the programme's own timezone — so the line lands in the
+      // right place for a reader anywhere, with no timezone arithmetic here.
+      //
+      // The geometry is measured rather than calculated: the grid is 6.5px
+      // rows with 2px gaps today and that is a number in a stylesheet, not a
+      // contract. Two hour ticks give the pixels per minute, and the day's own
+      // column header gives the line its left edge and width, so the line
+      // follows the grid wherever the grid goes.
+      (function () {
+        var DAYS = {{ program.days | map(attribute="grid_from_ms") | list | tojson }}
+          .map(function (from, i) {
+            return {
+              from: from,
+              to: {{ program.days | map(attribute="grid_to_ms") | list | tojson }}[i],
+              header: i + 1  // .header 0 is the Time column
+            };
+          });
+        var line = document.querySelector(".now-line");
+        if (!line) return;
+        var label = line.querySelector(".now-line-at");
+        var box = line.parentNode;
+
+        function place() {
+          var now = Date.now();
+          var day = null;
+          for (var i = 0; i < DAYS.length; i++)
+            if (now >= DAYS[i].from && now <= DAYS[i].to) day = DAYS[i];
+          if (!day) { line.hidden = true; return; }
+
+          var ticks = box.querySelectorAll(".time-axis");
+          var heads = box.querySelectorAll(".header");
+          if (ticks.length < 2 || heads.length <= day.header) { line.hidden = true; return; }
+
+          var frame = box.getBoundingClientRect();
+          var first = ticks[0].getBoundingClientRect();
+          var second = ticks[1].getBoundingClientRect();
+          // The axis step is an hour, and the ticks are the only thing on the
+          // page that knows how tall an hour is.
+          var perMs = (second.top - first.top) / 3600000;
+          var head = heads[day.header].getBoundingClientRect();
+
+          line.style.top = (first.top - frame.top + (now - day.from) * perMs) + "px";
+          line.style.left = (head.left - frame.left) + "px";
+          line.style.width = head.width + "px";
+          var d = new Date(now);
+          // Shown in the programme's hours, not the reader's: the grid it is
+          // drawn on is in Pohang time, and a line labelled 03:40 beside a
+          // session that starts at 11:10 would read as a bug.
+          var mins = Math.round((now - day.from) / 60000) + {{ program.grid.day_start.split(":")[0] | int * 60 + program.grid.day_start.split(":")[1] | int }};
+          label.textContent = String(Math.floor(mins / 60) % 24).padStart(2, "0") + ":" +
+                              String(mins % 60).padStart(2, "0");
+          line.hidden = false;
+        }
+
+        place();
+        // Half a minute: the line moves 1.7px a minute, so this is never more
+        // than a pixel out, and it is one layout read either way.
+        setInterval(place, 30000);
+        window.addEventListener("resize", place);
+        // The grid is display:none until its view is picked, and an element
+        // inside it measures as zero — so it is placed again when it is shown.
+        document.addEventListener("viewchange", place);
+      })();
 
       // ---- Which notices still count as new, by the reader's clock
       //

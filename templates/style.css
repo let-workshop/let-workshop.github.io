@@ -1718,7 +1718,46 @@ a.spk-card {
 }
 /* The grid keeps its own frame — the grey between cells is what draws the
    timetable — so it only loses the outer border and corner. */
-.view-panel.schedule-scroll {
+.view-panel/* ---- Where the clock has got to
+   Drawn across the day it falls in, and only on that day — a line running the
+   width of the table would say the hour belongs to both. It sits above the
+   cells and ignores the pointer, so a session underneath is still one click.
+   The accent, because this is the one thing on the grid that is about the
+   reader rather than about the programme. */
+.now-line {
+  position: absolute;
+  height: 2px;
+  background: var(--hero-accent);
+  z-index: 3;
+  pointer-events: none;
+}
+.now-line[hidden] {
+  display: none;
+}
+/* The hour itself, in the time column's own width, so it reads as a label on
+   the axis rather than as something floating over the first session.
+   Not `.now-time`: the Now view's progress rail already uses that for the two
+   ends of its bar, and its rule sits further down this file — so this one was
+   being overruled and the pill came out styled as a rail end. */
+.now-line-at {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 5px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--band);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--hero-accent);
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.schedule-scroll {
   padding: 16px;
 }
 .view-panel .schedule-container {
@@ -2750,6 +2789,7 @@ button.sp-talk-link:focus-visible {
 
 /* ---------- Schedule grid ---------- */
 .schedule-container {
+  position: relative; /* the frame the now-line is measured against */
   display: grid;
   grid-auto-rows: 6.5px; /* 1 row = 5 min; height(min)=1.7·min−2, identical to the old 10-min/15px grid */
   gap: 2px;
