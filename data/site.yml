@@ -99,6 +99,18 @@ signs:
     en: Poster session
   - ko: 물품 보관
     en: Cloakroom
+  # Not folded: this one goes flat on the box the tickets are dropped into, so it
+  # takes the whole sheet and an arrow, which is the part of a "put it here" sign
+  # that works from across the room.
+  - ko: 식권 넣는 곳
+    en: Meal tickets here
+    full: true
+    arrow: down
+  # The desk closes after lunch on the second day. `note` carries the when, so
+  # the large line can stay short enough to read at 26mm.
+  - ko: 데스크 운영 종료
+    en: Desk closed
+    note: 2일차 10.8 (목) 오후부터 · From the afternoon of Day 2
 
 country: South Korea
 # Fallback for local builds only. In CI the deployed URL is derived from

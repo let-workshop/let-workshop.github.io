@@ -1977,6 +1977,18 @@ SIGN = """<!doctype html>
     border-top:.25mm dashed {rule_strong}; opacity:.55;
   }}
   .fold.one {{ top:99mm; }}  .fold.two {{ top:198mm; }}
+  /* A sign that is taped to something rather than stood on a table: one panel,
+     the whole sheet, no folds. The box the tickets go into is read from across
+     a room, so the words are larger and an arrow does the pointing — which is
+     the part of a "put it here" sign that works before anyone reads it. */
+  .panel.only {{ top:0; height:297mm; justify-content:center; padding:30mm 18mm; }}
+  .panel.only .ko {{ font-size:34mm; }}
+  .panel.only .en {{ font-size:9mm; margin-top:8mm; }}
+  .arrow {{ display:block; width:46mm; height:46mm; margin:16mm 0 0; opacity:.75; }}
+  .note {{
+    font-family:"Satoshi",sans-serif; font-weight:500; font-size:5.4mm;
+    letter-spacing:-.005em; color:{ink}; opacity:.62; margin:7mm 0 0;
+  }}
   .foldnote {{
     position:absolute; right:5mm; font-family:"JetBrains Mono",monospace;
     font-size:2.6mm; letter-spacing:.1em; text-transform:uppercase;
@@ -3211,10 +3223,24 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
         for s in site.get("signs", []):
             face = (f'<p class="ko">{esc(s["ko"])}</p>'
                     f'<p class="en">{esc(s["en"])}</p>')
+            note = f'<p class="note">{esc(s["note"])}</p>' if s.get("note") else ""
+            if s.get("full"):
+                arrow = ('<svg class="arrow" viewBox="0 0 24 24" fill="none" '
+                         f'stroke="{PALETTE["ink"]}" stroke-width="2.2" '
+                         'stroke-linecap="round" stroke-linejoin="round">'
+                         '<path d="M12 3v16"/><path d="M5 13l7 7 7-7"/></svg>'
+                         ) if s.get("arrow") == "down" else ""
+                sign_sheets += (
+                    '<div class="sheet">'
+                    f'<div class="panel only">{face}{note}{arrow}'
+                    f'<p class="mark" style="margin-top:22mm">{esc(mark)} '
+                    f'<span>{esc(year)}</span></p></div>'
+                    "</div>")
+                continue
             sign_sheets += (
                 '<div class="sheet">'
-                f'<div class="panel back">{face}</div>'
-                f'<div class="panel front">{face}</div>'
+                f'<div class="panel back">{face}{note}</div>'
+                f'<div class="panel front">{face}{note}</div>'
                 '<div class="panel base">'
                 f'<p class="mark">{esc(mark)} <span>{esc(year)}</span></p></div>'
                 '<div class="fold one"></div><div class="fold two"></div>'
