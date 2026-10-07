@@ -1731,6 +1731,21 @@ a.spk-card {
   z-index: 3;
   pointer-events: none;
 }
+/* A head on the far end, so the line reads as travelling rather than as a
+   rule somebody drew. Borders rather than a glyph: it is the same accent as
+   the line with no font to miss it, and the tip sits exactly on the line's own
+   right edge, which is the day column's edge — nothing overhangs, so the
+   container's clipping never takes a bite out of it. */
+.now-line::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left: 7px solid var(--hero-accent);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
 .now-line[hidden] {
   display: none;
 }
