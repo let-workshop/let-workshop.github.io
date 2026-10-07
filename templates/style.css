@@ -1718,7 +1718,30 @@ a.spk-card {
 }
 /* The grid keeps its own frame — the grey between cells is what draws the
    timetable — so it only loses the outer border and corner. */
-.view-panel/* ---- Where the clock has got to
+.view-panel/* ---- The session the clock is in, where there is no line to draw
+   The list and the abstracts have no axis to hang a line on, so the row says
+   it instead: a wash of the accent at eight per cent over whatever ground it
+   already has, and a hairline of the accent around it. Slight on purpose —
+   this is a "you are here", not a selection, and the row is still readable as
+   one of a list.
+   Said twice, as the label is: color-mix arrived in Safari 16.4, and an engine
+   without it would otherwise get no wash at all. The fallback is the light
+   accent flat — a shade off in dark mode, on browsers that are already old. */
+.agenda-row.is-now > td,
+.abs.is-now {
+  background-image: linear-gradient(rgba(219, 71, 44, 0.08), rgba(219, 71, 44, 0.08));
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--hero-accent) 8%, transparent),
+    color-mix(in srgb, var(--hero-accent) 8%, transparent)
+  );
+}
+.agenda-row.is-now,
+.abs.is-now {
+  outline: 1px solid var(--hero-accent);
+  outline-offset: -1px;
+}
+
+/* ---- Where the clock has got to
    Drawn across the day it falls in, and only on that day — a line running the
    width of the table would say the hour belongs to both. It sits above the
    cells and ignores the pointer, so a session underneath is still one click.

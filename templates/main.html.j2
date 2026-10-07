@@ -650,7 +650,7 @@
                and the paragraph that decides whether to walk over — so the two
                are the same row, in the hour they happen. #}
             {% for t in e.talks + e.poster_entries %}
-            <article class="abs" data-kind="{{ 'poster' if loop.index0 >= e.talks | length else 'talk' }}">
+            <article class="abs" data-kind="{{ 'poster' if loop.index0 >= e.talks | length else 'talk' }}" data-begins="{{ e.begins_iso }}" data-ends="{{ e.ends_iso }}">
               <div class="abs-when">{% if t.when %}<span class="abs-no">{{ t.when }}</span>{% else %}{{ e.start }} – {{ e.end }}{% endif %}<span class="badge badge-{{ e.type }}">{{ types[e.type].short }}</span></div>
               <div class="abs-main">
                 <div class="abs-who">{{ t.line }}</div>
@@ -2939,10 +2939,25 @@
           line.hidden = false;
         }
 
-        place();
+        // The two views that have no line to draw mark the session instead.
+        // Same clock, same tick — one thing is true at a time or the grid and
+        // the list disagree about what is happening.
+        var marked = document.querySelectorAll(
+          "#view-list [data-begins], #view-abstracts [data-begins]");
+        function mark() {
+          var now = Date.now();
+          Array.prototype.forEach.call(marked, function (el) {
+            var from = Date.parse(el.getAttribute("data-begins")),
+                to = Date.parse(el.getAttribute("data-ends"));
+            el.classList.toggle("is-now", now >= from && now < to);
+          });
+        }
+
+        function tick() { place(); mark(); }
+        tick();
         // Half a minute: the line moves 1.7px a minute, so this is never more
         // than a pixel out, and it is one layout read either way.
-        setInterval(place, 30000);
+        setInterval(tick, 30000);
         window.addEventListener("resize", place);
         // The grid is display:none until its view is picked, and an element
         // inside it measures as zero — so it is placed again when it is shown.

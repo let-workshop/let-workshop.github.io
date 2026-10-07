@@ -1984,7 +1984,8 @@ SIGN = """<!doctype html>
   .panel.only {{ top:0; height:297mm; justify-content:center; padding:30mm 18mm; }}
   .panel.only .ko {{ font-size:34mm; }}
   .panel.only .en {{ font-size:9mm; margin-top:8mm; }}
-  .arrow {{ display:block; width:46mm; height:46mm; margin:16mm 0 0; opacity:.75; }}
+  .arrow {{ display:block; width:46mm; height:46mm; margin:0 0 16mm; opacity:.75; }}
+  .ko + .arrow, .en + .arrow, .note + .arrow {{ margin:16mm 0 0; }}
   .note {{
     font-family:"Satoshi",sans-serif; font-weight:500; font-size:5.4mm;
     letter-spacing:-.005em; color:{ink}; opacity:.62; margin:7mm 0 0;
@@ -3225,14 +3226,22 @@ def main(art_path, out_path, layout="stack", photo=None, cutout=None, duotone=No
                     f'<p class="en">{esc(s["en"])}</p>')
             note = f'<p class="note">{esc(s["note"])}</p>' if s.get("note") else ""
             if s.get("full"):
+                # An arrow that points up goes above the words and one that points
+                # down goes below: either way it points away from the sign and at
+                # the thing it means, which is the slot.
+                way = s.get("arrow")
                 arrow = ('<svg class="arrow" viewBox="0 0 24 24" fill="none" '
                          f'stroke="{PALETTE["ink"]}" stroke-width="2.2" '
                          'stroke-linecap="round" stroke-linejoin="round">'
-                         '<path d="M12 3v16"/><path d="M5 13l7 7 7-7"/></svg>'
-                         ) if s.get("arrow") == "down" else ""
+                         + ('<path d="M12 21V5"/><path d="M5 12l7-7 7 7"/>'
+                            if way == "up" else
+                            '<path d="M12 3v16"/><path d="M5 13l7 7 7-7"/>')
+                         + "</svg>") if way else ""
+                body = (f'{arrow}{face}{note}' if way == "up"
+                        else f'{face}{note}{arrow}')
                 sign_sheets += (
                     '<div class="sheet">'
-                    f'<div class="panel only">{face}{note}{arrow}'
+                    f'<div class="panel only">{body}'
                     f'<p class="mark" style="margin-top:22mm">{esc(mark)} '
                     f'<span>{esc(year)}</span></p></div>'
                     "</div>")

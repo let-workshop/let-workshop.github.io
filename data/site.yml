@@ -105,7 +105,7 @@ signs:
   - ko: 식권 넣는 곳
     en: Meal tickets here
     full: true
-    arrow: down
+    arrow: up
   # The desk closes after lunch on the second day. `note` carries the when, so
   # the large line can stay short enough to read at 26mm.
   - ko: 데스크 운영 종료
