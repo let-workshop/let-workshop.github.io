@@ -1739,6 +1739,20 @@ a.spk-card {
 .abs.is-now {
   outline: 1px solid var(--hero-accent);
   outline-offset: -1px;
+  border-radius: 10px;
+}
+/* The abstract rows are a divided list, not cards — no side padding and a
+   hairline between them — so a ring on the box would sit against the words.
+   The marked row grows sideways instead, by exactly as much as it pulls its
+   margins in, so the ring gets its room and nothing on the row moves. The
+   divider goes while it is marked: a line through the top of a ring reads as
+   a box somebody drew badly. */
+.abs.is-now {
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-left: -14px;
+  margin-right: -14px;
+  border-top-color: transparent;
 }
 
 /* ---- Where the clock has got to

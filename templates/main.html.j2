@@ -650,8 +650,8 @@
                and the paragraph that decides whether to walk over — so the two
                are the same row, in the hour they happen. #}
             {% for t in e.talks + e.poster_entries %}
-            <article class="abs" data-kind="{{ 'poster' if loop.index0 >= e.talks | length else 'talk' }}" data-begins="{{ e.begins_iso }}" data-ends="{{ e.ends_iso }}">
-              <div class="abs-when">{% if t.when %}<span class="abs-no">{{ t.when }}</span>{% else %}{{ e.start }} – {{ e.end }}{% endif %}<span class="badge badge-{{ e.type }}">{{ types[e.type].short }}</span></div>
+            <article class="abs" data-kind="{{ 'poster' if loop.index0 >= e.talks | length else 'talk' }}" data-begins="{{ t.begins_iso or e.begins_iso }}" data-ends="{{ t.ends_iso or e.ends_iso }}">
+              <div class="abs-when">{% if t.when %}<span class="abs-no">{{ t.when }}</span>{% else %}{{ t.span or (e.start ~ " – " ~ e.end) }}{% endif %}<span class="badge badge-{{ e.type }}">{{ types[e.type].short }}</span></div>
               <div class="abs-main">
                 <div class="abs-who">{{ t.line }}</div>
                 {% if t.talk %}<h4>{{ t.talk }}</h4>{% endif %}

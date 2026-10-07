@@ -759,14 +759,28 @@ def local_dt(day: dict, hhmm: str, offset: int) -> datetime:
     return datetime.combine(day["date"], time(h, m), tzinfo=tz)
 
 
-def talk_entries(event: dict, ident: str, notes: bool) -> list[dict]:
+def talk_entries(event: dict, ident: str, notes: bool,
+                 day: dict, offset: int) -> list[dict]:
     """Per-speaker rows for the list view, each with its own abstract."""
     talks = []
+    count = len(event["speakers"])
+    # The session divides equally between its speakers — the same arithmetic
+    # talk_span prints — so each talk knows the two instants it runs between
+    # and the Abstracts view can mark the talk rather than the session.
+    a, b = minutes(event["start"]), minutes(event["end"])
+    each = (b - a) // count if count and not (b - a) % count else None
     for i, s in enumerate(event["speakers"]):
+        at = a + each * i if each else None
         talks.append(
             {
                 # Talks are told apart by when they are; see poster_entries.
                 "when": None,
+                "begins_iso": local_dt(day, clock(at), offset).isoformat() if each else None,
+                "ends_iso": local_dt(day, clock(at + each), offset).isoformat() if each else None,
+                # The hours this one talk runs, for the Abstracts view — which
+                # is one card per talk, so the session's hours on every card in
+                # it would say the wrong thing about each of them.
+                "span": f"{clock(at)} {EN_DASH} {clock(at + each)}" if each else None,
                 "line": speaker_line(s),
                 "talk": s.get("talk"),
                 "abstract": Markup(md.markdown(s["abstract"])) if s.get("abstract") else None,
@@ -791,6 +805,9 @@ def poster_entries(event: dict) -> list[dict]:
             # hour — so what tells one from another in a list is its number,
             # which is also the number on the sheet you walk in with.
             "when": f"#{i + 1}",
+            "begins_iso": None,
+            "ends_iso": None,
+            "span": None,
             "line": Markup("<b>%s</b>%s")
             % (
                 bilingual(p["name"], p.get("name_ko")),
@@ -855,7 +872,7 @@ def place_events(program: dict, anonymize: bool, notes: bool = False) -> None:
             else:
                 e["lines"] = [speaker_line(s) for s in e["speakers"]]
                 e["lines"] += [note_line(n) for n in e["notes"]]
-                e["talks"] = talk_entries(e, e["id"], notes)
+                e["talks"] = talk_entries(e, e["id"], notes, day, offset)
                 e["poster_entries"] = poster_entries(e)
 
 
