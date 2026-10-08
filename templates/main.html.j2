@@ -783,6 +783,10 @@
           </li>
           {% endfor %}
         </ul>
+          <!-- The rail's own length and place in it. The native bar is hidden
+               like the other two rails on this page; this says the same thing
+               in the page's own ink, and can be dragged. -->
+          <div class="rail-bar" id="rail-bar"><i id="rail-thumb"></i></div>
         </div>
         <button class="shots-all" onclick="openWall()">
           <span class="t-en">See all {{ gallery.photos | length }}</span><span class="t-ko">{{ gallery.photos | length }}장 전체 보기</span>
@@ -3040,10 +3044,45 @@
         var target = 0, mine = 0;
 
         function most() { return Math.max(0, rail.scrollWidth - rail.clientWidth); }
+        var bar = document.getElementById("rail-bar"),
+          thumb = document.getElementById("rail-thumb");
+
         function ends() {
           prev.disabled = rail.scrollLeft <= 1;
           next.disabled = rail.scrollLeft >= most() - 1;
+          // Width is how much of the row is on screen, offset is how far in —
+          // the two numbers a scrollbar carries, in the page's own ink.
+          var span = rail.scrollWidth || 1;
+          thumb.style.width = (rail.clientWidth / span) * 100 + "%";
+          thumb.style.left = (rail.scrollLeft / span) * 100 + "%";
         }
+
+        // Dragging it moves the rail, the way the session sheet's ribbon does.
+        var scrubbing = false;
+        function scrubTo(clientX) {
+          var box = bar.getBoundingClientRect();
+          var at = Math.min(1, Math.max(0, (clientX - box.left) / box.width));
+          // The pointer is the middle of what is shown, not its left edge.
+          target = Math.min(most(), Math.max(0, at * rail.scrollWidth - rail.clientWidth / 2));
+          mine = Date.now();
+          rail.scrollTo({ left: target, behavior: "auto" });
+          ends();
+        }
+        bar.addEventListener("pointerdown", function (ev) {
+          scrubbing = true;
+          try { bar.setPointerCapture(ev.pointerId); } catch (e) { /* older pointers */ }
+          scrubTo(ev.clientX);
+          ev.preventDefault();
+        });
+        bar.addEventListener("pointermove", function (ev) {
+          if (scrubbing) scrubTo(ev.clientX);
+        });
+        ["pointerup", "pointercancel"].forEach(function (type) {
+          bar.addEventListener(type, function (ev) {
+            scrubbing = false;
+            try { bar.releasePointerCapture(ev.pointerId); } catch (e) { /* already */ }
+          });
+        });
         function page(dir) {
           // Whole tiles, as many as fit — so a step always lands on an edge
           // rather than halfway through a picture, and two steps are the same
@@ -3054,6 +3093,10 @@
           target = Math.min(most(), Math.max(0, target + dir * by));
           mine = Date.now();
           rail.scrollTo({ left: target, behavior: still.matches ? "auto" : "smooth" });
+          // Drawn now rather than when the scroll event arrives: a smooth
+          // scroll reports itself over the next few frames, and the bar
+          // jumping late reads as the bar lagging the rail.
+          ends();
         }
         rail.addEventListener("scroll", function () {
           // Not while our own smooth scroll is still running, or the target

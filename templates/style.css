@@ -1807,7 +1807,31 @@ a.spk-card {
   scroll-snap-type: x proximity;
   /* A sideways drag is the rail's; a downward one is the reader's. */
   touch-action: pan-x pan-y;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+}
+.shots::-webkit-scrollbar {
+  display: none;
+}
+.rail-bar {
+  position: relative;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+  /* A drag along it is a drag along it, not a scroll of the page under it. */
+  touch-action: none;
+}
+.rail-bar i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 24px;
+  border-radius: 999px;
+  background: var(--faint);
+}
+.rail-bar:hover i {
+  background: var(--hero-accent);
 }
 .shots > li {
   flex: 0 0 auto;
