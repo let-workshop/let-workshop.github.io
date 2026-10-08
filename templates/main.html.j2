@@ -1336,6 +1336,13 @@
           <b id="shot-title"></b>
           <span id="shot-text"></span>
         </figcaption>
+        <!-- Inside the figure, not the sheet: the sheet now has a strip along
+             its foot, and arrows anchored to the sheet would sit on it. -->
+        <nav class="shot-nav">
+          <button id="shot-prev" class="shot-step" aria-label="Previous photograph">&larr;</button>
+          <span id="shot-count"></span>
+          <button id="shot-next" class="shot-step" aria-label="Next photograph">&rarr;</button>
+        </nav>
       </figure>
       <a id="shot-raw" class="shot-raw" target="_blank" rel="noopener"
         ><span class="t-en">Larger</span><span class="t-ko">크게 보기</span> &#8599;</a
@@ -1344,11 +1351,10 @@
       <!-- The same two arrows the session sheet has, wired the same way: hold
            to run, swipe to turn, arrow keys. A picture you cannot step past is
            a picture you have to close to see the next one. -->
-      <nav class="shot-nav">
-        <button id="shot-prev" class="shot-step" aria-label="Previous photograph">&larr;</button>
-        <span id="shot-count"></span>
-        <button id="shot-next" class="shot-step" aria-label="Next photograph">&rarr;</button>
-      </nav>
+      <!-- The whole set along the foot, the way the session sheet keeps the
+           programme along its own: somewhere to see where you are and to get
+           somewhere else without stepping there one at a time. -->
+      <div class="shot-strip" id="shot-strip" role="tablist" aria-label="All photographs · 사진 전체"></div>
     </dialog>
 
     <dialog id="speaker-modal" aria-label="Speaker detail">
@@ -3145,6 +3151,19 @@
         });
       }
 
+      // Built once, on the first open. Sixty-eight more thumbnails in the
+      // document at load is sixty-eight things to hold for a sheet nobody has
+      // opened; `loading="lazy"` then keeps it to the few that are on screen.
+      var STRIP = document.getElementById("shot-strip");
+      function buildStrip() {
+        if (STRIP.firstChild) return;
+        STRIP.innerHTML = SHOTS.map(function (s, j) {
+          return '<button role="tab" data-i="' + j + '" onclick="openShot(' + j + ')" ' +
+                 'aria-label="' + esc(s.alt || s.title) + '">' +
+                 '<img src="' + esc(s.thumb_src) + '" alt="" loading="lazy" decoding="async" /></button>';
+        }).join("");
+      }
+
       function openShot(i) {
         var s = SHOTS[i];
         if (!s) return;
@@ -3165,6 +3184,13 @@
           img.src = s.src;
         }
         prefetch(i);
+        buildStrip();
+        var here = STRIP.children[i];
+        Array.prototype.forEach.call(STRIP.children, function (b, j) {
+          b.classList.toggle("is-here", j === i);
+          b.setAttribute("aria-selected", j === i ? "true" : "false");
+        });
+
         document.getElementById("shot-img").alt = s.title || "";
         document.getElementById("shot-title").innerHTML = tbd(s.title, s.title_ko || s.title);
         var text = document.getElementById("shot-text");
@@ -3175,6 +3201,12 @@
         raw.hidden = !s.raw;
         if (s.raw) raw.href = s.raw;
         if (!SHOT_MODAL.open) SHOT_MODAL.showModal();
+        // After the sheet is up, not before: a dialog that has not been shown
+        // is display:none, everything in it measures as nothing, and asking a
+        // box with no layout to scroll itself into view does nothing at all.
+        // Centred rather than merely in view — stepping along should move the
+        // strip under a still mark, not shunt the mark to one edge.
+        if (here) here.scrollIntoView({ inline: "center", block: "nearest" });
       }
       SHOT_MODAL.addEventListener("click", function (ev) {
         if (ev.target === SHOT_MODAL) SHOT_MODAL.close();
