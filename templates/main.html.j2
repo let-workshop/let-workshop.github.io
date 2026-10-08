@@ -410,6 +410,21 @@
     <!-- ===== ABOUT ===== -->
     <section id="about" class="band">
       <div class="wrap">
+        {% if gallery.headline %}
+        <!-- Above the heading, not under it: the picture is what the section
+             is about before the sentence explaining it, and a hundred people
+             in front of the banner says more in a glance than the paragraph
+             does. It opens the same sheet the gallery's pictures do. -->
+        <figure class="headshot">
+          <button class="shot-open" onclick="openShot(0)" aria-label="{{ gallery.headline.alt }}">
+            <img src="{{ gallery.headline.src }}" alt="{{ gallery.headline.alt }}"
+                 width="{{ gallery.headline.width }}" height="{{ gallery.headline.height }}" />
+          </button>
+          {% if gallery.headline.caption %}
+          <figcaption>{{ t(gallery.headline.caption, gallery.headline.caption_ko) }}</figcaption>
+          {% endif %}
+        </figure>
+        {% endif %}
         <h2>{{ t(about.title, about.title_ko) }}</h2>
         {% if about.subtitle %}
         <p class="sub">{{ t(about.subtitle, about.subtitle_ko) }}</p>
@@ -726,13 +741,41 @@
 
       </div>
     </section>
+    <!-- ===== GALLERY =====
+         After the programme, because it is the programme that happened. Still
+         filling: the grid is empty until somebody has been through the day's
+         files, and the section says that rather than showing a tidy nothing.
+         -->
+    <section id="gallery" class="band">
+      <div class="wrap">
+        <h2>
+          <span class="t-en">{{ gallery.title }}</span><span class="t-ko">{{ t(gallery.title, gallery.title_ko) }}</span>
+          {% if gallery.note %}<span class="note">{{ t(gallery.note, gallery.note_ko) }}</span>{% endif %}
+        </h2>
+        {% if gallery.photos %}
+        <ul class="shots">
+          {% for shot in gallery.photos %}
+          <li>
+            <button class="shot-open" onclick="openShot({{ loop.index }})" aria-label="{{ shot.alt }}">
+              <img src="{{ shot.src }}" alt="{{ shot.alt }}"
+                   width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" />
+              <span class="shot-name">{{ t(shot.title, shot.title_ko) }}</span>
+            </button>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="shots-empty">{{ t(gallery.empty, gallery.empty_ko) }}</p>
+        {% endif %}
+      </div>
+    </section>
     {% if program.instructions %}
     <!-- ===== INSTRUCTIONS =====
          What somebody has to be told that is not a time or a room. After the
          programme, because that is what they are instructions about, and its
          own section because the answer to "what size?" should not live in a
          mail anybody has to find again. -->
-    <section id="instructions" class="band">
+    <section id="instructions" class="band band-alt">
       <div class="wrap">
         <h2>{{ t(program.instructions.title, program.instructions.title_ko) }}</h2>
         {% for block in program.instructions.blocks %}
@@ -752,7 +795,7 @@
     </section>
     {% endif %}
     <!-- ===== ORGANIZERS ===== -->
-    <section id="organizers" class="band band-alt">
+    <section id="organizers" class="band">
       <div class="wrap">
         <h2><span class="t-en">Organizers</span><span class="t-ko">조직위원회</span></h2>
         <div class="org-grid">
@@ -794,7 +837,7 @@
          tone — which is how you show a mark you are obliged to show. Given a
          band of their own and their own colours they read as the institutions
          behind the thing. -->
-    <section id="sponsors" class="band">
+    <section id="sponsors" class="band band-alt">
       <div class="wrap">
         <h2>{{ t(site.sponsors.title, site.sponsors.title_ko) }}</h2>
         <div class="sponsors-row">
@@ -815,7 +858,7 @@
     {% endif %}
 
     <!-- ===== VENUE ===== -->
-    <section id="venue" class="band band-alt">
+    <section id="venue" class="band">
       <div class="wrap">
         <h2>{{ t(venue.title, venue.title_ko) }}</h2>
         {% if venue.subtitle %}
@@ -939,7 +982,7 @@
          said everything the poster says, so it is here as a thing to take away
          rather than as a thing to read. It links to the full-size file instead
          of shipping the 48MB print PDF into the repository. -->
-    <section id="poster" class="band">
+    <section id="poster" class="band band-alt">
       <div class="wrap">
         <h2>{{ t(site.poster.title, site.poster.title_ko) }}{% if site.poster.title_note %}
           <span class="h2-note">({{ t(site.poster.title_note, site.poster.title_note_ko) }})</span>{% endif %}</h2>
@@ -991,7 +1034,7 @@
     {% if variant.candidates %}
 
     <!-- ===== CANDIDATES (internal build only) =====
-    <section class="band band-alt">
+    <section class="band">
       <div class="wrap">
         <h2>{{ candidates.title }}</h2>
         <p class="sub">{{ candidates.subtitle }}</p>
@@ -1233,6 +1276,25 @@
          The arrows step between speakers, not between sessions: this panel is
          deliberately off the timetable while the timetable does not say who is
          when, so there is no ribbon and no link into the grid. -->
+    <!-- A picture, centred, with its caption on a shade over the foot of it —
+         over the picture rather than under it, so the sheet is the picture and
+         the words are a label on it. "Full size" leaves for the raw file in a
+         tab of its own: the browser's own viewer pans and pinches better than
+         anything written here, and the file is the point of asking. -->
+    <dialog id="shot-modal" class="shot-modal" aria-label="Photo">
+      <figure>
+        <img id="shot-img" alt="" />
+        <figcaption id="shot-cap">
+          <b id="shot-title"></b>
+          <span id="shot-text"></span>
+        </figcaption>
+      </figure>
+      <a id="shot-raw" class="shot-raw" target="_blank" rel="noopener"
+        ><span class="t-en">Full size</span><span class="t-ko">원본 보기</span> &#8599;</a
+      >
+      <form method="dialog"><button class="shot-x" aria-label="Close">&times;</button></form>
+    </dialog>
+
     <dialog id="speaker-modal" aria-label="Speaker detail">
       <div class="modal-head">
         <div>
@@ -2880,6 +2942,33 @@
       // Clicking the backdrop closes it.
       MODAL.addEventListener("click", function (ev) {
         if (ev.target === MODAL) MODAL.close();
+      });
+
+      // ---- Pictures
+      //
+      // One list for both places they are shown: the headline at the top of
+      // About is index 0 and the grid carries on from 1, so a picture that
+      // moves between them in gallery.yml does not have to be renumbered here.
+      var SHOTS = {{ (([gallery.headline] if gallery.headline else []) + gallery.photos) | tojson }};
+      var SHOT_MODAL = document.getElementById("shot-modal");
+
+      function openShot(i) {
+        var s = SHOTS[i];
+        if (!s) return;
+        document.getElementById("shot-img").src = s.src;
+        document.getElementById("shot-img").alt = s.title || "";
+        document.getElementById("shot-title").innerHTML = tbd(s.title, s.title_ko || s.title);
+        var text = document.getElementById("shot-text");
+        text.innerHTML = s.caption ? tbd(s.caption, s.caption_ko || s.caption) : "";
+        var raw = document.getElementById("shot-raw");
+        // No original, no link — rather than a link that reopens what is
+        // already on the screen.
+        raw.hidden = !s.raw;
+        if (s.raw) raw.href = s.raw;
+        if (!SHOT_MODAL.open) SHOT_MODAL.showModal();
+      }
+      SHOT_MODAL.addEventListener("click", function (ev) {
+        if (ev.target === SHOT_MODAL) SHOT_MODAL.close();
       });
 
       // ---- Where the clock has got to, on the grid

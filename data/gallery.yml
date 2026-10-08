@@ -1,0 +1,38 @@
+# Pictures from the workshop.
+#
+# `headline` is the one at the top of About — the picture that says the thing
+# happened. `photos` is the grid further down the page; it is empty until
+# somebody has been through the day's files and decided what goes up, and the
+# section says so rather than pretending to be finished.
+#
+# Both take the same shape, so a photo moves between them by moving its block,
+# and both open the same way: tap for the caption over the picture, and from
+# there the raw file, full screen.
+#
+#   file    the copy the page draws, 1600px wide — see tools/prep-gallery.py
+#   full    the original, for opening at full size. Omit it and the picture is
+#           not zoomable, which is the right answer for anything already small.
+#   width   the drawn copy's pixels, so the browser keeps the space before the
+#   height  file arrives and the page does not jump as pictures land.
+#
+# Faces: everyone in the headline posed for it. A candid of somebody who did
+# not is a different thing to publish, and not a decision this file should make
+# quietly — which is the other reason `photos` is empty.
+title: Gallery
+title_ko: 갤러리
+note: Being put together
+note_ko: 정리하고 있습니다
+empty: Pictures from both days are on their way here.
+empty_ko: 양일 사진을 정리해 곧 올리겠습니다.
+
+headline:
+  file: gallery/day1-group.jpg
+  full: gallery/day1-group-full.jpg
+  width: 1600
+  height: 1067
+  title: Day 1, all of us
+  title_ko: 1일차 단체 사진
+  caption: Outside the Grand Conference Room, 7 October 2026.
+  caption_ko: 2026년 10월 7일, 포스코국제관 대회의실 앞.
+
+photos: []

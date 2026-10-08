@@ -644,6 +644,7 @@ def fill_defaults(bundle: dict) -> None:
         cell.setdefault("countdown", False)
         cell.setdefault("icon", None)
         cell.setdefault("mono", False)
+    prepare_gallery(bundle["gallery"])
     prepare_news(bundle["news"], bundle["program"]["utc_offset"])
     bundle["site"].setdefault("sponsors", None)
     # A logo entry with no file on disk would render a broken image.
@@ -717,6 +718,28 @@ FRESH_DAYS = 7
 
 MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def prepare_gallery(gallery: dict) -> None:
+    """Fill in what a picture may leave out, and resolve its two URLs."""
+    for key in ("title_ko", "note", "note_ko", "empty", "empty_ko", "headline"):
+        gallery.setdefault(key, None)
+    shots = gallery.setdefault("photos", [])
+    for shot in ([gallery["headline"]] if gallery["headline"] else []) + shots:
+        for key in ("title_ko", "caption", "caption_ko", "full"):
+            shot.setdefault(key, None)
+        for key in ("width", "height"):
+            if not shot.get(key):
+                raise SystemExit(f"gallery {shot['file']!r}: needs `width` and "
+                                 "`height`, or the page jumps as it loads")
+        # Plain text, for the alt and the button's label: an attribute cannot
+        # hold the two spans the language switch is made of.
+        shot["alt"] = " · ".join(
+            dict.fromkeys(x for x in (shot["title"], shot["title_ko"]) if x))
+        shot["src"] = asset_url(shot["file"])
+        # The raw file keeps its own stamp: it changes when it changes, and it
+        # is not the file the page draws.
+        shot["raw"] = asset_url(shot["full"]) if shot["full"] else None
 
 
 def prepare_news(news: dict, utc_offset: str) -> None:
@@ -1278,6 +1301,7 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
         candidates=bundle["candidates"],
         venue=bundle["venue"],
         news=bundle["news"],
+        gallery=bundle["gallery"],
         program=program,
         types=program["types"],
         grid=program["grid"],
@@ -1313,6 +1337,7 @@ def main() -> int:
         "venue": resolve_venue(load("venue.yml")),
         "program": load("program.yml"),
         "news": load("news.yml"),
+        "gallery": load("gallery.yml"),
     }
     fill_defaults(bundle)
     resolve_colors(bundle["program"])

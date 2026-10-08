@@ -1718,7 +1718,177 @@ a.spk-card {
 }
 /* The grid keeps its own frame — the grey between cells is what draws the
    timetable — so it only loses the outer border and corner. */
-.view-panel/* ---- The session the clock is in, where there is no line to draw
+.view-panel/* ---- Pictures
+   The headline at the top of About, the grid under the programme, and the
+   sheet either of them opens. */
+.headshot {
+  margin: 0 0 26px;
+}
+.shot-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: zoom-in;
+  position: relative;
+}
+.shot-open img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The space is held from the file's own pixels — see `width`/`height` in
+     gallery.yml — so nothing below it moves when the picture lands. */
+}
+.shot-open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.headshot figcaption {
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 0.86em;
+}
+
+/* The grid. Three up where there is room, one where there is not, and a name
+   on a shade across the foot of each — the same shade the sheet uses, so the
+   thumbnail is a small copy of what opens. */
+.shots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.shots .shot-open {
+  aspect-ratio: 3 / 2;
+}
+.shots img {
+  height: 100%;
+  object-fit: cover;
+}
+.shot-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 22px 12px 9px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.62));
+  color: #fff;
+  font-size: 0.84em;
+  font-weight: 600;
+  text-align: left;
+}
+.shots-empty {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* The sheet. Sized to the picture rather than to the page: a dialog as wide as
+   the window would letterbox a landscape photograph twice over, once at the
+   sides and again in the browser's own chrome. */
+.shot-modal {
+  max-width: min(94vw, 1200px);
+  max-height: 92vh;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  overflow: visible;
+  background: none;
+}
+.shot-modal::backdrop {
+  background: rgba(0, 0, 0, 0.78);
+}
+.shot-modal figure {
+  margin: 0;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  line-height: 0;
+}
+.shot-modal img {
+  display: block;
+  max-width: 100%;
+  max-height: 86vh;
+  width: auto;
+  height: auto;
+}
+/* Over the foot of the picture, on a shade that is only as dark as it has to
+   be to carry white type — the picture is what the sheet is for. */
+.shot-modal figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 44px 18px 14px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.66));
+  color: #fff;
+  line-height: 1.5;
+  text-align: left;
+}
+.shot-modal figcaption b {
+  display: block;
+  font-size: 1.02em;
+}
+.shot-modal figcaption span {
+  font-size: 0.88em;
+  opacity: 0.9;
+}
+.shot-raw {
+  position: absolute;
+  right: 0;
+  top: -34px;
+  color: #fff;
+  font-size: 0.84em;
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0.86;
+}
+.shot-raw:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+.shot-raw[hidden] {
+  display: none;
+}
+.shot-x {
+  position: absolute;
+  left: 0;
+  top: -40px;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-size: 1.7em;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.86;
+}
+.shot-x:hover {
+  opacity: 1;
+}
+/* On a phone the picture takes the width and the two controls come inside it,
+   where there is no room above. */
+@media (max-width: 620px) {
+  .shot-modal {
+    max-width: 100vw;
+  }
+  .shot-raw,
+  .shot-x {
+    top: 10px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  }
+  .shot-raw {
+    right: 12px;
+  }
+  .shot-x {
+    left: 12px;
+  }
+}
+
+/* ---- The session the clock is in, where there is no line to draw
    The list and the abstracts have no axis to hang a line on, so the row says
    it instead: a wash of the accent at eight per cent over whatever ground it
    already has, and a hairline of the accent around it. Slight on purpose —
