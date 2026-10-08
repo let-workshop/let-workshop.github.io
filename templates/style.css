@@ -1984,7 +1984,7 @@ a.spk-card {
 }
 .shot-raw {
   position: absolute;
-  right: 0;
+  left: 0;
   top: -34px;
   color: #fff;
   font-size: 0.84em;
@@ -2038,7 +2038,7 @@ a.spk-card {
 }
 .shot-x {
   position: absolute;
-  left: 0;
+  right: 0;
   top: -40px;
   border: 0;
   background: none;
@@ -2063,10 +2063,10 @@ a.spk-card {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   }
   .shot-raw {
-    right: 12px;
+    left: 12px;
   }
   .shot-x {
-    left: 12px;
+    right: 12px;
   }
   .wall-modal {
     width: 100vw;
@@ -2081,8 +2081,27 @@ a.spk-card {
   .wall-head {
     padding-top: calc(14px + env(safe-area-inset-top));
   }
+  /* Top right of a full-screen sheet is the one corner a thumb cannot reach,
+     and this is the only way out of the wall. Fixed rather than absolute: the
+     grid scrolls under it and the button stays where the hand is. */
+  .wall-head .shot-x {
+    position: fixed;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 3;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 1px solid var(--control-line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 1.5em;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+  }
   .wall {
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
