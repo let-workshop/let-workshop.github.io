@@ -766,6 +766,12 @@
              — the room, the lobby, the queue — belong to the workshop rather
              than to a day of it, and splitting the rail filed each of them
              under whichever day its file happened to sit in. -->
+        <div class="shots-rail">
+          <!-- The same two arrows the session sheet has, on the same
+               holdToRepeat: tap to move a screenful, hold to run. A rail that
+               can only be swiped is a rail a mouse cannot move. -->
+          <button id="shots-prev" class="rail-step" aria-label="Scroll back · 이전">&larr;</button>
+          <button id="shots-next" class="rail-step" aria-label="Scroll on · 다음">&rarr;</button>
         <ul class="shots" tabindex="0" aria-label="Photographs · 사진">
           {% for shot in gallery.photos %}
           <li>
@@ -777,6 +783,7 @@
           </li>
           {% endfor %}
         </ul>
+        </div>
         <button class="shots-all" onclick="openWall()">
           <span class="t-en">See all {{ gallery.photos | length }}</span><span class="t-ko">{{ gallery.photos | length }}장 전체 보기</span>
         </button>
@@ -1327,7 +1334,7 @@
         </figcaption>
       </figure>
       <a id="shot-raw" class="shot-raw" target="_blank" rel="noopener"
-        ><span class="t-en">Full size</span><span class="t-ko">원본 보기</span> &#8599;</a
+        ><span class="t-en">Larger</span><span class="t-ko">크게 보기</span> &#8599;</a
       >
       <form method="dialog"><button class="shot-x" aria-label="Close">&times;</button></form>
       <!-- The same two arrows the session sheet has, wired the same way: hold
@@ -2273,6 +2280,11 @@
         if (who >= 0)
           bits += '<button class="sp-who" onclick="speakerFromSession(' + who + ')">' +
                   tbd("About the speaker", "연사 소개") + ' <span aria-hidden="true">&rarr;</span></button>';
+        // And the pictures of this talk, beside the door to the speaker. Both
+        // are doors out of the session, so they sit on the same line.
+        if (s.shot !== null && s.shot !== undefined)
+          bits += '<button class="sp-who sp-shot" onclick="shotFromSession(' + s.shot + ')">' +
+                  tbd("Photographs", "사진") + ' <span aria-hidden="true">&rarr;</span></button>';
 
         if (!compact)
           bits += s.abstract
@@ -2535,8 +2547,9 @@
         });
 
         // Releasing outside the dialog, or closing it mid-hold, must not leave
-        // the timer running.
-        modal.addEventListener("close", stop);
+        // the timer running. Optional: the gallery rail uses these arrows on
+        // the page itself, where there is no dialog to close.
+        if (modal) modal.addEventListener("close", stop);
         addEventListener("pointerup", stop);
         addEventListener("blur", stop);
       }
@@ -3011,6 +3024,61 @@
       WALL_MODAL.addEventListener("click", function (ev) {
         if (ev.target === WALL_MODAL) WALL_MODAL.close();
       });
+
+      // ---- The rail's arrows
+      //
+      // where() has to change the moment step() is called or holdToRepeat
+      // stops on its first repeat, and a smooth scroll has not moved
+      // scrollLeft by then. So the target is kept here and the element is told
+      // to go to it; a scroll the reader does themselves syncs it back.
+      (function () {
+        var rail = document.querySelector("#gallery .shots");
+        if (!rail) return;
+        var prev = document.getElementById("shots-prev"),
+          next = document.getElementById("shots-next");
+        var still = matchMedia("(prefers-reduced-motion: reduce)");
+        var target = 0, mine = 0;
+
+        function most() { return Math.max(0, rail.scrollWidth - rail.clientWidth); }
+        function ends() {
+          prev.disabled = rail.scrollLeft <= 1;
+          next.disabled = rail.scrollLeft >= most() - 1;
+        }
+        function page(dir) {
+          // Whole tiles, as many as fit — so a step always lands on an edge
+          // rather than halfway through a picture, and two steps are the same
+          // size as each other.
+          var first = rail.querySelector("li");
+          var tile = first ? first.getBoundingClientRect().width + 12 : 260;
+          var by = Math.max(tile, Math.floor(rail.clientWidth / tile) * tile);
+          target = Math.min(most(), Math.max(0, target + dir * by));
+          mine = Date.now();
+          rail.scrollTo({ left: target, behavior: still.matches ? "auto" : "smooth" });
+        }
+        rail.addEventListener("scroll", function () {
+          // Not while our own smooth scroll is still running, or the target
+          // would be dragged back to wherever it had got to.
+          if (Date.now() - mine > 700) target = rail.scrollLeft;
+          ends();
+        }, { passive: true });
+        window.addEventListener("resize", function () { target = rail.scrollLeft; ends(); });
+        ends();
+        holdToRepeat(
+          [
+            ["shots-prev", -1],
+            ["shots-next", 1],
+          ],
+          page,
+          function () { return Math.round(target); }
+        );
+      })();
+
+      // From a session to its pictures. The session sheet closes behind it —
+      // two sheets open at once is a back button nobody can predict.
+      function shotFromSession(i) {
+        MODAL.close();
+        openShot(i);
+      }
 
       function stepShot(d) {
         var next = shotAt + d;

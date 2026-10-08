@@ -96,6 +96,8 @@ CALENDAR_FILE = "programme.ics"
 
 EN_DASH = "–"
 
+MIDDOT = "·"
+
 
 # ---------------------------------------------------------------- helpers
 
@@ -746,6 +748,12 @@ def prepare_gallery(gallery: dict) -> None:
     # through — the rails are a way of looking at one list, not three lists.
     for i, shot in enumerate(shots):
         shot["i"] = i + (1 if gallery["headline"] else 0)
+    # "Namhoon Lee · DL Theory I" is how a talk's pictures are captioned, which
+    # is exactly what the programme knows about that talk — so the session
+    # sheet can offer them without anything being written down twice.
+    gallery["by_talk"] = {}
+    for shot in shots:
+        gallery["by_talk"].setdefault(shot["title"], shot["i"])
 
 
 def prepare_news(news: dict, utc_offset: str) -> None:
@@ -1211,6 +1219,11 @@ def build(name: str, variant: dict, bundle: dict, env: Environment) -> tuple[str
                     "photo": asset_url(f"speakers/{s['photo']}") if s.get("photo") else None,
                     "slides": s.get("slides"),
                     "home": s.get("home"),
+                    # The first of this talk's pictures, if anybody took any —
+                    # matched on the caption, which is the speaker and the
+                    # session, which is what this row already is.
+                    "shot": bundle["gallery"]["by_talk"].get(
+                        f"{s['name']} {MIDDOT} {e['title']}"),
                 }
                 for i, s in enumerate(e["speakers"] if not variant["anonymize"] else [])
             ],

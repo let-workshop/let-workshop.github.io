@@ -1750,6 +1750,50 @@ a.spk-card {
   font-size: 0.86em;
 }
 
+/* The rail and its two arrows. The buttons sit over the ends of the row
+   rather than beside it: beside it they would take 80px of a 1136px band from
+   the pictures, and the ends of a rail are exactly where there is nothing to
+   cover — the row has run out. */
+.shots-rail {
+  position: relative;
+}
+.rail-step {
+  position: absolute;
+  top: calc(50% - 26px);
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--control-line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--control-ink);
+  font-size: 1em;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+}
+#shots-prev {
+  left: -6px;
+}
+#shots-next {
+  right: -6px;
+}
+.rail-step:hover:not(:disabled) {
+  border-color: var(--hero-accent);
+  color: var(--hero-accent);
+}
+.rail-step:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+/* A thumb does this better than a button can, and the buttons would be sitting
+   on the pictures at this width. */
+@media (max-width: 620px) {
+  .rail-step {
+    display: none;
+  }
+}
+
 /* The rail. One row deep, moving under a thumb or a trackpad, with the row
    running off the edge to say there is more — a grid of sixty-nine is a
    contact sheet the rest of the page sits below. */
@@ -1842,6 +1886,10 @@ a.spk-card {
   color: var(--muted);
   font-size: 1.6em;
 }
+.wall-modal[open] {
+  display: flex;
+  flex-direction: column;
+}
 .wall {
   list-style: none;
   margin: 0;
@@ -1849,8 +1897,10 @@ a.spk-card {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 12px;
+  grid-auto-rows: min-content;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  height: calc(92vh - 56px);
   overscroll-behavior: contain;
 }
 .shots-empty {
@@ -1997,10 +2047,18 @@ a.spk-card {
   .wall-modal {
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    top: 0;
+    left: 0;
     border-radius: 0;
   }
+  .wall-head {
+    padding-top: calc(14px + env(safe-area-inset-top));
+  }
   .wall {
-    height: calc(100vh - 56px);
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
@@ -2691,6 +2749,9 @@ button.sp-talk-link:focus-visible {
 }
 /* The door from a session to the person giving the talk — the talk window's
    way back, pointing the other way. */
+.sp-shot {
+  margin-left: 6px;
+}
 .sp-who {
   display: inline-flex;
   align-items: baseline;
