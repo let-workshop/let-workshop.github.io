@@ -1716,9 +1716,7 @@ a.spk-card {
   border-radius: var(--radius);
   padding: 22px 24px;
 }
-/* The grid keeps its own frame — the grey between cells is what draws the
-   timetable — so it only loses the outer border and corner. */
-.view-panel/* ---- Pictures
+/* ---- Pictures
    The headline at the top of About, the grid under the programme, and the
    sheet either of them opens. */
 .headshot {
@@ -1979,7 +1977,9 @@ a.spk-card {
   line-height: 1.5;
   white-space: nowrap;
 }
-.schedule-scroll {
+/* The grid keeps its own frame — the grey between cells is what draws the
+   timetable — so it only loses the outer border and corner. */
+.view-panel.schedule-scroll {
   padding: 16px;
 }
 .view-panel .schedule-container {
