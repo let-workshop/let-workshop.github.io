@@ -49,6 +49,9 @@ def main() -> None:
     ap.add_argument("slug", help="the file name to write, without .jpg")
     ap.add_argument("--no-full", action="store_true",
                     help="skip the full-size copy, for a picture not worth zooming")
+    ap.add_argument("--crop-top", type=float, default=0, metavar="FRACTION",
+                    help="take this much off the top first, 0.33 for a third — "
+                         "a room photographed whole is mostly ceiling")
     args = ap.parse_args()
 
     if not args.source.exists():
@@ -59,6 +62,12 @@ def main() -> None:
     # Pillow does not apply it on open — so a portrait arrives on its side.
     im = ImageOps.exif_transpose(Image.open(args.source)).convert("RGB")
     print(f"{args.source.name}  {im.width}×{im.height}")
+    if args.crop_top:
+        if not 0 < args.crop_top < 1:
+            raise SystemExit("--crop-top is a fraction of the height, 0 to 1")
+        cut = round(im.height * args.crop_top)
+        im = im.crop((0, cut, im.width, im.height))
+        print(f"  cut {cut}px off the top  ->  {im.width}×{im.height}")
 
     wide = im if im.width <= WIDE else im.resize(
         (WIDE, round(im.height * WIDE / im.width)), Image.LANCZOS)

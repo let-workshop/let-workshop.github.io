@@ -26,10 +26,12 @@ empty: Pictures from both days are on their way here.
 empty_ko: 양일 사진을 정리해 곧 올리겠습니다.
 
 headline:
+  # tools/prep-gallery.py <src> day1-group --crop-top 0.33 — the lobby was
+  # photographed whole and the top third of it was ceiling.
   file: gallery/day1-group.jpg
   full: gallery/day1-group-full.jpg
   width: 1600
-  height: 1067
+  height: 715
   title: Day 1, all of us
   title_ko: 1일차 단체 사진
   caption: Outside the Grand Conference Room, 7 October 2026.
