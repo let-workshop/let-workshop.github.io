@@ -1750,27 +1750,12 @@ a.spk-card {
   font-size: 0.86em;
 }
 
-/* The rails. One row deep, moving under a thumb or a trackpad, with the row
+/* The rail. One row deep, moving under a thumb or a trackpad, with the row
    running off the edge to say there is more — a grid of sixty-nine is a
    contact sheet the rest of the page sits below. */
-.shots-rail-head {
-  display: flex;
-  align-items: baseline;
-  gap: 9px;
-  margin: 18px 0 9px;
-}
-.shots-rail-head h3 {
-  margin: 0;
-  font-size: 1em;
-}
-.shots-count {
-  color: var(--muted);
-  font-size: 0.82em;
-  font-variant-numeric: tabular-nums;
-}
 .shots {
   list-style: none;
-  margin: 0;
+  margin: 10px 0 0;
   padding: 0 0 8px;
   display: flex;
   gap: 12px;

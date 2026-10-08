@@ -757,18 +757,17 @@
           {% if gallery.note %}<span class="note">{{ t(gallery.note, gallery.note_ko) }}</span>{% endif %}
         </h2>
         {% if gallery.photos %}
-        <!-- A rail to a day, not a wall of everything. Sixty-nine tiles in a
-             grid is a contact sheet somebody has to scroll past to reach the
-             rest of the page; a rail is one row deep, moves under a thumb and
-             under a trackpad, and says there is more by running off the edge.
-             The whole set is a button away, as a grid that takes the screen. -->
-        {% for rail in gallery.rails %}
-        <div class="shots-rail-head">
-          {% if rail.day %}<h3>{{ t("Day " ~ rail.day, rail.day ~ "일차") }}</h3>{% endif %}
-          <span class="shots-count">{{ rail.shots | length }}</span>
-        </div>
-        <ul class="shots" tabindex="0" aria-label="Day {{ rail.day }} · {{ rail.day }}일차">
-          {% for shot in rail.shots %}
+        <!-- One rail, not a wall. Sixty-nine tiles in a grid is a contact
+             sheet somebody has to scroll past to reach the rest of the page;
+             a rail is one row deep, moves under a thumb and under a trackpad,
+             and says there is more by running off the edge. The whole set is a
+             button away, as a grid that takes the screen.
+             One rail and not one per day: the pictures of nobody in particular
+             — the room, the lobby, the queue — belong to the workshop rather
+             than to a day of it, and splitting the rail filed each of them
+             under whichever day its file happened to sit in. -->
+        <ul class="shots" tabindex="0" aria-label="Photographs · 사진">
+          {% for shot in gallery.photos %}
           <li>
             <button class="shot-open" onclick="openShot({{ shot.i }})" aria-label="{{ shot.alt }}">
               <img src="{{ shot.thumb_src }}" alt="{{ shot.alt }}"
@@ -778,7 +777,6 @@
           </li>
           {% endfor %}
         </ul>
-        {% endfor %}
         <button class="shots-all" onclick="openWall()">
           <span class="t-en">See all {{ gallery.photos | length }}</span><span class="t-ko">{{ gallery.photos | length }}장 전체 보기</span>
         </button>
