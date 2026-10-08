@@ -2000,7 +2000,6 @@ a.spk-card {
 .shot-strip {
   display: flex;
   gap: 6px;
-  flex: 0 0 auto;
   overflow-x: auto;
   padding: 0 calc(50% - 42px) 14px;
   scroll-snap-type: x proximity;
@@ -2026,22 +2025,25 @@ a.spk-card {
 .shot-strip button:hover {
   opacity: 0.8;
 }
-/* The one in the middle, which is the one on screen. A dot under it rather
-   than a ring around it: the ring read as a selection waiting to be opened,
-   and this is a mark on a dial saying where the dial is. */
-.shot-strip button.is-here {
-  opacity: 1;
+.shot-dial {
+  position: relative;
+  flex: 0 0 auto;
 }
-.shot-strip button.is-here::after {
+.shot-dial::after {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -9px;
-  width: 5px;
-  height: 5px;
-  margin-left: -2.5px;
+  bottom: 1px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
   border-radius: 50%;
   background: var(--hero-accent);
+  pointer-events: none;
+}
+/* The one the needle is under, told by being the only one at full strength. */
+.shot-strip button.is-here {
+  opacity: 1;
 }
 .shot-strip img {
   width: 100%;

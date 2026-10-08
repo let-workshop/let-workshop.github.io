@@ -1354,7 +1354,9 @@
       <!-- The whole set along the foot, the way the session sheet keeps the
            programme along its own: somewhere to see where you are and to get
            somewhere else without stepping there one at a time. -->
-      <div class="shot-strip" id="shot-strip" role="tablist" aria-label="All photographs · 사진 전체"></div>
+      <div class="shot-dial">
+        <div class="shot-strip" id="shot-strip" role="tablist" aria-label="All photographs · 사진 전체"></div>
+      </div>
     </dialog>
 
     <dialog id="speaker-modal" aria-label="Speaker detail">
@@ -3250,7 +3252,12 @@
       // What the sheet shows, without touching the strip's position — so it
       // can be called by the strip's own scrolling without the strip then
       // scrolling itself under the hand that is moving it.
-      function paintShot(i) {
+      // `quick` is what a finger dragging the dial gets: the thumbnail, which
+      // is already decoded, and all the words. The sheet's own copy and the
+      // two either side wait until the dial has stopped — a drag across sixty
+      // pictures would otherwise ask the network for sixty of them, and the
+      // one you stop on would be queued behind the fifty-nine you passed.
+      function paintShot(i, quick) {
         var s = SHOTS[i];
         if (!s) return false;
         shotAt = i;
@@ -3261,7 +3268,9 @@
         // was pressed — so the frame is never empty while the sheet's copy
         // arrives. Soft for a moment rather than blank for a moment.
         var img = document.getElementById("shot-img");
-        if (s.thumb_src && s.thumb_src !== s.src) {
+        if (quick && s.thumb_src) {
+          img.src = s.thumb_src;
+        } else if (s.thumb_src && s.thumb_src !== s.src) {
           img.src = s.thumb_src;
           var hi = new Image();
           hi.onload = function () { if (shotAt === i) img.src = s.src; };
@@ -3269,7 +3278,7 @@
         } else {
           img.src = s.src;
         }
-        prefetch(i);
+        if (!quick) prefetch(i);
         buildStrip();
         Array.prototype.forEach.call(STRIP.children, function (b, j) {
           b.classList.toggle("is-here", j === i);
@@ -3311,22 +3320,32 @@
       // list you then have to tap.
       (function () {
         var settle = null;
+
+        // Which tile the needle is over. Worked out from the scroll position
+        // rather than by measuring every tile: the tiles are a known width and
+        // a known gap, and sixty-eight getBoundingClientRect calls on every
+        // frame of a flick is how a dial comes to stutter.
+        function under() {
+          var first = STRIP.children[0];
+          if (!first) return -1;
+          var step = first.getBoundingClientRect().width + 6;
+          var lead = parseFloat(getComputedStyle(STRIP).paddingLeft) || 0;
+          var mid = STRIP.scrollLeft + STRIP.clientWidth / 2 - lead;
+          return Math.min(SHOTS.length - 1, Math.max(0, Math.round((mid - step / 2) / step)));
+        }
+
         STRIP.addEventListener("scroll", function () {
           // Our own centring scroll reports itself over the next few frames,
           // and reading that as the reader's would fight it halfway.
           if (Date.now() - stripMoved < 500) return;
+          // Every frame of the drag, including the momentum after the finger
+          // has gone: the picture is what tells you where the dial has got to,
+          // so it has to arrive with the movement and not after it.
+          var j = under();
+          if (j >= 0 && j !== shotAt) paintShot(j, true);
+          // And the full copy once it has come to rest.
           clearTimeout(settle);
-          settle = setTimeout(function () {
-            var box = STRIP.getBoundingClientRect();
-            var mid = (box.left + box.right) / 2;
-            var best = -1, by = Infinity;
-            Array.prototype.forEach.call(STRIP.children, function (b, j) {
-              var r = b.getBoundingClientRect();
-              var d = Math.abs((r.left + r.right) / 2 - mid);
-              if (d < by) { by = d; best = j; }
-            });
-            if (best >= 0 && best !== shotAt) paintShot(best);
-          }, 90);
+          settle = setTimeout(function () { paintShot(shotAt); }, 140);
         }, { passive: true });
       })();
 
