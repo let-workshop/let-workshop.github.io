@@ -194,6 +194,7 @@ nav:
   - { label: Notices, label_ko: 공지, href: "#news" }
   - { label: Speakers, label_ko: 연사, href: "#speakers" }
   - { label: Program, label_ko: 프로그램, href: "#program" }
+  - { label: Gallery, label_ko: 갤러리, href: "#gallery" }
   - { label: Instructions, label_ko: 안내사항, href: "#instructions" }
   - { label: Organizers, label_ko: 조직위원회, href: "#organizers" }
   - { label: Travel Info, label_ko: 오시는 길, href: "#venue" }

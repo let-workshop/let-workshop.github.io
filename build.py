@@ -726,7 +726,7 @@ def prepare_gallery(gallery: dict) -> None:
         gallery.setdefault(key, None)
     shots = gallery.setdefault("photos", [])
     for shot in ([gallery["headline"]] if gallery["headline"] else []) + shots:
-        for key in ("title_ko", "caption", "caption_ko", "full"):
+        for key in ("title_ko", "caption", "caption_ko", "full", "thumb"):
             shot.setdefault(key, None)
         for key in ("width", "height"):
             if not shot.get(key):
@@ -737,6 +737,7 @@ def prepare_gallery(gallery: dict) -> None:
         shot["alt"] = " · ".join(
             dict.fromkeys(x for x in (shot["title"], shot["title_ko"]) if x))
         shot["src"] = asset_url(shot["file"])
+        shot["thumb_src"] = asset_url(shot["thumb"]) if shot["thumb"] else shot["src"]
         # The raw file keeps its own stamp: it changes when it changes, and it
         # is not the file the page draws.
         shot["raw"] = asset_url(shot["full"]) if shot["full"] else None

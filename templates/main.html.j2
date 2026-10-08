@@ -761,8 +761,8 @@
           {% for shot in gallery.photos %}
           <li>
             <button class="shot-open" onclick="openShot({{ loop.index }})" aria-label="{{ shot.alt }}">
-              <img src="{{ shot.src }}" alt="{{ shot.alt }}"
-                   width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" />
+              <img src="{{ shot.thumb_src }}" alt="{{ shot.alt }}"
+                   width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" decoding="async" />
               <span class="shot-name">{{ t(shot.title, shot.title_ko) }}</span>
             </button>
           </li>

@@ -27,8 +27,12 @@ from PIL import Image, ImageOps
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "static" / "gallery"
 
-# What the page draws. See the module docstring for why not the original.
+# What the sheet draws. See the module docstring for why not the original.
 WIDE = 1600
+# What the grid draws. A thumbnail is shown about 360px wide, so 640 covers it
+# on a retina screen — and seventy of them at the sheet's size would be 14MB of
+# scrolling to look at a wall of small pictures.
+THUMB = 640
 # 82 is where this photograph stopped losing anything a reader could see; the
 # file is a third of what 95 cost. Progressive, so a slow connection gets a
 # whole picture early rather than a band of one.
@@ -81,10 +85,14 @@ def main() -> None:
     wide = shown if shown.width <= WIDE else shown.resize(
         (WIDE, round(shown.height * WIDE / shown.width)), Image.LANCZOS)
     save(wide, OUT / f"{args.slug}.jpg", QUALITY)
+    thumb = wide if wide.width <= THUMB else wide.resize(
+        (THUMB, round(wide.height * THUMB / wide.width)), Image.LANCZOS)
+    save(thumb, OUT / f"{args.slug}-thumb.jpg", QUALITY)
     if not args.no_full:
         save(im, OUT / f"{args.slug}-full.jpg", FULL_QUALITY)
 
     print("\n  - file: gallery/%s.jpg" % args.slug)
+    print("    thumb: gallery/%s-thumb.jpg" % args.slug)
     if not args.no_full:
         print("    full: gallery/%s-full.jpg" % args.slug)
     print(f"    width: {wide.width}")
