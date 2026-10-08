@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "static" / "gallery"
 
 # What the sheet draws. See the module docstring for why not the original.
-WIDE = 1600
+WIDE = 1280
 # What the grid draws. A thumbnail is shown about 360px wide, so 640 covers it
 # on a retina screen — and seventy of them at the sheet's size would be 14MB of
 # scrolling to look at a wall of small pictures.
@@ -36,7 +36,7 @@ THUMB = 640
 # 82 is where this photograph stopped losing anything a reader could see; the
 # file is a third of what 95 cost. Progressive, so a slow connection gets a
 # whole picture early rather than a band of one.
-QUALITY = 82
+QUALITY = 78
 FULL_QUALITY = 86
 
 

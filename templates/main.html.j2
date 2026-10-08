@@ -3018,6 +3018,22 @@
         openShot(next);
       }
 
+      // The two either side, fetched while this one is being looked at. Held in
+      // a list so the browser keeps them: an Image with nothing referring to it
+      // can be collected before it has finished, and then stepping fetches it
+      // again. Two each way covers a thumb moving faster than it reads.
+      var ahead = [];
+      function prefetch(i) {
+        [i - 2, i - 1, i + 1, i + 2].forEach(function (j) {
+          var s = SHOTS[j];
+          if (!s || ahead.indexOf(s.src) >= 0) return;
+          var im = new Image();
+          im.src = s.src;
+          ahead.push(s.src);
+          if (ahead.length > 12) ahead.shift();
+        });
+      }
+
       function openShot(i) {
         var s = SHOTS[i];
         if (!s) return;
@@ -3025,7 +3041,19 @@
         document.getElementById("shot-prev").disabled = i === 0;
         document.getElementById("shot-next").disabled = i === SHOTS.length - 1;
         document.getElementById("shot-count").textContent = i + 1 + " / " + SHOTS.length;
-        document.getElementById("shot-img").src = s.src;
+        // The thumbnail first, which is already decoded — it was the tile that
+        // was pressed — so the frame is never empty while the sheet's copy
+        // arrives. Soft for a moment rather than blank for a moment.
+        var img = document.getElementById("shot-img");
+        if (s.thumb_src && s.thumb_src !== s.src) {
+          img.src = s.thumb_src;
+          var hi = new Image();
+          hi.onload = function () { if (shotAt === i) img.src = s.src; };
+          hi.src = s.src;
+        } else {
+          img.src = s.src;
+        }
+        prefetch(i);
         document.getElementById("shot-img").alt = s.title || "";
         document.getElementById("shot-title").innerHTML = tbd(s.title, s.title_ko || s.title);
         var text = document.getElementById("shot-text");
