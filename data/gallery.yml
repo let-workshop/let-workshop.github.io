@@ -41,414 +41,483 @@ headline:
 
 photos:
   - file: gallery/d1-0-general1.jpg
+    day: 1
     thumb: gallery/d1-0-general1-thumb.jpg
     width: 1600
     height: 1067
     title: The two days
     title_ko: 워크숍 풍경
   - file: gallery/d1-0-general2.jpg
+    day: 1
     thumb: gallery/d1-0-general2-thumb.jpg
     width: 1600
     height: 1066
     title: The two days
     title_ko: 워크숍 풍경
   - file: gallery/d1-0-general3.jpg
+    day: 1
     thumb: gallery/d1-0-general3-thumb.jpg
     width: 1600
     height: 1067
     title: The two days
     title_ko: 워크숍 풍경
   - file: gallery/d1-0-general4.jpg
+    day: 1
     thumb: gallery/d1-0-general4-thumb.jpg
     width: 1600
     height: 1067
     title: The two days
     title_ko: 워크숍 풍경
   - file: gallery/d1-0-general5.jpg
+    day: 1
     thumb: gallery/d1-0-general5-thumb.jpg
     width: 1600
     height: 1067
     title: The two days
     title_ko: 워크숍 풍경
   - file: gallery/d1-0-general6.jpg
+    day: 1
     thumb: gallery/d1-0-general6-thumb.jpg
     width: 1600
     height: 1067
     title: The two days
     title_ko: 워크숍 풍경
   - file: gallery/d1-0-general-question.jpg
+    day: 1
     thumb: gallery/d1-0-general-question-thumb.jpg
     width: 1600
     height: 1067
     title: A question from the floor
     title_ko: 객석의 질문
   - file: gallery/d1-1-opening1.jpg
+    day: 1
     thumb: gallery/d1-1-opening1-thumb.jpg
     width: 1600
     height: 1067
     title: Opening Remarks
     title_ko: 개회
   - file: gallery/d1-1-opening2.jpg
+    day: 1
     thumb: gallery/d1-1-opening2-thumb.jpg
     width: 1600
     height: 1067
     title: Opening Remarks
     title_ko: 개회
   - file: gallery/d1-2-dl1-1-namhoon1.jpg
+    day: 1
     thumb: gallery/d1-2-dl1-1-namhoon1-thumb.jpg
     width: 1600
     height: 1066
     title: Namhoon Lee · DL Theory I
     title_ko: 이남훈 · DL Theory I
   - file: gallery/d1-2-dl1-1-namhoon2.jpg
+    day: 1
     thumb: gallery/d1-2-dl1-1-namhoon2-thumb.jpg
     width: 1600
     height: 1104
     title: Namhoon Lee · DL Theory I
     title_ko: 이남훈 · DL Theory I
   - file: gallery/d1-3-dl1-2-jaeho1.jpg
+    day: 1
     thumb: gallery/d1-3-dl1-2-jaeho1-thumb.jpg
     width: 1600
     height: 1065
     title: Jaeho Lee · DL Theory I
     title_ko: 이재호 · DL Theory I
   - file: gallery/d1-3-dl1-2-jaeho2.jpg
+    day: 1
     thumb: gallery/d1-3-dl1-2-jaeho2-thumb.jpg
     width: 1600
     height: 1067
     title: Jaeho Lee · DL Theory I
     title_ko: 이재호 · DL Theory I
   - file: gallery/d1-4-lunch1-1.jpg
+    day: 1
     thumb: gallery/d1-4-lunch1-1-thumb.jpg
     width: 1600
     height: 1033
     title: Lunch
     title_ko: 점심
   - file: gallery/d1-4-lunch1-2.jpg
+    day: 1
     thumb: gallery/d1-4-lunch1-2-thumb.jpg
     width: 1600
     height: 1067
     title: Lunch
     title_ko: 점심
   - file: gallery/d1-5-dl2-1-seonghwan1.jpg
+    day: 1
     thumb: gallery/d1-5-dl2-1-seonghwan1-thumb.jpg
     width: 1600
     height: 1067
     title: Sung Whan Yoon · DL Theory II
     title_ko: 윤성환 · DL Theory II
   - file: gallery/d1-5-dl2-1-seonghwan2.jpg
+    day: 1
     thumb: gallery/d1-5-dl2-1-seonghwan2-thumb.jpg
     width: 1600
     height: 1067
     title: Sung Whan Yoon · DL Theory II
     title_ko: 윤성환 · DL Theory II
   - file: gallery/d1-5-dl2-2-jy-young1.jpg
+    day: 1
     thumb: gallery/d1-5-dl2-2-jy-young1-thumb.jpg
     width: 1600
     height: 1067
     title: Jy-yong Sohn · DL Theory II
     title_ko: 손지용 · DL Theory II
   - file: gallery/d1-5-dl2-2-jy-young2.jpg
+    day: 1
     thumb: gallery/d1-5-dl2-2-jy-young2-thumb.jpg
     width: 1600
     height: 1067
     title: Jy-yong Sohn · DL Theory II
     title_ko: 손지용 · DL Theory II
   - file: gallery/d1-6-uq1-1-sangdon1.jpg
+    day: 1
     thumb: gallery/d1-6-uq1-1-sangdon1-thumb.jpg
     width: 1600
     height: 1067
     title: Sangdon Park · UQ in LLMs
     title_ko: 박상돈 · UQ in LLMs
   - file: gallery/d1-6-uq1-1-sangdon2.jpg
+    day: 1
     thumb: gallery/d1-6-uq1-1-sangdon2-thumb.jpg
     width: 1600
     height: 1067
     title: Sangdon Park · UQ in LLMs
     title_ko: 박상돈 · UQ in LLMs
   - file: gallery/d1-7-dl3-1-juho1.jpg
+    day: 1
     thumb: gallery/d1-7-dl3-1-juho1-thumb.jpg
     width: 1600
     height: 1067
     title: Juho Lee · UQ in LLMs
     title_ko: 이주호 · UQ in LLMs
   - file: gallery/d1-7-dl3-1-juho2.jpg
+    day: 1
     thumb: gallery/d1-7-dl3-1-juho2-thumb.jpg
     width: 1600
     height: 1066
     title: Juho Lee · UQ in LLMs
     title_ko: 이주호 · UQ in LLMs
   - file: gallery/d1-8-dl4-donghwan1.jpg
+    day: 1
     thumb: gallery/d1-8-dl4-donghwan1-thumb.jpg
     width: 1600
     height: 1067
     title: Donghwan Kim · DL Theory III
     title_ko: 김동환 · DL Theory III
   - file: gallery/d1-8-dl4-donghwan2.jpg
+    day: 1
     thumb: gallery/d1-8-dl4-donghwan2-thumb.jpg
     width: 1600
     height: 1067
     title: Donghwan Kim · DL Theory III
     title_ko: 김동환 · DL Theory III
   - file: gallery/d1-8-posterinstall1.jpg
+    day: 1
     thumb: gallery/d1-8-posterinstall1-thumb.jpg
     width: 1600
     height: 1067
     title: Putting the posters up
     title_ko: 포스터 설치
   - file: gallery/d1-9-ws1.jpg
+    day: 1
     thumb: gallery/d1-9-ws1-thumb.jpg
     width: 1600
     height: 1067
     title: NRF project meeting
     title_ko: 과제 내부 회의
   - file: gallery/d1-9-ws2.jpg
+    day: 1
     thumb: gallery/d1-9-ws2-thumb.jpg
     width: 1600
     height: 1067
     title: NRF project meeting
     title_ko: 과제 내부 회의
   - file: gallery/d1-10-p-all0.jpg
+    day: 1
     thumb: gallery/d1-10-p-all0-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-10-p-all1.jpg
+    day: 1
     thumb: gallery/d1-10-p-all1-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-10-p-all2.jpg
+    day: 1
     thumb: gallery/d1-10-p-all2-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-10-p-all3.jpg
+    day: 1
     thumb: gallery/d1-10-p-all3-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-10-p-all4.jpg
+    day: 1
     thumb: gallery/d1-10-p-all4-thumb.jpg
     width: 1600
     height: 1066
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p1.jpg
+    day: 1
     thumb: gallery/d1-11-p1-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p10.jpg
+    day: 1
     thumb: gallery/d1-11-p10-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p11.jpg
+    day: 1
     thumb: gallery/d1-11-p11-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p12.jpg
+    day: 1
     thumb: gallery/d1-11-p12-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p13.jpg
+    day: 1
     thumb: gallery/d1-11-p13-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p14.jpg
+    day: 1
     thumb: gallery/d1-11-p14-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p15.jpg
+    day: 1
     thumb: gallery/d1-11-p15-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p2.jpg
+    day: 1
     thumb: gallery/d1-11-p2-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p3.jpg
+    day: 1
     thumb: gallery/d1-11-p3-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p4.jpg
+    day: 1
     thumb: gallery/d1-11-p4-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p5.jpg
+    day: 1
     thumb: gallery/d1-11-p5-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p6.jpg
+    day: 1
     thumb: gallery/d1-11-p6-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p7.jpg
+    day: 1
     thumb: gallery/d1-11-p7-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p8.jpg
+    day: 1
     thumb: gallery/d1-11-p8-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-11-p9.jpg
+    day: 1
     thumb: gallery/d1-11-p9-thumb.jpg
     width: 1600
     height: 1067
     title: Poster session
     title_ko: 포스터 세션
   - file: gallery/d1-12-banquet1.jpg
+    day: 1
     thumb: gallery/d1-12-banquet1-thumb.jpg
     width: 1600
     height: 1067
     title: Grand Banquet
     title_ko: 만찬
   - file: gallery/d1-12-banquet2.jpg
+    day: 1
     thumb: gallery/d1-12-banquet2-thumb.jpg
     width: 1600
     height: 1067
     title: Grand Banquet
     title_ko: 만찬
   - file: gallery/d2-13-tuto-seyoung1.jpg
+    day: 2
     thumb: gallery/d2-13-tuto-seyoung1-thumb.jpg
     width: 1600
     height: 1067
     title: Se-Young Yun · Tutorial
     title_ko: 윤세영 · 튜토리얼
   - file: gallery/d2-13-tuto-seyoung2.jpg
+    day: 2
     thumb: gallery/d2-13-tuto-seyoung2-thumb.jpg
     width: 1600
     height: 1067
     title: Se-Young Yun · Tutorial
     title_ko: 윤세영 · 튜토리얼
   - file: gallery/d2-14-dl5-1-seongjun1.jpg
+    day: 2
     thumb: gallery/d2-14-dl5-1-seongjun1-thumb.jpg
     width: 1600
     height: 1067
     title: Seong Joon Oh · DL Theory IV
     title_ko: 오성준 · DL Theory IV
   - file: gallery/d2-14-dl5-1-seongjun2.jpg
+    day: 2
     thumb: gallery/d2-14-dl5-1-seongjun2-thumb.jpg
     width: 1600
     height: 1067
     title: Seong Joon Oh · DL Theory IV
     title_ko: 오성준 · DL Theory IV
   - file: gallery/d2-14-dl5-2-charlie1.jpg
+    day: 2
     thumb: gallery/d2-14-dl5-2-charlie1-thumb.jpg
     width: 1600
     height: 1067
     title: Chulhee Yun · DL Theory IV
     title_ko: 윤철희 · DL Theory IV
   - file: gallery/d2-14-dl5-2-charlie2.jpg
+    day: 2
     thumb: gallery/d2-14-dl5-2-charlie2-thumb.jpg
     width: 1600
     height: 1067
     title: Chulhee Yun · DL Theory IV
     title_ko: 윤철희 · DL Theory IV
   - file: gallery/d2-15-bandit1-1-dabin1.jpg
+    day: 2
     thumb: gallery/d2-15-bandit1-1-dabin1-thumb.jpg
     width: 1600
     height: 1067
     title: Dabeen Lee · Bandits I
     title_ko: 이다빈 · Bandits I
   - file: gallery/d2-15-bandit1-1-dabin2.jpg
+    day: 2
     thumb: gallery/d2-15-bandit1-1-dabin2-thumb.jpg
     width: 1600
     height: 1067
     title: Dabeen Lee · Bandits I
     title_ko: 이다빈 · Bandits I
   - file: gallery/d2-15-bandit1-2-jongyoung1.jpg
+    day: 2
     thumb: gallery/d2-15-bandit1-2-jongyoung1-thumb.jpg
     width: 1600
     height: 1067
     title: Jongyeong Lee · Bandits I
     title_ko: 이종영 · Bandits I
   - file: gallery/d2-15-bandit1-2-jongyoung2.jpg
+    day: 2
     thumb: gallery/d2-15-bandit1-2-jongyoung2-thumb.jpg
     width: 1600
     height: 1067
     title: Jongyeong Lee · Bandits I
     title_ko: 이종영 · Bandits I
   - file: gallery/d2-16-offline-1-kyoungseok1.jpg
+    day: 2
     thumb: gallery/d2-16-offline-1-kyoungseok1-thumb.jpg
     width: 1600
     height: 1067
     title: Kyoungseok Jang · Offline RL
     title_ko: 장경석 · Offline RL
   - file: gallery/d2-16-offline-1-kyoungseok2.jpg
+    day: 2
     thumb: gallery/d2-16-offline-1-kyoungseok2-thumb.jpg
     width: 1600
     height: 1067
     title: Kyoungseok Jang · Offline RL
     title_ko: 장경석 · Offline RL
   - file: gallery/d2-16-offline-2-kihyuk1.jpg
+    day: 2
     thumb: gallery/d2-16-offline-2-kihyuk1-thumb.jpg
     width: 1600
     height: 1067
     title: Kihyuk Hong · Offline RL
     title_ko: 홍기혁 · Offline RL
   - file: gallery/d2-16-offline-2-kihyuk2.jpg
+    day: 2
     thumb: gallery/d2-16-offline-2-kihyuk2-thumb.jpg
     width: 1600
     height: 1067
     title: Kihyuk Hong · Offline RL
     title_ko: 홍기혁 · Offline RL
   - file: gallery/d2-17-bandit2-1-minhwan1.jpg
+    day: 2
     thumb: gallery/d2-17-bandit2-1-minhwan1-thumb.jpg
     width: 1600
     height: 1067
     title: Min-hwan Oh · Bandits II
     title_ko: 오민환 · Bandits II
   - file: gallery/d2-17-bandit2-1-minhwan2.jpg
+    day: 2
     thumb: gallery/d2-17-bandit2-1-minhwan2-thumb.jpg
     width: 1600
     height: 1067
     title: Min-hwan Oh · Bandits II
     title_ko: 오민환 · Bandits II
   - file: gallery/d2-17-bandit2-2-kwangsung1.jpg
+    day: 2
     thumb: gallery/d2-17-bandit2-2-kwangsung1-thumb.jpg
     width: 1600
     height: 1067
     title: Kwang-Sung Jun · Bandits II
     title_ko: 전광성 · Bandits II
   - file: gallery/d2-17-bandit2-2-kwangsung2.jpg
+    day: 2
     thumb: gallery/d2-17-bandit2-2-kwangsung2-thumb.jpg
     width: 1600
     height: 1067
     title: Kwang-Sung Jun · Bandits II
     title_ko: 전광성 · Bandits II
   - file: gallery/d2-18-closing.jpg
+    day: 2
     thumb: gallery/d2-18-closing-thumb.jpg
     width: 1600
     height: 1067

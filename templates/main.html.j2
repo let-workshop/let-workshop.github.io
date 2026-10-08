@@ -757,10 +757,20 @@
           {% if gallery.note %}<span class="note">{{ t(gallery.note, gallery.note_ko) }}</span>{% endif %}
         </h2>
         {% if gallery.photos %}
-        <ul class="shots">
-          {% for shot in gallery.photos %}
+        <!-- A rail to a day, not a wall of everything. Sixty-nine tiles in a
+             grid is a contact sheet somebody has to scroll past to reach the
+             rest of the page; a rail is one row deep, moves under a thumb and
+             under a trackpad, and says there is more by running off the edge.
+             The whole set is a button away, as a grid that takes the screen. -->
+        {% for rail in gallery.rails %}
+        <div class="shots-rail-head">
+          {% if rail.day %}<h3>{{ t("Day " ~ rail.day, rail.day ~ "일차") }}</h3>{% endif %}
+          <span class="shots-count">{{ rail.shots | length }}</span>
+        </div>
+        <ul class="shots" tabindex="0" aria-label="Day {{ rail.day }} · {{ rail.day }}일차">
+          {% for shot in rail.shots %}
           <li>
-            <button class="shot-open" onclick="openShot({{ loop.index }})" aria-label="{{ shot.alt }}">
+            <button class="shot-open" onclick="openShot({{ shot.i }})" aria-label="{{ shot.alt }}">
               <img src="{{ shot.thumb_src }}" alt="{{ shot.alt }}"
                    width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" decoding="async" />
               <span class="shot-name">{{ t(shot.title, shot.title_ko) }}</span>
@@ -768,6 +778,10 @@
           </li>
           {% endfor %}
         </ul>
+        {% endfor %}
+        <button class="shots-all" onclick="openWall()">
+          <span class="t-en">See all {{ gallery.photos | length }}</span><span class="t-ko">{{ gallery.photos | length }}장 전체 보기</span>
+        </button>
         {% else %}
         <p class="shots-empty">{{ t(gallery.empty, gallery.empty_ko) }}</p>
         {% endif %}
@@ -1285,6 +1299,27 @@
          the words are a label on it. "Full size" leaves for the raw file in a
          tab of its own: the browser's own viewer pans and pinches better than
          anything written here, and the file is the point of asking. -->
+    <!-- Every picture at once, over the page rather than in it — the grid the
+         section used to be, moved to where a wall of thumbnails is what you
+         asked for rather than what you were handed. -->
+    <dialog id="wall-modal" class="wall-modal" aria-label="All photographs">
+      <div class="wall-head">
+        <b><span class="t-en">All photographs</span><span class="t-ko">사진 전체</span></b>
+        <form method="dialog"><button class="shot-x" aria-label="Close">&times;</button></form>
+      </div>
+      <ul class="wall">
+        {% for shot in gallery.photos %}
+        <li>
+          <button class="shot-open" onclick="openShot({{ shot.i }})" aria-label="{{ shot.alt }}">
+            <img data-src="{{ shot.thumb_src }}" alt="{{ shot.alt }}"
+                 width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy" decoding="async" />
+            <span class="shot-name">{{ t(shot.title, shot.title_ko) }}</span>
+          </button>
+        </li>
+        {% endfor %}
+      </ul>
+    </dialog>
+
     <dialog id="shot-modal" class="shot-modal" aria-label="Photo">
       <figure>
         <img id="shot-img" alt="" />
@@ -1297,6 +1332,14 @@
         ><span class="t-en">Full size</span><span class="t-ko">원본 보기</span> &#8599;</a
       >
       <form method="dialog"><button class="shot-x" aria-label="Close">&times;</button></form>
+      <!-- The same two arrows the session sheet has, wired the same way: hold
+           to run, swipe to turn, arrow keys. A picture you cannot step past is
+           a picture you have to close to see the next one. -->
+      <nav class="shot-nav">
+        <button id="shot-prev" class="shot-step" aria-label="Previous photograph">&larr;</button>
+        <span id="shot-count"></span>
+        <button id="shot-next" class="shot-step" aria-label="Next photograph">&rarr;</button>
+      </nav>
     </dialog>
 
     <dialog id="speaker-modal" aria-label="Speaker detail">
@@ -2956,9 +2999,34 @@
       var SHOTS = {{ (([gallery.headline] if gallery.headline else []) + gallery.photos) | tojson }};
       var SHOT_MODAL = document.getElementById("shot-modal");
 
+      var shotAt = 0;
+      var WALL_MODAL = document.getElementById("wall-modal");
+
+      // The wall's thumbnails carry data-src until it is first opened: sixty-nine
+      // more images in the document, lazy or not, is sixty-nine more things for
+      // the page to hold before anyone has asked to see them.
+      function openWall() {
+        Array.prototype.forEach.call(WALL_MODAL.querySelectorAll("img[data-src]"),
+          function (im) { im.src = im.getAttribute("data-src"); im.removeAttribute("data-src"); });
+        if (!WALL_MODAL.open) WALL_MODAL.showModal();
+      }
+      WALL_MODAL.addEventListener("click", function (ev) {
+        if (ev.target === WALL_MODAL) WALL_MODAL.close();
+      });
+
+      function stepShot(d) {
+        var next = shotAt + d;
+        if (next < 0 || next >= SHOTS.length) return;
+        openShot(next);
+      }
+
       function openShot(i) {
         var s = SHOTS[i];
         if (!s) return;
+        shotAt = i;
+        document.getElementById("shot-prev").disabled = i === 0;
+        document.getElementById("shot-next").disabled = i === SHOTS.length - 1;
+        document.getElementById("shot-count").textContent = i + 1 + " / " + SHOTS.length;
         document.getElementById("shot-img").src = s.src;
         document.getElementById("shot-img").alt = s.title || "";
         document.getElementById("shot-title").innerHTML = tbd(s.title, s.title_ko || s.title);
@@ -2973,6 +3041,24 @@
       }
       SHOT_MODAL.addEventListener("click", function (ev) {
         if (ev.target === SHOT_MODAL) SHOT_MODAL.close();
+      });
+      SHOT_MODAL.addEventListener("keydown", function (ev) {
+        if (ev.key === "ArrowLeft") stepShot(-1);
+        if (ev.key === "ArrowRight") stepShot(1);
+      });
+      holdToRepeat(
+        [
+          ["shot-prev", -1],
+          ["shot-next", 1],
+        ],
+        stepShot,
+        function () { return shotAt; },
+        SHOT_MODAL
+      );
+      swipeToStep(SHOT_MODAL, stepShot, {
+        prev: "shot-prev",
+        next: "shot-next",
+        cards: [SHOT_MODAL.querySelector("figure")],
       });
 
       // ---- Where the clock has got to, on the grid

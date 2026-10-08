@@ -1750,21 +1750,51 @@ a.spk-card {
   font-size: 0.86em;
 }
 
-/* The grid. Three up where there is room, one where there is not, and a name
-   on a shade across the foot of each — the same shade the sheet uses, so the
-   thumbnail is a small copy of what opens. */
+/* The rails. One row deep, moving under a thumb or a trackpad, with the row
+   running off the edge to say there is more — a grid of sixty-nine is a
+   contact sheet the rest of the page sits below. */
+.shots-rail-head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 18px 0 9px;
+}
+.shots-rail-head h3 {
+  margin: 0;
+  font-size: 1em;
+}
+.shots-count {
+  color: var(--muted);
+  font-size: 0.82em;
+  font-variant-numeric: tabular-nums;
+}
 .shots {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
+  padding: 0 0 8px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  /* A sideways drag is the rail's; a downward one is the reader's. */
+  touch-action: pan-x pan-y;
+  scrollbar-width: thin;
 }
-.shots .shot-open {
+.shots > li {
+  flex: 0 0 auto;
+  width: 248px;
+  scroll-snap-align: start;
+}
+.shots:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.shots .shot-open,
+.wall .shot-open {
   aspect-ratio: 3 / 2;
 }
-.shots img {
+.shots img,
+.wall img {
   height: 100%;
   object-fit: cover;
 }
@@ -1773,12 +1803,70 @@ a.spk-card {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 22px 12px 9px;
+  padding: 22px 10px 8px;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.62));
   color: #fff;
-  font-size: 0.84em;
+  font-size: 0.8em;
   font-weight: 600;
   text-align: left;
+}
+/* The way to the whole set. A link would be a lie — there is no page to go to
+   — so it is a button, set like the quiet ones in the programme's bar. */
+.shots-all {
+  margin-top: 16px;
+  border: 1px solid var(--control-line);
+  background: var(--surface);
+  color: var(--control-ink);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font: inherit;
+  font-size: 0.88em;
+  font-weight: 600;
+  cursor: pointer;
+}
+.shots-all:hover {
+  border-color: var(--hero-accent);
+  color: var(--hero-accent);
+}
+
+/* The wall: every picture at once, over the page. It takes the screen because
+   that is the point of asking for all of them. */
+.wall-modal {
+  width: min(96vw, 1280px);
+  max-width: none;
+  height: 92vh;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--band);
+  color: var(--ink);
+  overflow: hidden;
+}
+.wall-modal::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+.wall-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 10px;
+}
+.wall-head .shot-x {
+  position: static;
+  color: var(--muted);
+  font-size: 1.6em;
+}
+.wall {
+  list-style: none;
+  margin: 0;
+  padding: 0 18px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  overflow-y: auto;
+  height: calc(92vh - 56px);
+  overscroll-behavior: contain;
 }
 .shots-empty {
   color: var(--muted);
@@ -1821,7 +1909,7 @@ a.spk-card {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 44px 18px 14px;
+  padding: 44px 180px 14px 18px;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.66));
   color: #fff;
   line-height: 1.5;
@@ -1851,6 +1939,43 @@ a.spk-card {
 }
 .shot-raw[hidden] {
   display: none;
+}
+/* The sheet's two arrows and its place in the set, under the picture where the
+   session sheet keeps its own. */
+.shot-nav {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+}
+.shot-step {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  font-size: 1em;
+  line-height: 1;
+  cursor: pointer;
+}
+.shot-step:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+}
+.shot-step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+#shot-count {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.86;
+  min-width: 5.5em;
+  text-align: center;
 }
 .shot-x {
   position: absolute;
@@ -1883,6 +2008,15 @@ a.spk-card {
   }
   .shot-x {
     left: 12px;
+  }
+  .wall-modal {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+  .wall {
+    height: calc(100vh - 56px);
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
 

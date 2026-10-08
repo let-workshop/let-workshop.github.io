@@ -726,7 +726,7 @@ def prepare_gallery(gallery: dict) -> None:
         gallery.setdefault(key, None)
     shots = gallery.setdefault("photos", [])
     for shot in ([gallery["headline"]] if gallery["headline"] else []) + shots:
-        for key in ("title_ko", "caption", "caption_ko", "full", "thumb"):
+        for key in ("title_ko", "caption", "caption_ko", "full", "thumb", "day"):
             shot.setdefault(key, None)
         for key in ("width", "height"):
             if not shot.get(key):
@@ -741,6 +741,20 @@ def prepare_gallery(gallery: dict) -> None:
         # The raw file keeps its own stamp: it changes when it changes, and it
         # is not the file the page draws.
         shot["raw"] = asset_url(shot["full"]) if shot["full"] else None
+
+    # The index into the flat list, because that is what the sheet steps
+    # through — the rails are a way of looking at one list, not three lists.
+    for i, shot in enumerate(shots):
+        shot["i"] = i + (1 if gallery["headline"] else 0)
+    # One rail per day. A day with nothing in it is not drawn, so a year with
+    # one day of pictures gets one rail and no empty heading.
+    gallery["rails"] = [
+        {"day": d, "shots": [s for s in shots if s["day"] == d]}
+        for d in sorted({s["day"] for s in shots if s["day"]})
+    ]
+    loose = [s for s in shots if not s["day"]]
+    if loose:
+        gallery["rails"].append({"day": None, "shots": loose})
 
 
 def prepare_news(news: dict, utc_offset: str) -> None:
