@@ -50,8 +50,11 @@ def main() -> None:
     ap.add_argument("--no-full", action="store_true",
                     help="skip the full-size copy, for a picture not worth zooming")
     ap.add_argument("--crop-top", type=float, default=0, metavar="FRACTION",
-                    help="take this much off the top first, 0.33 for a third — "
-                         "a room photographed whole is mostly ceiling")
+                    help="take this much off the top of the drawn copy, 0.25 for "
+                         "a quarter — a room photographed whole is mostly "
+                         "ceiling. The full-size copy is never cropped: it is "
+                         "the picture as it was taken, which is what somebody "
+                         "opening it at full size came for")
     args = ap.parse_args()
 
     if not args.source.exists():
@@ -62,15 +65,21 @@ def main() -> None:
     # Pillow does not apply it on open — so a portrait arrives on its side.
     im = ImageOps.exif_transpose(Image.open(args.source)).convert("RGB")
     print(f"{args.source.name}  {im.width}×{im.height}")
+
+    # The crop is the page's, not the picture's. What the page draws is a
+    # composition — the ceiling is nothing to look at in a strip two hundred
+    # pixels tall — and what opens at full size is the photograph, where the
+    # room is part of what you are looking at.
+    shown = im
     if args.crop_top:
         if not 0 < args.crop_top < 1:
             raise SystemExit("--crop-top is a fraction of the height, 0 to 1")
         cut = round(im.height * args.crop_top)
-        im = im.crop((0, cut, im.width, im.height))
-        print(f"  cut {cut}px off the top  ->  {im.width}×{im.height}")
+        shown = im.crop((0, cut, im.width, im.height))
+        print(f"  drawn copy: {cut}px off the top  ->  {shown.width}×{shown.height}")
 
-    wide = im if im.width <= WIDE else im.resize(
-        (WIDE, round(im.height * WIDE / im.width)), Image.LANCZOS)
+    wide = shown if shown.width <= WIDE else shown.resize(
+        (WIDE, round(shown.height * WIDE / shown.width)), Image.LANCZOS)
     save(wide, OUT / f"{args.slug}.jpg", QUALITY)
     if not args.no_full:
         save(im, OUT / f"{args.slug}-full.jpg", FULL_QUALITY)

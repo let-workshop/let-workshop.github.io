@@ -83,9 +83,13 @@
           t = m && m("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
         var narrow = m && m("(max-width: 780px)").matches;
-        var mask = t === "dark" ? "hero-art" : "hero-art-light";
         var plate = t === "dark" ? "hero" : narrow ? "hero-ink-narrow" : "hero-ink";
-        [mask + (narrow ? "-narrow" : "") + ".svg", plate + ".jpg"].forEach(function (u) {
+        // The plate only. The drawing is a mask, not a background, and a mask
+        // image is not fetched as `as="image"` is — so the preload never
+        // matched the request the stylesheet made, and the browser downloaded
+        // the same 587KB twice: once for a preload nothing claimed, once for
+        // the mask. Measured on a 390px viewport, both at full transfer size.
+        [plate + ".jpg"].forEach(function (u) {
           var l = document.createElement("link");
           l.rel = "preload";
           l.as = "image";
