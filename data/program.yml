@@ -146,6 +146,7 @@ days:
 
       - type: keynote
         title: Opening Remarks
+        chair: Kwang-Sung Jun
         emoji: "🎬"
         start: "11:00"
         end: "11:10"
@@ -847,6 +848,7 @@ days:
 
       - type: tutorial
         title: Tutorial
+        chair: Kwang-Sung Jun
         # Confirmed, so it is exempt from the plain rendering above: it keeps
         # its own name, its colour and its speaker while every other session
         # still reads "Invited talk · TBD". One session settling should not
@@ -978,7 +980,7 @@ days:
 
       - type: block
         title: Bandits I
-        chair: Kwang-Sung Jun
+        chair: Namhoon Lee
         start: "13:30"
         end: "14:50"
         speakers:
@@ -1075,7 +1077,7 @@ days:
 
       - type: block
         title: Offline RL
-        chair: Kwang-Sung Jun
+        chair: Chulhee Yun
         start: "15:05"
         end: "16:25"
         speakers:
