@@ -1968,10 +1968,12 @@ a.spk-card {
 }
 .shot-modal figure img {
   display: block;
-  max-width: 100%;
+  /* The width comes from the picture's own dimensions, set in script — not
+     from whichever file happens to be loaded, or the thumbnail shown during a
+     drag would lay the sheet out at 640px and the picture would jump. */
+  max-width: min(94vw, 1200px);
   /* The strip and its gap come off the top of what the picture may take. */
   max-height: calc(86vh - 78px);
-  width: auto;
   height: auto;
 }
 /* Over the foot of the picture, on a shade that is only as dark as it has to

@@ -3268,6 +3268,14 @@
         // was pressed — so the frame is never empty while the sheet's copy
         // arrives. Soft for a moment rather than blank for a moment.
         var img = document.getElementById("shot-img");
+        // The frame is the picture's size, not the file's. Without this the
+        // thumbnail swapped in during a drag laid itself out at 640px and the
+        // sheet shrank to a third of itself every time the dial moved; with
+        // it, both files fill the same box and only the sharpness changes.
+        // Style rather than the width/height attributes: those describe a
+        // picture only until it has loaded, and then the file's own size wins.
+        img.style.aspectRatio = s.width + " / " + s.height;
+        img.style.width = s.width + "px";
         if (quick && s.thumb_src) {
           img.src = s.thumb_src;
         } else if (s.thumb_src && s.thumb_src !== s.src) {
