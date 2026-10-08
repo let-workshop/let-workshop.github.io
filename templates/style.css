@@ -1293,6 +1293,43 @@ body {
 }
 
 
+/* ---------- Prose, set justified ----------
+   Every run of sentences on the page: the notices, the abstracts wherever they
+   are shown, the speaker's biography, the About text and the captions that are
+   paragraphs rather than labels.
+   Not applied to anything by its element — a justified line only shows itself
+   on a block long enough to have a middle, and `p` on this page is also used
+   for one-line notes and empty states, which justify into gappy nonsense.
+   Hyphenation is on with it: justified Latin without hyphens opens rivers
+   between short words. Korean hyphenates nowhere, so the rule is simply quiet
+   on the half of this page that is in it. */
+.news-body,
+.abs-body,
+.abs-body p,
+.sp-abstract,
+.sp-abstract p,
+.sp-bio,
+.sp-bio p,
+.poster-abs p,
+.about-lead p,
+.about-block p,
+.topic-group p,
+.headshot figcaption,
+.shot-modal figcaption span {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+/* An empty state is one short line saying there is nothing yet. Justified, its
+   one line is its last line, so it ranges left anyway — but it is a label, and
+   labels should not be asking about rivers. */
+.sp-abstract.is-todo,
+.sp-bio.is-todo {
+  text-align: left;
+  hyphens: manual;
+}
+
 /* ---------- Sections ----------
    Full-width bands alternating white and grey. A card then takes whichever of
    the two its band is not, so it reads as raised without any border. */
@@ -1959,6 +1996,7 @@ a.spk-card {
    the window would letterbox a landscape photograph twice over, once at the
    sides and again in the browser's own chrome. */
 .shot-modal {
+  touch-action: pan-y;
   max-width: min(94vw, 1200px);
   max-height: 92vh;
   padding: 0;

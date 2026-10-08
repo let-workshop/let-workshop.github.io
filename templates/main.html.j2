@@ -2609,10 +2609,15 @@
         function turn(dir) {
           var span = sheet.getBoundingClientRect().width || 1;
           busy = true;
-          place(dir * span, OUT);
+          // Out the way the finger went, and the next one in from the side the
+          // finger came from. These two were the wrong way round: a card
+          // dragged to the left was thrown back across to the right and its
+          // replacement walked in from the left, so the sheet answered every
+          // swipe by going the other way.
+          place(-dir * span, OUT);
           setTimeout(function () {
             step(dir);
-            place(-dir * span, 0);   // the next one, waiting on the far side
+            place(dir * span, 0);   // the next one, waiting on the far side
             requestAnimationFrame(function () {
               requestAnimationFrame(function () {
                 place(0, IN);
@@ -2629,6 +2634,12 @@
           x0 = ev.clientX;
           y0 = ev.clientY;
           axis = 0;
+          // Captured, so the rest of the gesture comes back here wherever the
+          // finger goes. Without it a drag that left the sheet — easy, it is
+          // only part of the screen — took its pointerup with it, the card was
+          // left standing wherever the finger had dragged it to, and it stayed
+          // there until something else moved it.
+          try { sheet.setPointerCapture(ev.pointerId); } catch (e) { /* older pointers */ }
         });
         sheet.addEventListener("pointermove", function (ev) {
           if (ev.pointerId !== id) return;
@@ -2647,6 +2658,7 @@
           if (ev.pointerId !== id) return;
           var dx = ev.clientX - x0, dir = dx < 0 ? 1 : -1;
           id = null;
+          try { sheet.releasePointerCapture(ev.pointerId); } catch (e) { /* already */ }
           if (axis !== 1) return void (axis = 0);
           axis = 0;
           if (Math.abs(dx) >= COMMIT && canStep(dir)) {
@@ -2661,7 +2673,18 @@
           if (ev.pointerId !== id) return;
           id = null;
           axis = 0;
+          try { sheet.releasePointerCapture(ev.pointerId); } catch (e) { /* already */ }
           place(0, IN);
+          setTimeout(function () { place(0, 0); }, IN);
+        });
+        // Last resort. If a gesture is ever lost — a tab switch mid-drag, a
+        // capture an engine declines to give — the card must not be left
+        // standing off the side of the sheet.
+        sheet.addEventListener("close", function () {
+          id = null;
+          axis = 0;
+          busy = false;
+          place(0, 0);
         });
       }
 
@@ -3381,6 +3404,9 @@
         prev: "shot-prev",
         next: "shot-next",
         cards: [SHOT_MODAL.querySelector("figure")],
+        // The strip along the foot is the dial. A finger on it is turning the
+        // dial, not turning the page, and the two gestures are the same one.
+        skip: function (t) { return t && t.closest && t.closest(".shot-strip"); },
       });
 
       // ---- Where the clock has got to, on the grid

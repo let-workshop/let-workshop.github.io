@@ -29,7 +29,13 @@ function El(cls) {
   };
 }
 
+const captured = [], released = [];
 const sheet = El();
+// The sheet captures the pointer for the length of the gesture; the stub has
+// to offer the methods or the code's try/catch quietly swallows the attempt
+// and the test cannot tell a capture from a failure to capture.
+sheet.setPointerCapture = (id) => captured.push(id);
+sheet.releasePointerCapture = (id) => released.push(id);
 const body = El("sp-body");
 const card = El("card");
 const rail = El("spk-strip-bar");
@@ -110,6 +116,42 @@ const cases = [
     const held = card.style.transform;
     g.release(); tick(1200);
     return /translate3d\(-40px/.test(held) && !card.style.transform;
+  }],
+  // The sheet used to throw the card back across the screen and walk the next
+  // one in from the side the finger had come from, which is the whole gesture
+  // answered backwards. These two watch the turn rather than its result.
+  ["the card leaves the way the finger went", () => {
+    const g = gesture({ dx: -120 });
+    g.release();
+    const leaving = card.style.transform;
+    tick(1200);
+    return /translate3d\(-360px/.test(leaving);
+  }],
+  ["and the next one comes in from the other side", () => {
+    const g = gesture({ dx: -120 });
+    g.release();
+    tick(170);                       // OUT: the old card is gone, the new one is placed
+    const arriving = card.style.transform;
+    tick(1200);
+    return /translate3d\(360px/.test(arriving);
+  }],
+  ["a swipe right throws the card right", () => {
+    const g = gesture({ dx: 120 });
+    g.release();
+    const leaving = card.style.transform;
+    tick(1200);
+    return /translate3d\(360px/.test(leaving);
+  }],
+  ["the pointer is captured, so a finger that leaves the sheet is still ours", () => {
+    captured.length = 0; released.length = 0;
+    swipe({ dx: -120 });
+    return captured.includes(7) && released.includes(7);
+  }],
+  ["a gesture cut short leaves nothing standing off the side", () => {
+    gesture({ dx: -90 });
+    sheet.fire("pointercancel", { pointerId: 7 });
+    tick(1200);
+    return !card.style.transform && !card.style.opacity;
   }],
   ["past the last card the finger gets a third of what it asks", () => {
     nextBtn.disabled = true;
