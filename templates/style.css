@@ -2164,11 +2164,14 @@ a.spk-card {
     padding-top: calc(14px + env(safe-area-inset-top));
   }
   /* Top right of a full-screen sheet is the one corner a thumb cannot reach,
-     and this is the only way out of the wall. Fixed rather than absolute: the
-     grid scrolls under it and the button stays where the hand is. */
+     and this is the only way out of the wall. Absolute against the dialog,
+     which is exactly the visible height — `fixed` measures the layout
+     viewport, and on mobile Chrome that runs on behind the browser's own
+     toolbar, which is where this button went. */
   .wall-head .shot-x {
-    position: fixed;
+    position: absolute;
     top: auto;
+    right: auto;
     left: 50%;
     transform: translateX(-50%);
     bottom: calc(16px + env(safe-area-inset-bottom));
