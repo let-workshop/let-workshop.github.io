@@ -3239,10 +3239,14 @@
       // Built once, on the first open. Sixty-eight more thumbnails in the
       // document at load is sixty-eight things to hold for a sheet nobody has
       // opened; `loading="lazy"` then keeps it to the few that are on screen.
-      var STRIP = document.getElementById("shot-strip");
+      // Not STRIP: the speaker modal's letter index has owned that name since
+      // long before there were pictures, and taking it threw on load — which
+      // stops the script dead and takes every handler after it, speaker cards
+      // included.
+      var SHOT_STRIP = document.getElementById("shot-strip");
       function buildStrip() {
-        if (STRIP.firstChild) return;
-        STRIP.innerHTML = SHOTS.map(function (s, j) {
+        if (SHOT_STRIP.firstChild) return;
+        SHOT_STRIP.innerHTML = SHOTS.map(function (s, j) {
           return '<button role="tab" data-i="' + j + '" onclick="openShot(' + j + ')" ' +
                  'aria-label="' + esc(s.alt || s.title) + '">' +
                  '<img src="' + esc(s.thumb_src) + '" alt="" loading="lazy" decoding="async" /></button>';
@@ -3288,7 +3292,7 @@
         }
         if (!quick) prefetch(i);
         buildStrip();
-        Array.prototype.forEach.call(STRIP.children, function (b, j) {
+        Array.prototype.forEach.call(SHOT_STRIP.children, function (b, j) {
           b.classList.toggle("is-here", j === i);
           b.setAttribute("aria-selected", j === i ? "true" : "false");
         });
@@ -3316,7 +3320,7 @@
         // box with no layout to scroll itself into view does nothing at all.
         // Centred rather than merely in view — stepping along should move the
         // strip under a still mark, not shunt the mark to one edge.
-        var here = STRIP.children[i];
+        var here = SHOT_STRIP.children[i];
         if (here) {
           stripMoved = Date.now();
           here.scrollIntoView({ inline: "center", block: "nearest" });
@@ -3334,15 +3338,15 @@
         // a known gap, and sixty-eight getBoundingClientRect calls on every
         // frame of a flick is how a dial comes to stutter.
         function under() {
-          var first = STRIP.children[0];
+          var first = SHOT_STRIP.children[0];
           if (!first) return -1;
           var step = first.getBoundingClientRect().width + 6;
-          var lead = parseFloat(getComputedStyle(STRIP).paddingLeft) || 0;
-          var mid = STRIP.scrollLeft + STRIP.clientWidth / 2 - lead;
+          var lead = parseFloat(getComputedStyle(SHOT_STRIP).paddingLeft) || 0;
+          var mid = SHOT_STRIP.scrollLeft + SHOT_STRIP.clientWidth / 2 - lead;
           return Math.min(SHOTS.length - 1, Math.max(0, Math.round((mid - step / 2) / step)));
         }
 
-        STRIP.addEventListener("scroll", function () {
+        SHOT_STRIP.addEventListener("scroll", function () {
           // Our own centring scroll reports itself over the next few frames,
           // and reading that as the reader's would fight it halfway.
           if (Date.now() - stripMoved < 500) return;

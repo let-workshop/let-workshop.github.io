@@ -1266,6 +1266,22 @@ body {
 }
 
 
+/* On a narrow screen the note decides how wide the button's column is, and in
+   English it is the wider of the two: "THANK YOU FOR THE INTEREST" is 172px
+   against a 132px button, which took the pair past the width of the row and
+   dropped "See speakers" onto a line of its own — ranged left under a
+   Registration that was centred over its own wider column, so neither lined up
+   with anything. Capped, the note wraps instead and the two buttons stay on
+   one line. In em, so it is tied to the type rather than to a screen: the
+   Korean notes are inside it already and are untouched. */
+@media (max-width: 480px) {
+  .btn-wait small,
+  .btn-note small {
+    width: auto;
+    max-width: 13em;
+  }
+}
+
 .hero-meta small {
   display: block;
   margin-top: 5px;
