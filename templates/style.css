@@ -1809,6 +1809,12 @@ a.spk-card {
   touch-action: pan-x pan-y;
   scrollbar-width: none;
 }
+/* Snapping and a drift pull against each other — the snap keeps tugging the
+   row back to the nearest edge a fraction of a pixel at a time, which reads as
+   a shiver. The snap comes back the moment the drift stops. */
+.shots.is-drifting {
+  scroll-snap-type: none;
+}
 .shots::-webkit-scrollbar {
   display: none;
 }
@@ -1866,7 +1872,8 @@ a.spk-card {
 /* The way to the whole set. A link would be a lie — there is no page to go to
    — so it is a button, set like the quiet ones in the programme's bar. */
 .shots-all {
-  margin-top: 16px;
+  display: block;
+  margin: 18px auto 0;
   border: 1px solid var(--control-line);
   background: var(--surface);
   color: var(--control-ink);
@@ -1995,7 +2002,8 @@ a.spk-card {
   gap: 6px;
   flex: 0 0 auto;
   overflow-x: auto;
-  padding-bottom: 2px;
+  padding: 0 calc(50% - 42px) 14px;
+  scroll-snap-type: x proximity;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
 }
@@ -2003,32 +2011,44 @@ a.spk-card {
   display: none;
 }
 .shot-strip button {
+  position: relative;
   flex: 0 0 auto;
   width: 84px;
   height: 56px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
-  overflow: hidden;
   background: none;
   cursor: pointer;
+  scroll-snap-align: center;
   opacity: 0.45;
   transition: opacity 0.15s ease;
 }
 .shot-strip button:hover {
   opacity: 0.8;
 }
-/* The one on screen, told by being the only one at full strength and the only
-   one with the accent under it. */
+/* The one in the middle, which is the one on screen. A dot under it rather
+   than a ring around it: the ring read as a selection waiting to be opened,
+   and this is a mark on a dial saying where the dial is. */
 .shot-strip button.is-here {
   opacity: 1;
-  box-shadow: inset 0 0 0 2px var(--hero-accent);
+}
+.shot-strip button.is-here::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--hero-accent);
 }
 .shot-strip img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 6px;
 }
 .shot-raw {
   position: absolute;
@@ -2112,6 +2132,9 @@ a.spk-card {
   }
   .shot-raw {
     left: 12px;
+  }
+  .shot-strip {
+    padding: 0 calc(50% - 33px) 14px;
   }
   .shot-strip button {
     width: 66px;

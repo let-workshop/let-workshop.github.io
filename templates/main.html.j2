@@ -3120,6 +3120,89 @@
           page,
           function () { return Math.round(target); }
         );
+
+        // ---- The drift
+        //
+        // The row moves on its own, slowly, so the page shows more than the
+        // four pictures that happen to fit and says without a word that there
+        // is a row here to move. 24px a second: slower than reading, fast
+        // enough that a picture you liked is still findable.
+        //
+        // It gives way to the reader completely. A hover or a focus pauses it;
+        // touching it, wheeling it, dragging the bar or pressing an arrow ends
+        // it for the rest of the visit, because after that the position is
+        // something the reader chose and nothing should be moving it.
+        var pos = 0, dir = 1, frame = null, paused = false, done = false, last = 0;
+        // Per second, not per frame. A frame is 8ms on a 120Hz screen and 16
+        // on a 60Hz one, so a constant added per frame is a row that drifts at
+        // twice the speed on the better display.
+        var SPEED = 24 / 1000;
+
+        function drift(now) {
+          frame = null;
+          if (done) return;
+          // Capped: a tab that was in the background wakes with a gap of
+          // seconds in it, and the row should not leap across it.
+          var dt = last ? Math.min(64, now - last) : 16;
+          last = now;
+          if (!paused) {
+            var max = most();
+            if (max > 0) {
+              pos = Math.min(max, Math.max(0, pos + dir * SPEED * dt));
+              if (pos >= max) dir = -1;
+              if (pos <= 0) dir = 1;
+              mine = Date.now();
+              rail.scrollLeft = pos;
+              target = pos;
+              ends();
+            }
+          }
+          frame = requestAnimationFrame(drift);
+        }
+        function start() {
+          if (done || frame || still.matches) return;
+          pos = rail.scrollLeft;
+          last = 0;
+          rail.classList.add("is-drifting");
+          frame = requestAnimationFrame(drift);
+        }
+        function halt(forGood) {
+          if (forGood) done = true;
+          if (frame) cancelAnimationFrame(frame);
+          frame = null;
+          rail.classList.remove("is-drifting");
+        }
+
+        ["pointerdown", "wheel", "touchstart", "keydown"].forEach(function (type) {
+          rail.addEventListener(type, function () { halt(true); }, { passive: true });
+        });
+        [prev, next, bar].forEach(function (el) {
+          el.addEventListener("pointerdown", function () { halt(true); });
+        });
+        rail.addEventListener("pointerenter", function () { paused = true; });
+        rail.addEventListener("pointerleave", function () { paused = false; });
+        rail.addEventListener("focusin", function () { paused = true; });
+        rail.addEventListener("focusout", function () { paused = false; });
+
+        // Only while it is on the screen. A row scrolling itself in a section
+        // nobody is looking at is a frame of work every sixteenth of a second
+        // for nothing, and on a phone that is the battery.
+        //
+        // Started first and stopped by the observer, not the other way round:
+        // observe() reports what it finds straight away, so a row below the
+        // fold is halted within a frame of being started — while a browser
+        // whose observer never reports still gets a row that moves, rather
+        // than one that sits there because the thing meant to start it never
+        // spoke.
+        start();
+        if (window.IntersectionObserver) {
+          new IntersectionObserver(function (rows) {
+            rows.forEach(function (row) { row.isIntersecting ? start() : halt(false); });
+          }, { threshold: 0.2 }).observe(rail);
+        }
+        document.addEventListener("visibilitychange", function () {
+          document.hidden ? halt(false) : start();
+        });
       })();
 
       // From a session to its pictures. The session sheet closes behind it —
@@ -3164,9 +3247,12 @@
         }).join("");
       }
 
-      function openShot(i) {
+      // What the sheet shows, without touching the strip's position — so it
+      // can be called by the strip's own scrolling without the strip then
+      // scrolling itself under the hand that is moving it.
+      function paintShot(i) {
         var s = SHOTS[i];
-        if (!s) return;
+        if (!s) return false;
         shotAt = i;
         document.getElementById("shot-prev").disabled = i === 0;
         document.getElementById("shot-next").disabled = i === SHOTS.length - 1;
@@ -3185,13 +3271,11 @@
         }
         prefetch(i);
         buildStrip();
-        var here = STRIP.children[i];
         Array.prototype.forEach.call(STRIP.children, function (b, j) {
           b.classList.toggle("is-here", j === i);
           b.setAttribute("aria-selected", j === i ? "true" : "false");
         });
-
-        document.getElementById("shot-img").alt = s.title || "";
+        img.alt = s.title || "";
         document.getElementById("shot-title").innerHTML = tbd(s.title, s.title_ko || s.title);
         var text = document.getElementById("shot-text");
         text.innerHTML = s.caption ? tbd(s.caption, s.caption_ko || s.caption) : "";
@@ -3200,14 +3284,52 @@
         // already on the screen.
         raw.hidden = !s.raw;
         if (s.raw) raw.href = s.raw;
+        return true;
+      }
+
+      // Moved here, so the strip knows not to read its own scrolling as the
+      // reader's for as long as it is still settling.
+      var stripMoved = 0;
+
+      function openShot(i) {
+        if (!paintShot(i)) return;
         if (!SHOT_MODAL.open) SHOT_MODAL.showModal();
         // After the sheet is up, not before: a dialog that has not been shown
         // is display:none, everything in it measures as nothing, and asking a
         // box with no layout to scroll itself into view does nothing at all.
         // Centred rather than merely in view — stepping along should move the
         // strip under a still mark, not shunt the mark to one edge.
-        if (here) here.scrollIntoView({ inline: "center", block: "nearest" });
+        var here = STRIP.children[i];
+        if (here) {
+          stripMoved = Date.now();
+          here.scrollIntoView({ inline: "center", block: "nearest" });
+        }
       }
+
+      // Scrolling the strip is choosing a picture. Whichever tile is nearest
+      // the middle is the one the sheet shows — the strip is a dial, not a
+      // list you then have to tap.
+      (function () {
+        var settle = null;
+        STRIP.addEventListener("scroll", function () {
+          // Our own centring scroll reports itself over the next few frames,
+          // and reading that as the reader's would fight it halfway.
+          if (Date.now() - stripMoved < 500) return;
+          clearTimeout(settle);
+          settle = setTimeout(function () {
+            var box = STRIP.getBoundingClientRect();
+            var mid = (box.left + box.right) / 2;
+            var best = -1, by = Infinity;
+            Array.prototype.forEach.call(STRIP.children, function (b, j) {
+              var r = b.getBoundingClientRect();
+              var d = Math.abs((r.left + r.right) / 2 - mid);
+              if (d < by) { by = d; best = j; }
+            });
+            if (best >= 0 && best !== shotAt) paintShot(best);
+          }, 90);
+        }, { passive: true });
+      })();
+
       SHOT_MODAL.addEventListener("click", function (ev) {
         if (ev.target === SHOT_MODAL) SHOT_MODAL.close();
       });
