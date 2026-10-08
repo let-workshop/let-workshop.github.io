@@ -2703,6 +2703,15 @@
         // The title moves with the body: they are one card, and the head above
         // them is the frame it sits in.
         cards: [document.getElementById("modal-title"), document.getElementById("modal-body")],
+        // Not a swipe that starts on the ribbon — that is a drag along the
+        // programme, which the ribbon handles itself. The speaker sheet has
+        // always said this about its own rail; this one never did, so a drag
+        // on the ribbon was read as a page turn as well, and once the sheet
+        // started capturing the pointer it took the gesture off the ribbon
+        // altogether.
+        skip: function (target) {
+          return !!(target.closest && target.closest("#modal-strip"));
+        },
       });
 
       // Card order, not id: the cards are written in one order and rearranged

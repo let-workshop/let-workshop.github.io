@@ -163,6 +163,22 @@ const cases = [
   }],
 ];
 
+// Every sheet that can be swiped has something inside it that is dragged along
+// instead — a ribbon, a rail, a filmstrip — and the swipe has to be told to
+// keep its hands off it. The session sheet was the one that never said so, and
+// the symptom was not a page that turned when it should not: it was a ribbon
+// that stopped working entirely, because the sheet captured the pointer out
+// from under it. This is a call-site check, not a behaviour one.
+const callSites = [...page.matchAll(/(?<!function )swipeToStep\((\w+),/g)].map((m) => {
+  const start = m.index;
+  const end = page.indexOf("});", start);
+  return { sheet: m[1], opts: page.slice(start, end) };
+});
+cases.push(["every sheet that can be swiped keeps its hands off its own rail", () => {
+  if (callSites.length < 3) return false;
+  return callSites.every((c) => /\bskip:/.test(c.opts));
+}]);
+
 let bad = 0;
 for (const [what, run] of cases) {
   moved = [];
