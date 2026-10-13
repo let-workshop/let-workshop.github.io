@@ -164,6 +164,7 @@ days:
             role_ko: 교수
             name_ko: 이남훈
             photo: namhoon-lee.jpg
+            slides: slides/namhoon-lee.pdf
             affil: POSTECH
             talk: "FRESCO: A Novel Consistency Control for Asynchronous Pipeline Parallel Training"
             abstract: >-
@@ -204,6 +205,7 @@ days:
             role_ko: 교수
             name_ko: 이재호
             photo: jaeho-lee.jpg
+            slides: slides/jaeho-lee.pdf
             affil: POSTECH
             talk: On the Scale Bias of Neural Network Training
             abstract: >-
@@ -253,6 +255,7 @@ days:
             role_ko: 교수
             name_ko: 윤성환
             photo: sung-whan-yoon.jpg
+            slides: slides/sung-whan-yoon.pdf
             affil: UNIST
             talk: Understanding Model Flatness Across Learning Frameworks
             bio: >-
@@ -280,6 +283,7 @@ days:
             role_ko: 교수
             name_ko: 손지용
             photo: jy-yong-sohn.jpg
+            slides: slides/jy-yong-sohn.pdf
             affil: Yonsei
             talk: "Theory and Algorithms for In-Context Learning: Weight-Space and Activation-Space Perspectives"
             bio: >-
@@ -323,6 +327,7 @@ days:
             role_ko: 교수
             name_ko: 박상돈
             photo: sangdon-park.jpg
+            slides: slides/sangdon-park.pdf
             affil: POSTECH
             talk: Online Conformal Abstention Under Adversarial Bandit Feedback
             bio: >-
@@ -348,6 +353,7 @@ days:
             role_ko: 교수
             name_ko: 이주호
             photo: juho-lee.jpg
+            slides: slides/juho-lee.pdf
             affil: KAIST
             talk: Predictive Bayes with large language models
             bio: >-
@@ -398,6 +404,7 @@ days:
             role_ko: 교수
             name_ko: 김동환
             photo: donghwan-kim.jpg
+            slides: slides/donghwan-kim.pdf
             affil: KAIST
             talk: Edge of Stability Occurs in Minimax Optimization
             bio: >-
@@ -946,6 +953,7 @@ days:
             role_ko: 교수
             name_ko: 윤철희
             photo: chulhee-yun.jpg
+            slides: slides/chulhee-yun.pdf
             affil: KAIST
             talk: Understanding Neural Network Optimization through River-Valley Dynamics
             bio: >-
@@ -1011,6 +1019,7 @@ days:
             role_ko: 박사
             name_ko: 이종영
             photo: jongyeong-lee.jpg
+            slides: slides/jongyeong-lee.pdf
             affil: KIST
             links:
               scholar: https://scholar.google.com/citations?user=ZNLjOlEAAAAJ
@@ -1142,6 +1151,7 @@ days:
             role_ko: 교수
             name_ko: 홍기혁
             photo: kihyuk-hong.jpg
+            slides: slides/kihyuk-hong.pdf
             affil: KAIST
             talk: Offline Constrained Reinforcement Learning under Partial Data Coverage
             bio: >-
@@ -1212,6 +1222,7 @@ days:
             role_ko: 교수
             name_ko: 전광성
             photo: kwang-sung-jun.jpg
+            slides: slides/kwang-sung-jun.pdf
             affil: POSTECH
             talk: "Frontiers of Offline Interactive Machine Learning: From Contextual Bandits to LLM Alignment"
             abstract: >-
