@@ -1324,7 +1324,6 @@ body {
 /* An empty state is one short line saying there is nothing yet. Justified, its
    one line is its last line, so it ranges left anyway — but it is a label, and
    labels should not be asking about rivers. */
-.sp-abstract.is-todo,
 .sp-bio.is-todo {
   text-align: left;
   hyphens: manual;
@@ -2956,6 +2955,21 @@ button.sp-talk-link:focus-visible {
   color: var(--ink);
   border-color: var(--accent);
 }
+/* The deck, among the three. The other two are doors further into the page;
+   this one hands over the file, which is the thing somebody came back for —
+   so it is the one in the accent and the others stay quiet beside it. */
+.sp-deck {
+  color: var(--hero-accent);
+  border-color: var(--hero-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.sp-deck:hover,
+.sp-deck:focus-visible {
+  color: var(--btn-primary-ink);
+  background: var(--hero-accent);
+  border-color: var(--hero-accent);
+}
 
 /* The way back, carrying the name: a button that says where it goes rather
    than only that it goes back. */
@@ -3830,11 +3844,6 @@ button.sp-talk-link:focus-visible {
   margin: 0 0 10px;
   color: var(--prose);
 }
-.abs-none {
-  color: var(--faint);
-  font-style: italic;
-  margin: 4px 0 0;
-}
 .abs-pdf {
   display: inline-block;
   margin-top: 12px;
@@ -4084,13 +4093,6 @@ h2 .note {
 .is-todo {
   color: var(--muted);
   font-style: italic;
-}
-.sp-slides.is-todo {
-  font-style: normal;
-  border-style: dashed;
-  opacity: 0.7;
-  cursor: default;
-  pointer-events: none;
 }
 .now-track.is-todo .now-fill {
   display: none;

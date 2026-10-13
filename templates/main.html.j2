@@ -676,8 +676,6 @@
                 {% if t.talk %}<h4>{{ t.talk }}</h4>{% endif %}
                 {% if t.abstract %}
                 <div class="abs-body">{{ t.abstract }}</div>
-                {% else %}
-                <p class="abs-none">Abstract to be announced.</p>
                 {% endif %}
                 {% if t.slides %}
                 <a class="pill abs-pdf" href="{{ t.slides }}" target="_blank" rel="noopener">Slides (PDF)</a>
@@ -2297,16 +2295,19 @@
         if (s.shot !== null && s.shot !== undefined)
           bits += '<button class="sp-who sp-shot" onclick="shotFromSession(' + s.shot + ')">' +
                   tbd("Photographs", "사진") + ' <span aria-hidden="true">&rarr;</span></button>';
+        // The deck on the same line as the other two, and the only one of the
+        // three in the accent: those two lead further into the page and this
+        // one is the thing itself, the file the talk was given from.
+        if (s.slides)
+          bits += '<a class="sp-who sp-deck" href="' + esc(s.slides) + '" target="_blank" rel="noopener">' +
+                  tbd("Slides (PDF)", "발표자료 (PDF)") + ' <span aria-hidden="true">&darr;</span></a>';
 
-        if (!compact)
-          bits += s.abstract
-            ? '<div class="sp-abstract">' + s.abstract + "</div>"
-            : '<div class="sp-abstract is-todo">' + tbd("Abstract to be announced", "초록 준비 중") + "</div>";
-
-        bits += s.slides
-          ? '<a class="sp-slides" href="' + esc(s.slides) + '" target="_blank" rel="noopener">' +
-            tbd("Slides (PDF)", "발표자료 (PDF)") + "</a>"
-          : '<span class="sp-slides is-todo">' + tbd("Slides after the talk", "발표 후 자료 공개") + "</span>";
+        // Nothing where there is no abstract and nothing where there is no
+        // deck. Both lines promised something after the talk, and the talks
+        // are over — a page that is still waiting for them is a page that has
+        // not noticed.
+        if (!compact && s.abstract)
+          bits += '<div class="sp-abstract">' + s.abstract + "</div>";
         return '<div class="sp">' + head + "<div>" + bits + "</div></div>";
       }
 
