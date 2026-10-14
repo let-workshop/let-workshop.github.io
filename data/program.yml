@@ -1095,6 +1095,7 @@ days:
             role_ko: 교수
             name_ko: 장경석
             photo: kyoungseok-jang.jpg
+            slides: slides/kyoungseok-jang.pdf
             affil: CAU
             talk: >-
               Revisiting Bellman Residual Minimization: From Duality to Modern Offline
